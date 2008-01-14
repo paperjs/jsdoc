@@ -6,6 +6,7 @@ function publish(symbolGroup) {
 		srcDir: "symbols/src/"
 	};
 	
+	// used to check the details of things being linked to
 	Link.symbolGroup = symbolGroup;
 
 	try {
@@ -20,8 +21,8 @@ function publish(symbolGroup) {
 	
 	// filters
 	function hasNoParent($) {return ($.memberof == "")}
-	function isaFile($) {return ($.isa == "FILE")}
-	function isaClass($) {return ($.isa == "CONSTRUCTOR" || $.isNamespace)}
+	function isaFile($) {return ($.is("FILE"))}
+	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace())}
 	
 	var symbols = symbolGroup.getSymbols();
 	var classes = symbols.filter(isaClass).sort(makeSortby("alias"));
@@ -100,7 +101,7 @@ function Link() {
 			
 			var linkPath = linkTo.alias+publish.conf.ext;
 			if (!linkTo.is("CONSTRUCTOR")) {
-				linkPath = linkTo.parentConstructor || "Global";
+				linkPath = linkTo.parentConstructor || "_global_";
 				linkPath += publish.conf.ext+"#"+linkTo.name
 			}
 			

@@ -209,7 +209,7 @@ var testCases = [
 		is('symbols[4].isStatic', true, 'Static method from second scope comment is known to be static.');
 		
 		is('symbols[5].name', "Unknown.isok", 'Static instance method from scope comment is kept.');
-		is('symbols[6].name', "Global", 'Orphaned instance method from scope comment is discarded.');
+		is('symbols[6].name', "_global_", 'Orphaned instance method from scope comment is discarded.');
 	}
 	,
 	function() {
@@ -236,7 +236,7 @@ var testCases = [
 		is('symbols[2].desc', "Extension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
 		is('symbols[3].desc', "A first in, first out data structure.", 'A description is not shared when outside a shared section.');
 		is('symbols[4].alias', "Queue.rewind", 'Second shared tag can be started.');
-		is('symbols[5].alias', "Global#startOver", 'Shared tag doesnt cross over files.');
+		is('symbols[5].alias', "_global_#startOver", 'Shared tag doesnt cross over files.');
 	
 	}
 ];

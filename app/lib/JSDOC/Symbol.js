@@ -19,7 +19,7 @@ JSDOC.Symbol = function(name, params, isa, comment) {
 	
 	this.isa = (isa || "OBJECT");
 	this.type = "";
-	
+	this._properties = {};
 	this.desc = "";
 	this.classDesc = "";
 	this.memberof = "";
@@ -85,7 +85,7 @@ JSDOC.Symbol = function(name, params, isa, comment) {
 			this.classDesc += this.desc; // desc can't apply to the constructor as there is none.
 			this.classDesc += ns[0].desc;
 			this.isa = "CONSTRUCTOR";
-			this.isNamespace = true;
+			this._properties['isNamespace'] = true;
 		}
 		
 		var params;
@@ -226,6 +226,14 @@ JSDOC.Symbol.prototype.getDescription = function() {
 
 JSDOC.Symbol.prototype.is = function(what) {
 	return this.isa === what;
+}
+
+JSDOC.Symbol.prototype.isBuiltin = function() {
+	return JSDOC.Lang.isBuiltin(this.alias);
+}
+
+JSDOC.Symbol.prototype.isNamespace = function() {
+	return this._properties['isNamespace'];
 }
 
 JSDOC.Symbol.prototype.hasTag = function(tagTitle) {

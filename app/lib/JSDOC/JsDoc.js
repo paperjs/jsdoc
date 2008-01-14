@@ -9,6 +9,8 @@ JSDOC.JsDoc = function(opt) {
 
 	if (!JSDOC.opt.e) JSDOC.opt.e = "utf-8";
 	JSDOC.IO.setEncoding(JSDOC.opt.e);
+	
+	if (JSDOC.opt.r === true) JSDOC.opt.r = 10;
 
 	JSDOC.opt.srcFiles = this.getSrcFiles();
 	this.symbolGroup = new JSDOC.SymbolGroup(this.getSymbols());

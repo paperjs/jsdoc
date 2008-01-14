@@ -4,7 +4,12 @@ var global;
 */
 JSDOC.SymbolGroup = function(symbols) {
 	this.symbols = this.filterByOption(symbols, JSDOC.opt);
-	global = new JSDOC.Symbol("Global", [], "CONSTRUCTOR", new JSDOC.DocComment("/** BUILTIN */"));
+	
+	// generate a dummy class to hold any symbols with no parent class
+	global = new JSDOC.Symbol("_global_", [], "CONSTRUCTOR", new JSDOC.DocComment("/** BUILTIN */"));
+	global._properties['isNamespace'] = true;
+	global.srcFile = "";
+	
 	this.symbols.push(global);
 	
 	this.fileIndex = new Hash();
@@ -107,10 +112,11 @@ JSDOC.SymbolGroup.prototype.indexSymbol = function(symbol) {
 }
 
 JSDOC.SymbolGroup.prototype.addBuiltIn = function(isa) {
-	if (this.getSymbol(isa)) return;
+	if (this.getSymbol(isa)) return; // user defined one of these exists
 	var docComment = new JSDOC.DocComment("/** BUILTIN */");
 	var builtIn = new JSDOC.Symbol(isa, [], "CONSTRUCTOR", docComment, "");
 	builtIn.isStatic = true;
+	builtIn.srcfile = "";
 	this.symbols.push(builtIn);
 	this.indexSymbol(builtIn);
 	return builtIn;
@@ -119,7 +125,7 @@ JSDOC.SymbolGroup.prototype.addBuiltIn = function(isa) {
 JSDOC.SymbolGroup.prototype.resolveMemberOf = function(symbol) {
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
-		if (symbol.alias == "Global" || symbol.is("FILE")) continue;
+		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
 		
 		if (symbol.memberof) {
 			symbol.memberof = symbol.memberof.replace(/\.prototype(\.|$)/g, "#");
@@ -136,7 +142,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 	eachSymbol:
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
-		if (symbol.alias == "Global" || symbol.is("FILE")) continue;
+		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
 
 		var nameChain = new Chain(symbol.alias.split(/([#.-])/));
 
@@ -201,7 +207,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 			this.classIndex[symbol.memberof].push(symbol);
 		}
 		else { // no parent constructor
-			symbol.alias = symbol.alias.replace(/^(Global#)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4");
+			symbol.alias = symbol.alias.replace(/^(_global_#)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4");
 			if (RegExp.$2 && RegExp.$4) symbol.name = RegExp.$2+"."+RegExp.$4;
 
 			if (!symbol.is("CONSTRUCTOR")) {
@@ -211,8 +217,8 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 					continue eachSymbol;
 				}
 				
-				symbol.memberof = "Global";
-				symbol.alias = "Global#"+symbol.name;
+				symbol.memberof = "_global_";
+				symbol.alias = "_global_#"+symbol.name;
 			}
 			
 			symbol.isStatic = true;
@@ -245,7 +251,7 @@ JSDOC.SymbolGroup.prototype.resolveMembers = function() {
 JSDOC.SymbolGroup.prototype.resolveInherits = function() {
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
-		if (symbol.alias == "Global" || symbol.is("FILE")) continue;
+		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
 		
 		// add in inherited members
 		for(var ii = 0, il = symbol.inherits.length; ii < il; ii++) {

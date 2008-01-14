@@ -25,60 +25,62 @@
 
 <hr>
 
-<h1 class="classTitle">{!output+=(data.isNamespace)?"Namespace":"Class";!} {+data.alias+}</h1>
+<h1 class="classTitle">{!output+=(data.isNamespace())?"Namespace":"Class";!} {+data.alias+}</h1>
 <hr>
 
-<if test="data.alias != 'Global'">
-	<p>
-	{!output+=(data.isNamespace)?"Namespace":"Class";!} <b>{+data.alias+}</b>
-	<if test="data.augments.length"><br>extends
-		{+
-			data.augments
-			.sort()
-			.map(
-				function($) { return new Link().toSymbol($).from("../"); }
-			)
-			.join(", ")
-		+}.
-	</if>
-	</p>
-	<p class="description">{+data.classDesc+}
-	<br>
-	<i>Defined in {+new Link().toSrc(data.srcfile).from("../")+}</i>
-	</p>
-	
-	<hr>
-	<if test="!data.isNamespace">
-	<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class {+data.alias+}.">
-		<caption>Constructor Summary</caption>
-		<thead>
-			<tr>
-				<th scope="col">Constructor Attributes</th>
-				<th scope="col">Constructor Name and Description</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td class="attributes">{!
-					if (data.isPrivate) output += "&lt;private&gt; ";
-					if (data.isInner) output += "&lt;inner&gt; ";
-					else if (data.isStatic) output += "&lt;static&gt; ";
-				!}</td>
-				<td class="nameDescription">
-					<div class="fixedFont">new <b>{+new Link().toSymbol(data.alias).from("../")+}</b>({+
-						data.params.map(
-							function($) {
-								return (($.type)?"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>" : "")+$.name;
-							}
-						).join(", ")
-						+})</div>
-					<div class="description">{+summarize(data.desc)+}</div>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	</if>
+
+<p>
+<if test="data.isBuiltin()">Buit-In</if>
+{!output+=(data.isNamespace())?"Namespace":"Class";!} <b>{+data.alias+}</b>
+<if test="data.augments.length"><br>extends
+	{+
+		data.augments
+		.sort()
+		.map(
+			function($) { return new Link().toSymbol($).from("../"); }
+		)
+		.join(", ")
+	+}.
 </if>
+</p>
+<p class="description">{+data.classDesc+}
+<if test="!data.isBuiltin()">{# isn't defined in any file #}
+<br><i>Defined in {+new Link().toSrc(data.srcfile).from("../")+}</i>
+</if>
+</p>
+
+<hr>
+<if test="!data.isNamespace() && !data.isBuiltin()">{# have no documented constructor #}
+<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class {+data.alias+}.">
+	<caption>Constructor Summary</caption>
+	<thead>
+		<tr>
+			<th scope="col">Constructor Attributes</th>
+			<th scope="col">Constructor Name and Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td class="attributes">{!
+				if (data.isPrivate) output += "&lt;private&gt; ";
+				if (data.isInner) output += "&lt;inner&gt; ";
+				else if (data.isStatic) output += "&lt;static&gt; ";
+			!}</td>
+			<td class="nameDescription">
+				<div class="fixedFont">new <b>{+new Link().toSymbol(data.alias).from("../")+}</b>({+
+					data.params.map(
+						function($) {
+							return (($.type)?"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>" : "")+$.name;
+						}
+					).join(", ")
+					+})</div>
+				<div class="description">{+summarize(data.desc)+}</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</if>
+
 
 <if test="data.properties.length">
 	{! var ownProperties = data.properties.filter(function($){return $.memberof == data.alias}).sort(makeSortby("alias")); !}
@@ -203,7 +205,7 @@
 </if>
 
 <hr>
-<if test="!data.isNamespace && data.alias != 'Global'">
+<if test="!data.isNamespace()  && !data.isBuiltin()">
 <div class="details">
 	<div class="sectionTitle">
 		Constructor Detail
@@ -214,7 +216,7 @@
 		if (data.isInner) output += "&lt;inner&gt; ";
 		else if (data.isStatic) output += "&lt;static&gt; ";
 		
-		output += "new " + data.alias +
+		output += "new <b>" + data.alias + "</b>" +
 			"("
 			+
 			data.params.map(
@@ -272,7 +274,7 @@
 		</div>
 		<div class="description">
 			{+member.desc+}
-			<if test="data.alias == 'Global'">
+			<if test="member.srcfile != data.srcfile">
 				<br>
 				<i>Defined in {+new Link().toSrc(member.srcfile).from("../")+}</i>
 			</if>
@@ -308,7 +310,7 @@
 		!}</div>
 		<div class="description">
 			{+member.desc+}
-			<if test="data.alias == 'Global'">
+			<if test="member.srcfile != data.srcfile">
 				<br>
 				<i>Defined in {+new Link().toSrc(member.srcfile).from("../")+}</i>
 			</if>
