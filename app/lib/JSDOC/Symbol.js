@@ -71,7 +71,7 @@ JSDOC.Symbol = function(name, params, isa, comment) {
 		}
 		
 		var see;
-		if ((see = this.doc.getTag("see")) && version.length) {
+		if ((see = this.doc.getTag("see")) && see.length) {
 			this.see = see;
 		}
 		

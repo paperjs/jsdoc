@@ -253,6 +253,17 @@
 			</for>
 		</dl>
 	</if>
+	<if test="data.see.length">
+		<dl class="detailList">
+			<dt class="heading">See:</dt>
+			<for each="item" in="data.see">
+				<dt>
+					{+new Link().toSymbol(item.name).from("../")+}
+				</dt>
+				<if test="item.desc"><dd>{+item.desc+}</dd></if>
+			</for>
+		</dl>
+	</if>
 </div>
 </if>
 
@@ -279,6 +290,17 @@
 				<i>Defined in {+new Link().toSrc(member.srcfile).from("../")+}</i>
 			</if>
 		</div>
+		<if test="member.see.length">
+			<dl class="detailList">
+				<dt class="heading">See:</dt>
+				<for each="item" in="member.see">
+					<dt>
+						{+new Link().toSymbol(item.name).from("../")+}
+					</dt>
+					<if test="item.desc"><dd>{+item.desc+}</dd></if>
+				</for>
+			</dl>
+		</if>
 		<hr>
 	</for>
 </if>
@@ -354,6 +376,17 @@
 						{+new Link().toSymbol(item.name).from("../")+}
 					</dt>
 					<dd>{+item.desc+}</dd>
+				</for>
+			</dl>
+		</if>
+		<if test="member.see.length">
+			<dl class="detailList">
+				<dt class="heading">See:</dt>
+				<for each="item" in="member.see">
+					<dt>
+						{+new Link().toSymbol(item.name).from("../")+}
+					</dt>
+					<if test="item.desc"><dd>{+item.desc+}</dd></if>
 				</for>
 			</dl>
 		</if>

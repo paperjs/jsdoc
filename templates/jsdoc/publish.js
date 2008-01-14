@@ -95,19 +95,22 @@ function Link() {
 				
 		function _makeSymbolLink(alias) {
 			var linkTo;
-
-			// if there is no symbol by that name just return the name unaltered
-			if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
+			var linkPath;
 			
-			var linkPath = escape(linkTo.alias)+publish.conf.ext;
-			if (!linkTo.is("CONSTRUCTOR")) {
-				linkPath = escape(linkTo.parentConstructor) || "_global_";
-				linkPath += publish.conf.ext+"#"+linkTo.name
+			if (alias.charAt(0) == "#") var linkPath = alias;
+			// if there is no symbol by that name just return the name unaltered
+			else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
+			else {
+				linkPath = escape(linkTo.alias)+publish.conf.ext;
+				if (!linkTo.is("CONSTRUCTOR")) {
+					linkPath = escape(linkTo.parentConstructor) || "_global_";
+					linkPath += publish.conf.ext+"#"+linkTo.name
+				}
+				linkPath = path+linkPath
 			}
 			
-			var fullPath = path+linkPath;
 			if (!text) text = alias;
-			return "<a href=\""+fullPath+"\""+target+">"+text+"</a>";
+			return "<a href=\""+linkPath+"\""+target+">"+text+"</a>";
 		}
 		
 		function _makeSrcLink(srcFilePath) {
@@ -122,7 +125,7 @@ function Link() {
 			var path = relativeToPath+publish.conf.symbolsDir;
 			var linkString = this.alias;
 
-			linkString = linkString.replace(/\b([a-z$0-9_#-.]+)\b/gi,
+			linkString = linkString.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)\b/gi,
 				function(match, symbolName) {
 					return _makeSymbolLink(symbolName);
 				}
