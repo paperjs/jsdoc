@@ -1,0 +1,13 @@
+  * Removed circular references in parsed documentation objects.
+  * Improved inheritance handling, now properties and events can be inherited same as methods.
+  * Improved handling of cross-file relationships, now having two related objects in separate files is not a problem.
+  * Improved ability to recognize membership of previously defined objects.
+  * Added abilty to redefine parsing behavior with plugins.
+  * @methodOf is a synonym for @function and @memberOf.
+  * Added @default to document default values of members that are objects.
+  * Added ability to parse inner functions.
+  * Fixed bug that appeared when calling a method to set properties of the instance referred to by "this".
+  * Output is now more consistent, now produces nested directories with a file for each documented symbol.
+  * Inline parameter type hint comments are now documented.
+  * It is no longer necessary to document params in the same order as they are defined in the signature.
+  * Fixed error: Locally scoped variables (declared with var) no longer appear as global.
