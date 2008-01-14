@@ -2,9 +2,7 @@
  * @class
  */
 function Outer() {
-
-
- function Inner(name) /** @scope Outer/open */ {
+function Inner(name) {
     /** The title of this. */
  	this.title = name;
  }

@@ -99,9 +99,9 @@ function Link() {
 			// if there is no symbol by that name just return the name unaltered
 			if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
 			
-			var linkPath = linkTo.alias+publish.conf.ext;
+			var linkPath = escape(linkTo.alias)+publish.conf.ext;
 			if (!linkTo.is("CONSTRUCTOR")) {
-				linkPath = linkTo.parentConstructor || "_global_";
+				linkPath = escape(linkTo.parentConstructor) || "_global_";
 				linkPath += publish.conf.ext+"#"+linkTo.name
 			}
 			
