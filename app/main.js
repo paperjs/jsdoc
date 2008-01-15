@@ -27,10 +27,8 @@ SYS = {
 		if (SYS._pwd) return SYS._pwd;
 		
 		var fname = runscript;
-		
 		var absPath = SYS.userDir+SYS.slash+fname;
-		var pathParts = absPath.split(new RegExp(SYS.slash, "g"));
-		
+		var pathParts = absPath.split(/\b[\\\/]/);
 		var resolvedPath = [];
 		for (var i = 0; i < pathParts.length; i++) {
 			if (pathParts[i] == "..") resolvedPath.pop();
@@ -38,8 +36,8 @@ SYS = {
 		}
 		
 		resolvedPath.pop();
-		var thisDir = SYS.slash+resolvedPath.filter(function($) { return !!$}).join(SYS.slash);
-		if (thisDir.charAt(thisDir.length-1) != SYS.slash) thisDir += SYS.slash;
+		var thisDir = /*SYS.slash+*/resolvedPath.filter(function($) { return !!$}).join("/");
+		if (thisDir.charAt(thisDir.length-1) != SYS.slash) thisDir += "/";
 		
 		return SYS._pwd = thisDir;
 	}

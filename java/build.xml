@@ -5,15 +5,18 @@
 
     <target name="compile">
         <mkdir dir="build/classes"/>
-        <javac srcdir="src" destdir="build/classes"/>
+        <javac 
+        	srcdir="src" destdir="build/classes"
+        	classpath="./classes/js.jar"
+        />
     </target>
 
     <target name="jar">
         <mkdir dir="build/jar"/>
         <jar destfile="build/jar/jsrun.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="JsRun"/>
-                <attribute name="Class-Path" value="js.jar"/>
+            	<attribute name="Main-Class" value="JsRun"/>
+            	<attribute name="Class-Path" value="./java/classes/js.jar"/>
             </manifest>
         </jar>
     </target>
