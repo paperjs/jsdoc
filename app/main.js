@@ -1,8 +1,6 @@
 var argj = arguments.pop();
-var runscript;
-if (argj.match(/^-j=(.+)/)) {
-	runscript = RegExp.$1;
-}
+var thisScript;
+if (argj.match(/^-j=(.+)/)) thisScript = RegExp.$1;
 else {
 	print("run with JsRun.");
 	quit();
@@ -26,26 +24,57 @@ SYS = {
 	pwd: function() {
 		if (SYS._pwd) return SYS._pwd;
 		
-		var fname = runscript;
+		var fname = thisScript;
 		var absPath = SYS.userDir+SYS.slash+fname;
-		var pathParts = absPath.split(/\b[\\\/]/);
-		var resolvedPath = [];
-		for (var i = 0; i < pathParts.length; i++) {
-			if (pathParts[i] == "..") resolvedPath.pop();
-			else if (pathParts[i] != ".") resolvedPath.push(pathParts[i]);
-		}
 		
-		resolvedPath.pop();
-		var thisDir = /*SYS.slash+*/resolvedPath.filter(function($) { return !!$}).join("/");
-		if (thisDir.charAt(thisDir.length-1) != SYS.slash) thisDir += "/";
-		
+		var thisDir = new FilePath(absPath);
+		thisDir.toDir();
+
 		return SYS._pwd = thisDir;
 	}
 }
 
 // shortcuts
-var FileWriter = Packages.java.io.FileWriter;
 var File = Packages.java.io.File;
+//var FileWriter = Packages.java.io.FileWriter;
+
+/** @class */
+function FilePath(absPath) {
+	this.root = FilePath.separator;
+	this.path = [];
+	this.file = "";
+	
+	var parts = absPath.split(/[\\\/]/);
+	if (parts) {
+		if (parts.length) this.root = parts.shift() + FilePath.separator;
+		if (parts.length) this.file =  parts.pop()
+		if (parts.length) this.path = parts;
+	}
+	
+	this.path = this.resolvePath();
+}
+FilePath.separator = SYS.slash;
+FilePath.prototype.resolvePath = function() {
+	var resolvedPath = [];
+	for (var i = 0; i < this.path.length; i++) {
+		if (this.path[i] == "..") resolvedPath.pop();
+		else if (this.path[i] != ".") resolvedPath.push(this.path[i]);
+	}
+	return resolvedPath;
+}
+FilePath.prototype.toDir = function(n) {
+	if (this.file) this.file = "";
+}
+FilePath.prototype.upDir = function(n) {
+	this.toDir();
+	if (this.path.length) this.path.pop();
+}
+FilePath.prototype.toString = function() {
+	return this.root
+		+ this.path.join(FilePath.separator)
+		+ ((this.path.length > 0)? FilePath.separator : "")
+		+ this.file;
+}
 
 /**
 	@namespace
@@ -89,7 +118,7 @@ IO = {
 	mkPath: function(/**Array*/ path) {
 		var make = "";
 		for (var i = 0, l = path.length; i < l; i++) {
-			make += path[i]+"/";
+			make += path[i] + SYS.slash;
 			if (! IO.exists(make)) {
 				IO.makeDir(make);
 			}
@@ -116,13 +145,13 @@ IO = {
 			var file = String(files[f]);
 			if (file.match(/^\.[^\.\/\\]/)) continue; // skip dot files
 	
-			if ((new File(path.join("/")+"/"+file)).list()) { // it's a directory
+			if ((new File(path.join(SYS.slash)+SYS.slash+file)).list()) { // it's a directory
 				path.push(file);
-				if (path.length-1 < recurse) IO.ls(path.join("/"), recurse, allFiles, path);
+				if (path.length-1 < recurse) IO.ls(path.join(SYS.slash), recurse, allFiles, path);
 				path.pop();
 			}
 			else {
-				allFiles.push((path.join("/")+"/"+file).replace("//", "/"));
+				allFiles.push((path.join(SYS.slash)+SYS.slash+file).replace(SYS.slash+SYS.slash, SYS.slash));
 			}
 		}
 	
@@ -181,6 +210,27 @@ IO = {
 			load(lib[i]);
 	}
 }
+
+/** @namespace */
+LOG = {
+	warn: function(msg, e) {
+		if (e) msg = e.fileName+", line "+e.lineNumber+": "+msg;
+		
+		msg = ">> WARNING: "+msg;
+		LOG.warnings.push(msg);
+		if (LOG.out) LOG.out.write(msg+"\n");
+		else print(msg);
+	},
+
+	inform: function(msg) {
+		msg = " > "+msg;
+		if (LOG.out) LOG.out.write(msg+"\n");
+		else if (typeof LOG.verbose != "undefined" && LOG.verbose) print(msg);
+	}
+};
+LOG.warnings = [];
+LOG.verbose = true
+
 /*debug*///print("SYS.pwd() is "+SYS.pwd());
 
 IO.include("frame.js");
@@ -188,8 +238,14 @@ IO.include("lib/JSDOC.js");
 IO.includeDir("plugins/");
 /*debug*///IO.include("frame/Dumper.js");
 
-with (JSDOC) {
-	var jsdoc = new JsDoc(arguments);
+var jsdoc = new JSDOC.JsDoc(arguments);
+
+
+if (JSDOC.opt.T) {
+	IO.include("frame/Testrun.js");
+	IO.include("test.js");
+}
+else {
 	var myTemplate = JSDOC.opt.t;
 
 	var symbols = jsdoc.symbolGroup.getSymbols();

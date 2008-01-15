@@ -6,11 +6,15 @@ JSDOC.JsDoc = function(opt) {
 		JSDOC.opt = JSDOC.Util.getOptions(opt, {d:'directory', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', h:'help', 'D[]':'define'});
 	}
 	else JSDOC.opt = opt;
+	
+	if (LOG) LOG.verbose = JSDOC.opt.v;
 
 	if (!JSDOC.opt.e) JSDOC.opt.e = "utf-8";
 	IO.setEncoding(JSDOC.opt.e);
 	
-	if (JSDOC.opt.r === true) JSDOC.opt.r = 10;
+	if (typeof(JSDOC.opt.r) == "boolean") JSDOC.opt.r = 10;
+	else if (!isNaN(parseInt(JSDOC.opt.r))) JSDOC.opt.r = parseInt(JSDOC.opt.r);
+	else JSDOC.opt.r = 1;
 
 	JSDOC.opt.srcFiles = this.getSrcFiles();
 	this.symbolGroup = new JSDOC.SymbolGroup(this.getSymbols());
@@ -23,7 +27,7 @@ JSDOC.JsDoc.prototype.getSrcFiles = function() {
 	if (this.srcFiles) return this.srcFiles;
 	var srcFiles = [];
 	var ext = ["js"];
-	if (JSDOC.opt.x) ext = JSDOC.opt.x.split(",").map(function(x) {return x.toLowerCase()});
+	if (JSDOC.opt.x) ext = JSDOC.opt.x.split(",").map(function($) {return $.toLowerCase()});
 	
 	function isJs($) {
 		var thisExt = $.split(".").pop().toLowerCase();

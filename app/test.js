@@ -1,30 +1,3 @@
-try { importClass(java.lang.System); }
-catch (e) { throw "RuntimeException: The class java.lang.System is required to run this script."; }
-
-var userDir  = System.getProperty("user.dir");
-var envrDir  = (System.getProperty("jsdoc.dir")||System.getProperty("jsdoc_dir"));
-var javaLibs = (System.getProperty("java.library.path")).split(":");
-var libDirs = [userDir].concat(envrDir, javaLibs);
-var jsdocDir = ["jsdoc-toolkit", "../jsdoc-toolkit"];
-var libErrors = [];
-
-for(var i = 0, l = libDirs.length; i < l; i++) {
-	for (var j = 0, jl = jsdocDir.length; j < jl; j++) {
-		var appRootPath = libDirs[i]+Packages.java.io.File.separator+jsdocDir[j]+Packages.java.io.File.separator;
-		if(!Packages.java.io.File(appRootPath).exists()) {
-			libErrors.push("Could not find: ["+appRootPath+"]");
-		}
-		else {
-			__DIR__ = new String(appRootPath);
-			break;
-		}
-	}
-}
-
-load(__DIR__+"app/frame.js");
-load(__DIR__+"app/lib/JSDOC.js");
-include(__DIR__+"app/frame/Dumper.js");
-include(__DIR__+"t/JsTestrun.js");
 
 function symbolize(opt) {
 	jsdoc = null;
@@ -36,7 +9,7 @@ function symbolize(opt) {
 
 var testCases = [
 	function() {
-		symbolize({a:true, p:true, _: [__DIR__+"t/data/prototype.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd()+"test/prototype.js"]});
 //print(Dumper.dump(symbols));		
 		is('symbols[0].name', "Article", 'Function set to constructor prototype with inner constructor name is found.');
 		is('symbols[0].methods[0].name', "init", 'The initializer method name of prototype function is correct.');
@@ -48,7 +21,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/prototype_oblit.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/prototype_oblit.js"]});
 		
 		is('symbols[0].name', "Article", 'Oblit set to constructor prototype name is found.');
 		is('symbols[0].memberof', "", 'The memberof of prototype oblit is correct.');
@@ -63,7 +36,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, p:true, _: [__DIR__+"t/data/prototype_oblit_constructor.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd()+"test/prototype_oblit_constructor.js"]});
 		
 		is('symbols[0].name', "Article", 'Oblit set to constructor prototype with inner constructor name is found.');
 		is('symbols[0].methods[0].name', "init", 'The initializer method name of prototype oblit is correct.');
@@ -75,7 +48,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, p:true, _: [__DIR__+"t/data/inner.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd()+"test/inner.js"]});
 		
 		is('symbols[0].name', "Outer", 'Outer constructor prototype name is found.');
 		is('symbols[0].methods.length', 1, 'Inner function doesnt appear as a method of the outer.');
@@ -89,7 +62,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/prototype_nested.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/prototype_nested.js"]});
 		
 		is('symbols[0].name', "Word", 'Base constructor name is found.');
 		is('symbols[0].methods[0].name', "reverse", 'Base constructor method is found.');
@@ -103,7 +76,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/namespace_nested.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/namespace_nested.js"]});
 		
 		is('symbols[0].name', "ns1", 'Base namespace name is found.');
 		is('symbols[0].memberof', "", 'Base namespace memberof is empty (its a constructor).');
@@ -115,7 +88,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, p:true, _: [__DIR__+"t/data/functions_nested.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd()+"test/functions_nested.js"]});
 		
 		is('symbols[0].name', "Zop", 'Any constructor name is found.');
 		is('symbols[0].isa', "CONSTRUCTOR", 'It isa constructor.');
@@ -134,7 +107,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/memberof_constructor.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/memberof_constructor.js"]});
 		
 		is('symbols[1].name', "Tangent", 'Constructor set on prototype using @member has correct name.');
 		is('symbols[1].memberof', "Circle", 'Constructor set on prototype using @member has correct memberof.');
@@ -149,7 +122,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/inherits.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/inherits.js"]});
 //print(Dumper.dump(symbols));		
 		is('symbols[0].name', "Layout", 'Constructor can be found.');
 		is('symbols[0].methods[0].name', "init", 'Constructor method name can be found.');
@@ -164,7 +137,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a: true, _: [__DIR__+"t/data/augments.js", __DIR__+"t/data/augments2.js"]});
+		symbolize({a: true, _: [SYS.pwd()+"test/augments.js", SYS.pwd()+"test/augments2.js"]});
 		
 		is('symbols[4].augments[0]', "Layout", 'An augmented class can be found.');
 		is('symbols[4].methods[0].alias', "Page#reset", 'Method of augmenter can be found.');
@@ -185,7 +158,7 @@ var testCases = [
 	,
 
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/static_this.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/static_this.js"]});
 		
 		is('symbols[0].name', "box.holder", 'Static namespace name can be found.');
 		is('symbols[1].name', "foo", 'Static namespace method name can be found.');
@@ -197,7 +170,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/scope.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/scope.js"]});
 
 		is('symbols[0].name', "Person", 'Class defined in scope comment is found.');
 		is('symbols[0].methods[0].name', "initialize", 'Scoped instance method name can be found.');
@@ -213,7 +186,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [__DIR__+"t/data/param_inline.js"]});
+		symbolize({a:true, _: [SYS.pwd()+"test/param_inline.js"]});
 	
 		is('symbols[0].params[0].type', "int", 'Inline param name is set.');
 		is('symbols[0].params[0].desc', "The number of columns.", 'Inline param desc is set from comment.');
@@ -228,7 +201,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a: true, _: [__DIR__+"t/data/shared.js", __DIR__+"t/data/shared2.js"]});
+		symbolize({a: true, _: [SYS.pwd()+"test/shared.js", SYS.pwd()+"test/shared2.js"]});
 
 		is('symbols[1].name', 'some', 'The name of a symbol in a shared section is found.');
 		is('symbols[1].alias', 'Array#some', 'The alias of a symbol in a shared section is found.');

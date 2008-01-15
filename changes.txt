@@ -11,3 +11,4 @@
   * Inline parameter type hint comments are now documented.
   * It is no longer necessary to document params in the same order as they are defined in the signature.
   * Fixed error: Locally scoped variables (declared with var) no longer appear as global.
+  * It is now possible to run JsDoc Toolkit from any directory.
