@@ -8,7 +8,7 @@ JSDOC.JsDoc = function(opt) {
 	else JSDOC.opt = opt;
 
 	if (!JSDOC.opt.e) JSDOC.opt.e = "utf-8";
-	JSDOC.IO.setEncoding(JSDOC.opt.e);
+	IO.setEncoding(JSDOC.opt.e);
 	
 	if (JSDOC.opt.r === true) JSDOC.opt.r = 10;
 
@@ -32,7 +32,7 @@ JSDOC.JsDoc.prototype.getSrcFiles = function() {
 	
 	for (var i = 0; i < JSDOC.opt._.length; i++) {
 		srcFiles = srcFiles.concat(
-			JSDOC.IO.ls(JSDOC.opt._[i], JSDOC.opt.r).filter(isJs)
+			IO.ls(JSDOC.opt._[i], JSDOC.opt.r).filter(isJs)
 		);
 	}
 	
@@ -48,7 +48,7 @@ JSDOC.JsDoc.prototype.getSymbols = function() {
 		var srcFile = this.srcFiles[i];
 		
 		try {
-			var src = JSDOC.IO.readFile(srcFile);
+			var src = IO.readFile(srcFile);
 		}
 		catch(e) {
 			print("oops: "+e.message);

@@ -1,31 +1,10 @@
-
-load(__DIR__+"app/frame/Chain.js");
-load(__DIR__+"app/frame/Hash.js");
-load(__DIR__+"app/frame/Namespace.js");
+IO.include("frame/Chain.js");
+IO.include("frame/Hash.js");
+IO.include("frame/Namespace.js");
 
 function defined(o) {
 	return (o !== undefined);
 }
-
-function include(path) {
-	if (!path) return;
-	if (path.constructor === Array) {
-		for (var i = 0, l = path.length; i < l; i ++) {
-			load(path[i]);
-		}
-	}
-	else if (typeof path == "string") {
-		load(__DIR__+path);
-	}
-}
-
-function include_once(path) {
-	if (include_once.included.indexOf(path) === -1) {
-		include(path);
-		include_once.included.push(path);
-	}
-}
-include_once.included = [];
 
 function copy(o) { // todo check for circular refs
 	if (o == null || typeof(o) != 'object') return o;

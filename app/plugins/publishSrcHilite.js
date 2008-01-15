@@ -3,7 +3,7 @@ JSDOC.PluginManager.registerPlugin(
 	{
 		onPublishSrc: function(src) {
 			try {
-				var sourceCode = JSDOC.IO.readFile(src.path);
+				var sourceCode = IO.readFile(src.path);
 			}
 			catch(e) {
 				print(e.message);

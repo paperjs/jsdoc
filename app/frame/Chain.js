@@ -66,7 +66,6 @@ Chain.prototype.joinLeft = function() {
 		if (result && this.nodes[i].link) result += this.nodes[i].link;
 		result += this.nodes[i].value.toString();
 	}
-//print("~~! got result: "+result);
 	return result;
 }
 

@@ -3,7 +3,7 @@
 	@constructor
 */
 JSDOC.JsPlate = function(templateFile) {
-	if (templateFile) this.template = JSDOC.IO.readFile(templateFile);
+	if (templateFile) this.template = IO.readFile(templateFile);
 	
 	this.templateFile = templateFile;
 	this.code = "";

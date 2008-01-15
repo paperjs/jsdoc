@@ -12,10 +12,4 @@ JSDOC.usage = function() {
 	//todo
 }
 
-
-include("app/lib/JSDOC/IO.js");
-include(JSDOC.IO.ls(__DIR__+"app/lib/JSDOC/"));
-include("app/plugins/tagParamConfig.js");
-include("app/plugins/tagSynonyms.js");
-include("app/plugins/tagShortcuts.js");
-include("app/plugins/publishSrcHilite.js");
+IO.includeDir("lib/JSDOC/");

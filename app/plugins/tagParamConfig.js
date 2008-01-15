@@ -3,7 +3,6 @@ JSDOC.PluginManager.registerPlugin(
 	{
 		onDocCommentTags: function(symbol) {
 			var currentParam = null;
-//print("~~ symbol.tags.length is "+symbol.tags.length);				
 			for (var i = 0, l = symbol.tags.length; i < l; i++) {
 				if (symbol.tags[i].title == "param") {
 					symbol.tags[i].properties = [];
