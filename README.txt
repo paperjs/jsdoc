@@ -44,7 +44,7 @@ $ java -jar jsrun.jar app/main.js -a -t=templates/jsdoc mycode.js
 
 The above assumes your current working directory contains jsrun.jar,
 the "app" and "templates" subdirectories from the standard JsDoc
-Toolkit distribution and that the relative path tho the code you wish
+Toolkit distribution and that the relative path to the code you wish
 to document is "mycode.js".
 
 The output documentation files will be saved to a new directory named
