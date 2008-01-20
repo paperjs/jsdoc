@@ -98,3 +98,7 @@ JSDOC.TokenStream.prototype.balance = function(/**String*/start, /**String*/stop
 		if (!this.next()) break;
 	}
 }
+
+JSDOC.TokenStream.prototype.insertAhead = function(/**JSDOC.Token*/token) {
+	this.tokens.splice(this.cursor+1, 0, token);
+}

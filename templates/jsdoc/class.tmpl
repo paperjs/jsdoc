@@ -64,13 +64,7 @@
 				else if (data.get('isStatic')) output += "&lt;static&gt; ";
 			!}</td>
 			<td class="nameDescription">
-				<div class="fixedFont">new <b>{+new Link().toSymbol(data.get('alias')).from("../")+}</b>({+
-					data.get('params').map(
-						function($) {
-							return (($.type)?"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>" : "")+$.name;
-						}
-					).join(", ")
-					+})</div>
+				<div class="fixedFont">new <b>{+new Link().toSymbol(data.get('alias')).from("../")+}</b>{+ makeSignature(data.get('params')) +}</div>
 				<div class="description">{+summarize(data.get('desc'))+}</div>
 			</td>
 		</tr>
@@ -158,13 +152,7 @@
 					else output += "void"
 				!}</td>
 				<td class="nameDescription">
-					<div class="fixedFont"><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name')).from("../")+}</b>({+
-						member.get('params').map(
-							function($) {
-								return (($.type)?"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>" : "")+$.name;
-							}
-						).join(", ")
-						+})</div>
+					<div class="fixedFont"><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name')).from("../")+}</b>{+makeSignature(member.get('params'))+}</div>
 					<div class="description">{+summarize(member.get('desc'))+}</div>
 				</td>
 			</tr>
@@ -213,16 +201,7 @@
 		if (data.get('isInner')) output += "&lt;inner&gt; ";
 		else if (data.get('isStatic')) output += "&lt;static&gt; ";
 		
-		output += "new <b>" + data.get('alias') + "</b>" +
-			"("
-			+
-			data.get('params').map(
-				function($) {
-					return (($.type)?"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>" : "")+$.name;
-				}
-			).join(", ")
-			+
-			")";
+		output += "new <b>" + data.get('alias') + "</b>" + makeSignature(data.get('params'))
 	!}</div>
 	<div class="description">
 		{+data.get('desc')+}

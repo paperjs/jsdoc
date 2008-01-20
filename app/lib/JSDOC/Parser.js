@@ -170,8 +170,18 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		else if (ts.look(-1).is("VAR") && ts.look(-2).is("JSDOC")) doc = ts.look(-2).data;
 		
 		name = name.replace(/\.prototype(\.|$)/, "#");
-
-		if (doc) { // we only keep these if they're documented
+		
+		// like Foo = Class.create(BaseClass,{})
+		var nextName = ts.look(2);
+		if (nextName.is("NAME") && nextName.data == "Class.create" && ts.look(3).data == "(") {
+			if (defined(JSDOC.PluginManager)) {
+				var addComment = new JSDOC.Token("", "COMM", "JSDOC");
+				JSDOC.PluginManager.run("onPrototypeClassCreate", {"name":name, "comment": doc, "addComment":addComment});
+				ts.insertAhead(addComment)
+			}
+		
+		}
+		else if (doc) { // we only keep these if they're documented
 			var docComment = new JSDOC.DocComment(doc);
 			var isInner = (nspace && ts.look(-1).is("VAR"));
 			

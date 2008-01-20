@@ -5,15 +5,22 @@ JSDOC.PluginManager.registerPlugin(
 			var currentParam = null;
 			var tags = comment.tags;
 			for (var i = 0, l = tags.length; i < l; i++) {
+				
 				if (tags[i].title == "param") {
-					tags[i].properties = [];
-					currentParam = i;
+					if (tags[i].name.indexOf(".") == -1) {
+						currentParam = i;
+					}
 				}
-				else if (tags[i].title == "config" && currentParam != null) {
+				else if (tags[i].title == "config") {
 					tags[i].title = "param";
-					if (tags[i].name.indexOf(tags[currentParam].name+".") != 0)
+					if (currentParam == null) {
+						tags[i].name = "arguments"+"."+tags[i].name;
+					}
+					else if (tags[i].name.indexOf(tags[currentParam].name+".") != 0) {
 						tags[i].name = tags[currentParam].name+"."+tags[i].name;
-					tags[currentParam].properties.push(tags[i]);
+					}
+					currentParam != null
+					//tags[currentParam].properties.push(tags[i]);
 				}
 				else {
 					currentParam = null;

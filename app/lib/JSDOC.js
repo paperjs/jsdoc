@@ -14,7 +14,7 @@ JSDOC.usage = function() {
 	print("OPTIONS:");
 	print("  -a or --allfunctions\n          Include all functions, even undocumented ones.\n");
 	print("  -A or --Allfunctions\n          Include all functions, even undocumented, underscored ones.\n");
-	print("  -d=<PATH> or --directory=<PATH>\n          Output to this directory (defaults to js_docs_out).\n");
+	print("  -d=<PATH> or --directory=<PATH>\n          Output to this directory (defaults to \"out\").\n");
 	print("  -D=\"myVar:My value\" or --define=\"myVar:My value\"\n          Multiple. Define a variable, available in JsDoc as JSDOC.opt.D.myVar\n");
 	print("  -e=<ENCODING> or --encoding=<ENCODING>\n          Use this encoding to read and write files.\n");
 	print("  -h or --help\n          Show this message and exit.\n");

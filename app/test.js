@@ -213,6 +213,20 @@ var testCases = [
 		is('symbols[5].get("alias")', "_global_#startOver", 'Shared tag doesnt cross over files.');
 	
 	}
+	,
+	function() {
+		symbolize({a: true, _: [SYS.pwd()+"test/config.js"]});
+		is('symbols[0].get("params")[0].name', 'person', 'The name of a param is found.');
+		is('symbols[0].get("params")[1].name', 'person.name', 'The name of a param set with a dot name is found.');
+		is('symbols[0].get("params")[2].name', 'person.age', 'The name of a param set with a dot name is found.');
+		is('symbols[0].get("params")[4].name', 'connection', 'The name of a param after config is found.');
+		
+		is('symbols[1].get("params")[0].name', 'persons', 'Another name of a param is found.');
+		is('symbols[1].get("params")[1].name', 'persons.Father', 'The name of a param+config is found.');
+		is('symbols[1].get("params")[2].name', 'persons.Mother', 'The name of a second param+config is found.');
+		is('symbols[1].get("params")[3].name', 'persons.Children', 'The name of a third param+config is found.');
+			
+	}
 ];
 
 
