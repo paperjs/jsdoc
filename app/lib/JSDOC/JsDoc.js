@@ -3,12 +3,17 @@
 */
 JSDOC.JsDoc = function(opt) {
 	if (opt.constructor === Array) {
-		JSDOC.opt = JSDOC.Util.getOptions(opt, {d:'directory', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', h:'help', 'D[]':'define'});
+		JSDOC.opt = JSDOC.Util.getOptions(opt, {d:'directory', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', 'D[]':'define'});
 	}
 	else JSDOC.opt = opt;
 	
 	if (LOG) LOG.verbose = JSDOC.opt.v;
-
+	
+	if (JSDOC.opt.h) {
+		JSDOC.usage();
+		quit();
+	}
+	
 	if (!JSDOC.opt.e) JSDOC.opt.e = "utf-8";
 	IO.setEncoding(JSDOC.opt.e);
 	
