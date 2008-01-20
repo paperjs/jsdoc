@@ -15,7 +15,7 @@ function Junkmail() {
 }
 
 /**
-@inherits Junkmail.prototype.annoy
+@inherits Junkmail.prototype.annoy as pester
 @augments ThreeColumnPage
 @augments LibraryItem
 @constructor

@@ -6,9 +6,9 @@ JSDOC.SymbolGroup = function(symbols) {
 	this.symbols = this.filterByOption(symbols, JSDOC.opt);
 	
 	// generate a dummy class to hold any symbols with no parent class
-	global = new JSDOC.Symbol("_global_", [], "CONSTRUCTOR", new JSDOC.DocComment("/** BUILTIN */"));
-	global._properties['isNamespace'] = true;
-	global.srcFile = "";
+	global = new JSDOC.Symbol().init("_global_", [], "CONSTRUCTOR", new JSDOC.DocComment("/** BUILTIN */"));
+	global.set("isNamespace", true);
+	global.set("srcFile", "");
 	
 	this.symbols.push(global);
 	
@@ -18,18 +18,21 @@ JSDOC.SymbolGroup = function(symbols) {
 	this.typeIndex = new Hash();
 	
 	this.indexAll();
+	this.resolveInherits();
+	this.indexAll();
 	this.resolveMemberOf();
 	this.indexAll();
 	this.resolveNames();
 	this.indexAll(this.symbols);
 	this.resolveMembers();
-	this.resolveInherits();
+	this.indexAll();
+	this.resolveAugments();
 }
 
 JSDOC.SymbolGroup.prototype.getOverview = function(path) {
 	var overviews = this.getSymbolsByType().filter(
 		function(symbol) {
-			return (symbol.srcfile == path);
+			return (symbol.get("srcFile") == path);
 		}
 	);
 	if (overviews.constructor === Array) return overviews[0];
@@ -39,17 +42,17 @@ JSDOC.SymbolGroup.prototype.getOverview = function(path) {
 JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {			 
 	symbols = symbols.filter(
 		function(symbol) {
-			if (symbol.isInner) symbol.isPrivate = true;
+			if (symbol.get("isInner")) symbol.get("isPrivate") = true;
 			
 			var keep = true;
 			
-			if (symbol.isa == "FILE") keep = true;
-			else if (symbol.desc == "undocumented" && !(options.a ||options.A)) keep = false;
-			else if (/(^|[.#-])_/.test(symbol.alias) && !options.A) keep = false;
-			else if (symbol.isPrivate && !options.p) keep = false;
-			else if (symbol.doc.getTag("ignore").length > 0) keep = false;
+			if (symbol.is("FILE")) keep = true;
+			else if (symbol.get("desc") == "undocumented" && !(options.a ||options.A)) keep = false;
+			else if (/(^|[.#-])_/.test(symbol.get("alias")) && !options.A) keep = false;
+			else if (symbol.get("isPrivate") && !options.p) keep = false;
+			else if (symbol.get("isIgnored")) keep = false;
 			
-			if (/#$/.test(symbol.alias)) keep = false; // we don't document prototype
+			if (/#$/.test(symbol.get("alias"))) keep = false; // we don't document prototype
 			
 			if (keep) return symbol
 		}
@@ -92,31 +95,31 @@ JSDOC.SymbolGroup.prototype.indexAll = function() {
 
 JSDOC.SymbolGroup.prototype.indexSymbol = function(symbol) {
 	// filename=>symbol[] map
-	var srcfile = symbol.srcfile;
-	if (srcfile) {
-		if (!this.fileIndex.has(srcfile)) this.fileIndex.put(srcfile, []);
-		this.fileIndex.get(srcfile).push(symbol);
+	var srcFile = symbol.get("srcFile");
+	if (srcFile) {
+		if (!this.fileIndex.has(srcFile)) this.fileIndex.put(srcFile, []);
+		this.fileIndex.get(srcFile).push(symbol);
 	}
 	
 	// alias=>symbol map, presumes symbol.alias are unique
-	if (symbol.alias) {
-		this.nameIndex.put(symbol.alias, symbol);
+	if (symbol.get("alias")) {
+		this.nameIndex.put(symbol.get("alias"), symbol);
 	}
 
 	// isa=>symbol[] map
-	if (symbol.isa) {
-		var type = symbol.isa;
-		if (!this.typeIndex.has(type)) this.typeIndex.put(type, []);
-		this.typeIndex.get(type).push(symbol);
-	}
+	//if (symbol.isa) {
+		var kind = symbol.get("isa");
+		if (!this.typeIndex.has(kind)) this.typeIndex.put(kind, []);
+		this.typeIndex.get(kind).push(symbol);
+	//}
 }
 
 JSDOC.SymbolGroup.prototype.addBuiltIn = function(isa) {
 	if (this.getSymbol(isa)) return; // user defined one of these exists
 	var docComment = new JSDOC.DocComment("/** BUILTIN */");
-	var builtIn = new JSDOC.Symbol(isa, [], "CONSTRUCTOR", docComment, "");
+	var builtIn = new JSDOC.Symbol().init(isa, [], "CONSTRUCTOR", docComment, "");
 	builtIn.isStatic = true;
-	builtIn.srcfile = "";
+	builtIn.srcFile = "";
 	this.symbols.push(builtIn);
 	this.indexSymbol(builtIn);
 	return builtIn;
@@ -125,15 +128,11 @@ JSDOC.SymbolGroup.prototype.addBuiltIn = function(isa) {
 JSDOC.SymbolGroup.prototype.resolveMemberOf = function(symbol) {
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
-		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
-		
-		if (symbol.memberof) {
-			symbol.memberof = symbol.memberof.replace(/\.prototype(\.|$)/g, "#");
-			
-			if (symbol.memberof.charAt(symbol.memberof.length-1) == "#") {
-				symbol.alias = symbol.memberof+symbol.alias;
-			}
-			else symbol.alias = symbol.memberof+"."+symbol.alias;
+		if (symbol.get("alias") == "_global_" || symbol.is("FILE")) continue;
+
+// TODO can't this be resolved in init() of the Symbol script?		
+		if (symbol.get("memberof")) {
+			symbol.makeMemberOf(symbol.get("memberof"));	
 		}
 	}
 }
@@ -142,23 +141,22 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 	eachSymbol:
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
-		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
+		if (symbol.get("alias") == "_global_" || symbol.is("FILE")) continue;
 
-		var nameChain = new Chain(symbol.alias.split(/([#.-])/));
+		var nameChain = new Chain(symbol.get("alias").split(/([#.-])/));
 
 		// find the constructor closest in the chain to "this"
-		symbol.parentConstructor = "";
 		for (var node = nameChain.last(); node !== null; node = nameChain.prev()) {
 			var parentName = nameChain.joinLeft();
 			if (parentName) {
 				var parent = this.getSymbol(parentName);
 				if (
-					(parent && parent.isa == "CONSTRUCTOR")
+					(parent && parent.is("CONSTRUCTOR"))
 					||
-					(symbol.addOn = JSDOC.Lang.isBuiltin(parentName))
+					(symbol.set("addOn", JSDOC.Lang.isBuiltin(parentName)))
 				) {
-					symbol.parentConstructor = parentName;
-					if (symbol.addOn) {
+					symbol.set("parentConstructor", parentName);
+					if (symbol.get("addOn")) {
 						this.addBuiltIn(parentName);
 					}
 					break;
@@ -166,63 +164,64 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 			}
 		}
 
-		if (symbol.parentConstructor) {
+		if (symbol.get("parentConstructor")) {
 			// constructor#blah#foo => constructor#foo
-			var oldAlias = symbol.alias;
-			symbol.alias = 
-				symbol.alias.replace(
-					new RegExp("^"+RegExp.escapeMeta(symbol.parentConstructor)+'(\\.|#)[^+]+#'), 
-					symbol.parentConstructor+"#"
-				);
-			this.nameIndex.rename(oldAlias, symbol.alias);
+			var oldAlias = symbol.get("alias");
+			symbol.set("alias",
+				symbol.get("alias").replace(
+					new RegExp("^"+RegExp.escapeMeta(symbol.get("parentConstructor"))+'(\\.|#)[^+]+#'), 
+					symbol.get("parentConstructor")+"#"
+				)
+			);
+			this.nameIndex.rename(oldAlias, symbol.get("alias"));
 
-			var parts = symbol.alias.match(/^(.*[.#-])([^.#-]+)$/);
+			var parts = symbol.get("alias").match(/^(.*[.#-])([^.#-]+)$/);
 			if (parts) {
-				symbol.memberof = parts[1];
-				symbol.name = parts[2];
+				symbol.set("memberof", parts[1]);
+				symbol.set("name", parts[2]);
 
-				if (symbol.memberof) {
-					switch (symbol.memberof.charAt(symbol.memberof.length-1)) {
+				if (symbol.get("memberof")) {
+					switch (symbol.get("memberof").charAt(symbol.get("memberof").length-1)) {
 						case '#' :
-							symbol.isStatic = false;
-							symbol.isInner = false;
+							symbol.set("isStatic", false);
+							symbol.set("isInner", false);
 						break;
 						case '.' :
-							symbol.isStatic = true;
-							symbol.isInner = false;
+							symbol.set("isStatic", true);
+							symbol.set("isInner", false);
 						break;
 						case '-' :
-							symbol.isStatic = true;
-							symbol.isInner = true;
+							symbol.set("isStatic", true);
+							symbol.set("isInner", true);
 						break;
 					}
-					symbol.memberof = symbol.memberof.substr(0, symbol.memberof.length-1);
+					symbol.set("memberof", symbol.get("memberof").substr(0, symbol.get("memberof").length-1));
 				}
 				else {
-					symbol.isStatic = true;
-					symbol.isInner = false;
+					symbol.set("isStatic", true);
+					symbol.set("isInner", false);
 				}
 			}
-			if (!this.classIndex[symbol.memberof]) this.classIndex[symbol.memberof] = [];
-			this.classIndex[symbol.memberof].push(symbol);
+			if (!this.classIndex[symbol.get("memberof")]) this.classIndex[symbol.get("memberof")] = [];
+			this.classIndex[symbol.get("memberof")].push(symbol);
 		}
 		else { // no parent constructor
-			symbol.alias = symbol.alias.replace(/^(_global_#)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4");
-			if (RegExp.$2 && RegExp.$4) symbol.name = RegExp.$2+"."+RegExp.$4;
+			symbol.set("alias", symbol.get("alias").replace(/^(_global_#)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4"));
+			if (RegExp.$2 && RegExp.$4) symbol.set("name", RegExp.$2+"."+RegExp.$4);
 
 			if (!symbol.is("CONSTRUCTOR")) {
-				if (symbol.alias.indexOf("#") > -1) {
-					print("WARNING: Documentation found for instance member: "+this.symbols[i].name+", but no documentation exists for parent class.");
+				if (symbol.get("alias").indexOf("#") > -1) {
+					print("WARNING: Documentation found for instance member: "+symbol.get("name")+", but no documentation exists for parent class.");
 					this.symbols[i] = null;
 					continue eachSymbol;
 				}
 				
-				symbol.memberof = "_global_";
-				symbol.alias = "_global_#"+symbol.name;
+				symbol.set("memberof", "_global_");
+				symbol.set("alias", "_global_#"+symbol.get("name"));
 			}
 			
-			symbol.isStatic = true;
-			symbol.isInner = false;
+			symbol.set("isStatic", true);
+			symbol.set("isInner", false);
 			global.inherit(symbol);
 		}
 	}
@@ -233,15 +232,15 @@ JSDOC.SymbolGroup.prototype.resolveMembers = function() {
 		var symbol = this.symbols[i];
 		if (symbol.is("FILE")) continue;
 		
-		var members = this.classIndex[symbol.alias];
+		var members = this.classIndex[symbol.get("alias")];
 		if (members) {
 			for(var ii = 0, il = members.length; ii < il; ii++) {
 				var member = members[ii];
-				if (member.isa == "FUNCTION") {
-					symbol.methods.push(member);
+				if (member.is("FUNCTION")) {
+					if (!symbol.hasMember(member.get("alias"))) symbol.get("methods").push(member);
 				}
-				if (member.isa == "OBJECT") {
-					symbol.properties.push(member);
+				if (member.is("OBJECT")) {
+					if (!symbol.hasMember(member.get("alias"))) symbol.get("properties").push(member);
 				}
 			}
 		}
@@ -251,30 +250,53 @@ JSDOC.SymbolGroup.prototype.resolveMembers = function() {
 JSDOC.SymbolGroup.prototype.resolveInherits = function() {
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
-		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
+		if (symbol.get("alias") == "_global_" || symbol.is("FILE")) continue;
 		
-		// add in inherited members
-		for(var ii = 0, il = symbol.inherits.length; ii < il; ii++) {
-			symbol.inherits[ii] = symbol.inherits[ii].replace(/\.prototype(\.|$)/g, "#");
-			var inheritedMember = this.getSymbol(symbol.inherits[ii]);
-			if (inheritedMember) {
-				symbol.inherit(inheritedMember);
-				symbol.inheritsFrom.push(inheritedMember.memberof);
+		var inherits = symbol.get("inherits");
+		if (inherits.length) {
+			for (var j = 0; j < inherits.length; j++) {
+				var inherited = this.symbols.filter(function($){return $.get("alias") == inherits[j].alias});
+				var inheritedAs = inherits[j].as;
+				
+				if (symbol.hasMember(inheritedAs)) continue;
+				
+				if (inherited && inherited[0]) {
+
+					inherited = inherited[0];
+				
+					var clone = inherited.clone();
+	
+					clone.set("name", inheritedAs);
+					clone.set("alias", inheritedAs);
+					this.symbols.push(clone);
+				}
 			}
 		}
+	}
+}
+
+
+JSDOC.SymbolGroup.prototype.resolveAugments = function() {
+	for (var i = 0, l = this.symbols.length; i < l; i++) {
+		var symbol = this.symbols[i];
+		if (symbol.get("alias") == "_global_" || symbol.is("FILE")) continue;
 		
-		for(var ii = 0, il = symbol.augments.length; ii < il; ii++) {
-			var contributer = this.getSymbol(symbol.augments[ii]);
+		var augments = symbol.get("augments");
+		for(var ii = 0, il = augments.length; ii < il; ii++) {
+			var contributer = this.getSymbol(augments[ii]);
 			if (contributer) {
-				symbol.inheritsFrom.push(contributer.alias);
-				if (!isUnique(symbol.inheritsFrom)) {
-					LOG.warn("Can't resolve inherits: Circular reference: "+symbol.alias+" inherits from "+contributer.alias+" more than once.");
+				symbol.get("inheritsFrom").push(contributer.get("alias"));
+				if (!isUnique(symbol.get("inheritsFrom"))) {
+					LOG.warn("Can't resolve inherits: Circular reference: "+symbol.get("alias")+" inherits from "+contributer.get("alias")+" more than once.");
 				}
 				else {
-					for (var ci = 0, cl = contributer.methods.length; ci < cl; ci++)
-						symbol.inherit(contributer.methods[ci]);
-					for (var ci = 0, cl = contributer.properties.length; ci < cl; ci++)
-						symbol.inherit(contributer.properties[ci]);
+					var cmethods = contributer.getMethods();
+					var cproperties = contributer.getProperties();
+					
+					for (var ci = 0, cl = cmethods.length; ci < cl; ci++)
+						symbol.inherit(cmethods[ci]);
+					for (var ci = 0, cl = cproperties.length; ci < cl; ci++)
+						symbol.inherit(cproperties[ci]);
 				}
 			}
 		}

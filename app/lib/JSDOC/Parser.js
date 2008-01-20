@@ -5,12 +5,12 @@
 JSDOC.Parser =  {
 }
 
-JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcfile) {
+JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	JSDOC.Parser.symbols = [];
 	
 	JSDOC.DocComment.shared = "";
 	JSDOC.Symbol.setShortcuts();
-	JSDOC.Symbol.srcfile = (srcfile || "");
+	JSDOC.Symbol.srcFile = (srcFile || "");
 	
 	while(ts.next()) {
 		if (JSDOC.Parser.findDocComment(ts)) continue;
@@ -36,7 +36,7 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 			return true;
 		}
 		else if (docComment.getTag("overview").length > 0) {
-			JSDOC.Parser.symbols.push(new JSDOC.Symbol("", [], "FILE", docComment));
+			JSDOC.Parser.symbols.push(new JSDOC.Symbol().init("", [], "FILE", docComment));
 			delete ts.tokens[ts.cursor];
 			return true;
 		}
@@ -48,7 +48,7 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 				var virtualName = docComment.getTag("name");
 
 				if (virtualName.length && (virtualName = virtualName[0].desc)) {
-					JSDOC.Parser.symbols.push(new JSDOC.Symbol(virtualName, [], "VIRTUAL", docComment));
+					JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(virtualName, [], "VIRTUAL", docComment));
 				}
 				JSDOC.Parser.onObLiteral(block, scope);
 			}
@@ -57,7 +57,7 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 		else if (docComment.getTag("name").length > 0) {
 			var name = docComment.getTag("name")[0].desc;
 			if (name) {					
-				JSDOC.Parser.symbols.push(new JSDOC.Symbol(name, [], "VIRTUAL", docComment));
+				JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], "VIRTUAL", docComment));
 				delete ts.tokens[ts.cursor];
 				return true;
 			}
@@ -125,7 +125,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 				if (doc) { // we only keep these if they're documented
 					var docComment = new JSDOC.DocComment(doc);
 					if (!/#$/.test(name)) { // assigning to prototype of already existing symbol
-						JSDOC.Parser.symbols.push(new JSDOC.Symbol(name, [], isa, docComment));
+						JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], isa, docComment));
 					}
 				}
 
@@ -143,7 +143,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			}
 			
 			var docComment = new JSDOC.DocComment(doc);
-			JSDOC.Parser.symbols.push(new JSDOC.Symbol(name, params, isa, docComment));
+			JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, params, isa, docComment));
 			if (isInner) JSDOC.Parser.symbols[JSDOC.Parser.symbols.length-1].isInner = true;
 			if (body) {
 				JSDOC.Parser.onFnBody(
@@ -176,7 +176,7 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			var isInner = (nspace && ts.look(-1).is("VAR"));
 			
 			if (!/#$/.test(name)) { // assigning to prototype of already existing symbol
-				JSDOC.Parser.symbols.push(new JSDOC.Symbol(name, [], isa, docComment));
+				JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], isa, docComment));
 				if (isInner) JSDOC.Parser.symbols[JSDOC.Parser.symbols.length-1].isInner = true;
 			}
 		}
@@ -215,7 +215,7 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 						ts.balance("LEFT_PAREN");
 					}
 					var docComment = new JSDOC.DocComment(doc);
-					JSDOC.Parser.symbols.push(new JSDOC.Symbol(name, params, isa, docComment));
+					JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, params, isa, docComment));
 					JSDOC.Parser.onFnBody(
 						new JSDOC.TokenStream(body),
 						name
@@ -228,7 +228,7 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 						var doc = ts.look(-1).data;
 						var docComment = new JSDOC.DocComment(doc);
 						
-						JSDOC.Parser.symbols.push(new JSDOC.Symbol(name, [], isa, docComment));
+						JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], isa, docComment));
 					}
 					
 					JSDOC.Parser.onObLiteral(
@@ -242,7 +242,7 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 						var doc = ts.look(-1).data;
 						var docComment = new JSDOC.DocComment(doc);
 						
-						JSDOC.Parser.symbols.push(new JSDOC.Symbol(name, [], isa, docComment));
+						JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], isa, docComment));
 					}
 					
 					// skip to end of RH value ignoring values like foo: bar({blah, blah}),

@@ -27,6 +27,6 @@ function Page() {
 @constructor
 */
 function ThreeColumnPage() {
-	this.init = function(p) {
+	this.init = function(resetCode) {
 	}
 }

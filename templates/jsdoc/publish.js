@@ -42,11 +42,10 @@ function publish(symbolGroup) {
 	
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
-		
 		var output = "";
 		output = classTemplate.process(symbol);
 //		IO.mkPath(publish.conf.symbolsDir.split("/"));
-		IO.saveFile(publish.conf.outDir+"symbols/", symbol.alias+publish.conf.ext, output);
+		IO.saveFile(publish.conf.outDir+"symbols/", symbol.get("alias")+publish.conf.ext, output);
 	}
 	
 	var classesIndex = classesTemplate.process(classes);
@@ -86,7 +85,7 @@ function Link() {
 		return this;
 	}
 	this.toSymbol = function(alias) {
-		if (defined(alias)) this.alias = alias;
+		if (defined(alias)) this.alias = new String(alias);
 		return this;
 	}
 	
@@ -103,10 +102,10 @@ function Link() {
 			// if there is no symbol by that name just return the name unaltered
 			else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
 			else {
-				linkPath = escape(linkTo.alias)+publish.conf.ext;
+				linkPath = escape(linkTo.get('alias'))+publish.conf.ext;
 				if (!linkTo.is("CONSTRUCTOR")) {
-					linkPath = escape(linkTo.parentConstructor) || "_global_";
-					linkPath += publish.conf.ext+"#"+linkTo.name
+					linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
+					linkPath += publish.conf.ext+"#"+linkTo.get('name')
 				}
 				linkPath = path+linkPath
 			}
@@ -126,7 +125,6 @@ function Link() {
 		if (this.alias) {
 			var path = relativeToPath+publish.conf.symbolsDir;
 			var linkString = this.alias;
-
 			linkString = linkString.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)\b/gi,
 				function(match, symbolName) {
 					return _makeSymbolLink(symbolName);
@@ -135,8 +133,7 @@ function Link() {
 		}
 		else if (this.src) {
 			linkString = _makeSrcLink(this.src);
-		}
-		
+		}		
 		return linkString;
 	}
 }
@@ -149,9 +146,9 @@ function summarize(desc) {
 // sorters
 function makeSortby(attribute) {
 	return function(a, b) {
-		if (a[attribute] != undefined && b[attribute] != undefined) {
-			a = a[attribute].toLowerCase();
-			b = b[attribute].toLowerCase();
+		if (a.get(attribute) != undefined && b.get(attribute) != undefined) {
+			a = a.get(attribute).toLowerCase();
+			b = b.get(attribute).toLowerCase();
 			if (a < b) return -1;
 			if (a > b) return 1;
 			return 0;

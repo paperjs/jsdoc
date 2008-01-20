@@ -1,17 +1,18 @@
 JSDOC.PluginManager.registerPlugin(
 	"JSDOC.tagParamConfig",
 	{
-		onDocCommentTags: function(symbol) {
+		onDocCommentTags: function(comment) {
 			var currentParam = null;
-			for (var i = 0, l = symbol.tags.length; i < l; i++) {
-				if (symbol.tags[i].title == "param") {
-					symbol.tags[i].properties = [];
+			var tags = comment.tags;
+			for (var i = 0, l = tags.length; i < l; i++) {
+				if (tags[i].title == "param") {
+					tags[i].properties = [];
 					currentParam = i;
 				}
-				else if (symbol.tags[i].title == "config" && currentParam != null) {
-					if (symbol.tags[i].name.indexOf(symbol.tags[currentParam].name+".") != 0)
-						symbol.tags[i].name = symbol.tags[currentParam].name+"."+symbol.tags[i].name;
-					symbol.tags[currentParam].properties.push(symbol.tags[i]);
+				else if (tags[i].title == "config" && currentParam != null) {
+					if (tags[i].name.indexOf(tags[currentParam].name+".") != 0)
+						tags[i].name = tags[currentParam].name+"."+tags[i].name;
+					tags[currentParam].properties.push(tags[i]);
 				}
 				else {
 					currentParam = null;

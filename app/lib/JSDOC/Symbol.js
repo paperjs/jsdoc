@@ -1,286 +1,370 @@
-/**
-	@constructor
-*/
-JSDOC.Symbol = function(name, params, isa, comment) {
+JSDOC.Symbol = function() {
+	var properties = {
+		_addOn: "",
+		_alias: "",
+		_augments: [],
+		_classDesc: "",
+		_comment: {},
+		_deprecated: "",
+		_desc: "",
+		_events: [],
+		_exceptions: [],
+		_inherits: [],
+		_inheritsFrom: [],
+		_isa: "OBJECT",
+		_isEvent: false,
+		_isIgnored: false,
+		_isInner: false,
+		_isNamespace: false,
+		_isPrivate: false,
+		_isStatic: false,
+		_memberof: "",
+		_methods: [],
+		_name: "",
+		_parentConstructor: "",
+		_params: [],
+		_properties: [],
+		_requires: [],
+		_returns: [],
+		_see: "",
+		_since: "",
+		_srcFile: {},
+		_type: "",
+		_version: ""
+	};
 	
-	comment.src = comment.src;
-	
-	this.alias = this.name = name
-	
-	if (defined(JSDOC.PluginManager)) {
-		JSDOC.PluginManager.run("onSymbol", this);
-	}
-	this.name = this.alias = this.alias.replace(/\.prototype\.?/g, '#');
-	this.params = (params || []);
-	
-	for (var i = 0; i < this.params.length; i++) {
-		this.params[i] = new JSDOC.DocTag("param"+((this.params[i].type)?" {"+this.params[i].type+"}":"")+" "+this.params[i].name);
-	}
-	
-	this.isa = (isa || "OBJECT");
-	this.type = "";
-	this._properties = {};
-	this.desc = "";
-	this.classDesc = "";
-	this.memberof = "";
-	this.isStatic = false;
-	this.since = "";
-	this.version = "";
-	this.deprecated = "";
-	this.augments = [];
-	this.inherits = [];
-	this.inheritsFrom = [];
-	this.properties = [];
-	this.methods = [];
-	//this.file = {};
-	this.requires = [];
-	this.returns = [];
-	this.exceptions = [];
-	this.events = [];
-	this.doc = comment;
-	this.see = [];
-	this.srcfile = JSDOC.Symbol.srcfile;
-
-	// move certain data out of the tags and into the Symbol
-	var overviews;
-	if ((overviews = this.doc.getTag("overview")) && overviews.length) {
-		var libraries;
-		if ((libraries = this.doc.getTag("name")) && libraries.length) {
-			this.name = libraries[0].desc;
-		}
-		else {
-			this.name = JSDOC.Util.fileName(JSDOC.Symbol.srcfile)
-		}
+	this.init = function(
+		/** String */ name,
+		/** Object[] */ params,
+		/** String */ isa,
+		/** JSDOC.DocComment */ comment
+	) {
+		this.init.args = arguments;
 		
-		this.desc = overviews[0].desc;
-	}
-	else {
-		var since;
-		if ((since = this.doc.getTag("since")) && since.length) {
-			this.since = since[0].desc;
-		}
+		this.set("name", name);
+		this.set("alias", this.get("name"));
+		this.set("params", params);
+		this.set("isa", isa);
+		this.set("comment", comment);
+		this.set("srcFile", JSDOC.Symbol.srcFile);
 		
-		var version;
-		if ((version = this.doc.getTag("version")) && version.length) {
-			this.version = version[0].desc;
-		}
-		
-		var deprecated;
-		if ((deprecated = this.doc.getTag("deprecated")) && deprecated.length) {
-			this.deprecated = deprecated[0];
-		}
-		
-		var see;
-		if ((see = this.doc.getTag("see")) && see.length) {
-			this.see = see;
-		}
-		
-		var descs;
-		if ((descs = this.doc.getTag("desc")) && descs.length) {
-			this.desc = descs.join("\n"); // multiple descriptions are concatenated into one
-		}
-		
-		var ns;
-		if ((ns = this.doc.getTag("namespace")) && ns.length) {
-			this.classDesc += this.desc; // desc can't apply to the constructor as there is none.
-			this.classDesc += ns[0].desc;
-			this.isa = "CONSTRUCTOR";
-			this._properties['isNamespace'] = true;
-		}
-		
-		var params;
-		if ((params = this.doc.getTag("param")) && params.length) { // user defined params override those defined by parser
-			if (this.params.length == 0) {
-				this.params = params;
-			}
-			else {
-				// merge parser-defined params with user-defined params
-				for (var i = 0, l = this.params.length; i < l; i++) {
-					var thisParam = this.params[i];
-					var userParams = params.filter(function($){return $.name == thisParam.name});
-					
-					if (userParams && userParams.length) {
-						if (!userParams[0].type && thisParam.type) userParams[0].type = thisParam.type;
-						this.params[i] = userParams[0];
-					}
-				}
-			}
-		}
-		
-		var constructors;
-		if ((constructors = this.doc.getTag("constructor")) && constructors.length) {
-			this.isa = "CONSTRUCTOR";
-		}
-		
-		var classes;
-		if ((classes = this.doc.getTag("class")) && classes.length) {
-			if (this.doc.getTag("static").length > 0) this.isStatic = true;
-			this.isa = "CONSTRUCTOR"; // a class tag implies a conctuctor doclet
-			
-			this.classDesc += classes[0].desc; // multiple class tags are concatenated
-		}
-		
-		var functions;
-		if ((functions = this.doc.getTag("function")) && functions.length) {
-			this.isa = "FUNCTION";
-		}
-		
-		var events;
-		if ((events = this.doc.getTag("event")) && events.length) {
-			this.isa = "FUNCTION";
-			this.isEvent = true;
-		}
-		
-		var methods;
-		if ((functions = this.doc.getTag("method")) && functions.length) {
-			this.isa = "FUNCTION";
-		}
-		
-		var names;
-		if ((names = this.doc.getTag("name")) && names.length) {
-			this.name = names[0].desc;
-		}
-		
-		var properties;
-		if ((properties = this.doc.getTag("property")) && properties.length) {
-			for (var i = 0; i < properties.length; i++) {
-				properties[i].alias = this.alias+"."+properties[i].name;
-				this.properties.push(properties[i]);
-			}
-		}
-		
-		var returns;
-		if ((returns = this.doc.getTag("return")) && returns.length) {
-			for (var i = 0; i < returns.length; i++) {
-				this.returns.push(returns[i]);
-			}
-		}
-		
-		var exceptions;
-		if ((exceptions = this.doc.getTag("throws")) && exceptions.length) {
-			for (var i = 0; i < exceptions.length; i++) {
-				this.exceptions.push(exceptions[i]);
-			}
-		}
-		
-		var requires;
-		if ((requires = this.doc.getTag("requires")) && requires.length) {
-			for (var i = 0; i < requires.length; i++) {
-				this.requires.push(requires[i]);
-			}
-		}
-		
-		if (this.is("VIRTUAL")) this.isa = "OBJECT";
-		
-		var types;
-		if ((types = this.doc.getTag("type")) && types.length) {
-			this.type = (types[0].desc || ""); // multiple type tags are ignored
-		}
-		
-		if (this.doc.getTag("static").length > 0) {
-			this.isStatic = true;
-		}
-		
-		if (this.doc.getTag("private").length > 0) {
-			this.isPrivate = true;
-		}
-		
-		var inherits;
-		if ((inherits = this.doc.getTag("inherits")) && inherits.length) {
-			for (var i = 0; i < inherits.length; i++) {
-				this.inherits.push(inherits[i].desc);
-			}
-		}
-		
-		var augments;
-		if ((augments = this.doc.getTag("augments")) && augments.length) {
-			for (var i = 0; i < augments.length; i++) {
-				this.augments.push(augments[i].desc);
-			}
-		}
-		
-		var defaults;
-		if ((defaults = this.doc.getTag("default")) && defaults.length) {
-			if (this.is("OBJECT")) {
-				this.defaultValue = defaults[0];
-			}
-		}
-		
-		var memberofs;
-		if ((memberofs = this.doc.getTag("memberof")) && memberofs.length) {
-			this.memberof = memberofs[0].desc;
-		}
+		this.processTags();
 		
 		if (defined(JSDOC.PluginManager)) {
 			JSDOC.PluginManager.run("onSymbol", this);
 		}
+		
+		return this;
+	}
+	
+	this.hasProperty = function(propName) {
+		return (properties.hasOwnProperty("_"+propName));
+	}
+	
+	this.get = function(propName) {
+		return properties["_"+propName];
+	}
+	
+	this.set = function(propName, v) {
+		if (this.hasProperty(propName)) {
+			switch(propName) {
+				case "name":
+					v = v.replace(/\.prototype\.?/g, '#');
+					break;
+				case "isa":
+					if (JSDOC.Symbol.validKinds.indexOf(v) < 0) {
+						throw "Unknown kind: "+v+" is not in "+Symbol.validKinds+".";
+					}
+				case "params":
+					for (var i = 0; i < v.length; i++) {
+						if (v[i].constructor != JSDOC.DocTag) { // may be a generic object parsed from signature, like {type:..., name:...}
+							v[i] = new JSDOC.DocTag("param"+((v[i].type)?" {"+v[i].type+"}":"")+" "+v[i].name);
+						}
+					}
+					break;
+			}
+			properties["_"+propName] = v;
+		}
+		else throw "Property \""+propName+"\" not defined in properties of class ";//+new Reflection(this).getConstructorName()+".";
+	}
+	
+	this.clone = function() {
+		var clone = new this.constructor();
+		clone = clone.init.apply(clone, this.init.args);
+		// do further cloning here
+		clone.srcFile = this.srcFile;
+		
+		return clone;
+	}
+	
+	this.serialize = function() {
+		var out = "\n{\n";
+		var keys = [];
+		for (var p in properties) keys.push(p);
+		keys = keys.sort();		
+		for (var k in keys) {
+			out += keys[k].substring(1)+" => "+Dumper.dump(properties[keys[k]])+",\n";
+		}
+		
+		out += "}\n";
+		
+		return out;
+	}
+	
+	this.processTags = function() {
+		// @desc
+		var descs = this.get("comment").getTag("desc");
+		if (descs.length) {
+			this.set("desc", descs.map(function($){return $.desc;}).join("\n")); // multiple descriptions are concatenated into one
+		}
+		
+		// @since
+		var sinces = this.get("comment").getTag("since");
+		if (sinces.length) {
+			this.set("since", sinces.map(function($){return $.desc;}).join(", "));
+		}
+		
+		// @version
+		var versions = this.get("comment").getTag("version");
+		if (versions.length) {
+			this.set("version", versions.map(function($){return $.desc;}).join(", "));
+		}
+		
+		// @deprecated
+		var deprecateds = this.get("comment").getTag("deprecated");
+		if (deprecateds.length) {
+			this.set("deprecated", deprecateds.map(function($){return $.desc;}).join("\n"));
+		}
+		
+		// @see
+		var sees = this.get("comment").getTag("see");
+		if (sees.length) {
+			this.set("see", sees.map(function($){return $.desc;}).join(", "));
+		}
+		
+		// @class
+		var classes = this.get("comment").getTag("class");
+		if (classes.length) {
+			this.set("isa", "CONSTRUCTOR");
+			this.set("classDesc", this.get("desc")); // desc can't apply to the constructor as there is none.
+		}
+		
+		// @namespace
+		var namespaces = this.get("comment").getTag("namespace");
+		if (namespaces.length) {
+			this.set("classDesc", this.get("desc")); // desc can't apply to the constructor as there is none.
+			this.set("classDesc", namespaces[0].desc);
+			this.set("isa", "CONSTRUCTOR");
+			this.set("isNamespace", true);
+		}
+		
+		// @param
+		var params = this.get("comment").getTag("param");
+		if (params.length) {
+			// user-defined params overwrite those with same name defined by the parser
+			var thisParams = this.get("params");
+			if (thisParams.length == 0) { // none exist yet, so just bung all these user-defined params straight in
+				this.set("params", params);
+			}
+			else { // need to overlay these user-defined params on to existing parser-defined params
+				for (var i = 0, l = params.length; i < l; i++) {
+					if (thisParams[i]) {
+						if (params[i].type) thisParams[i].type = params[i].type;
+						thisParams[i].name = params[i].name;
+						thisParams[i].desc = params[i].desc;
+						thisParams[i].isOptional = params[i].isOptional;
+						thisParams[i].defaultValue = params[i].defaultValue;
+					}
+					else thisParams[i] = params[i];
+				}
+			}
+		}
+		
+		// @constructor
+		var constructors = this.get("comment").getTag("constructor");
+		if (constructors.length) {
+			this.set("isa", "CONSTRUCTOR");
+		}
+		
+		// @static
+		var statics = this.get("comment").getTag("static");
+		if (statics.length) {
+			this.set("isStatic", true);
+		}
+		
+		// @function
+		var functions = this.get("comment").getTag("function");
+		if (functions.length) {
+			this.set("isa", "FUNCTION");
+		}
+		
+		// @event
+		var events = this.get("comment").getTag("event");
+		if (events.length) {
+			this.set("isa", "FUNCTION");
+			this.set("isEvent", true);
+		}
+		
+		// @name
+		var names = this.get("comment").getTag("name");
+		if (names.length) {
+			this.set("name", names[0].desc);
+		}
+		
+		// @property
+		var properties = this.get("comment").getTag("property");
+		if (properties.length) {
+			thisProperties = this.get("properties");
+			for (var i = 0; i < properties.length; i++) {
+				var thisAlias = this.get("alias");
+				var joiner = ".";
+				if (thisAlias.charAt(thisAlias.length-1) == "#" || properties[i].name.charAt(0) == "#") {
+					joiner = "";
+				}
+				properties[i].alias = this.alias + joiner + properties[i].name;
+				thisProperties.push(properties[i]);
+			}
+		}
+		
+		// @return
+		var returns = this.get("comment").getTag("return");
+		if (returns.length) {
+			this.set("returns", returns);
+		}
+		
+		// @exception
+		var exceptions = this.get("comment").getTag("throws");
+		if (exceptions.length) {
+			this.set("exceptions", exceptions);
+		}
+		
+		// @requires
+		var requires = this.get("comment").getTag("requires");
+		if (requires.length) {
+			this.set("requires", requires);
+		}
+		
+		// @type
+		var types = this.get("comment").getTag("type");
+		if (types.length) {
+			this.set("type", types[0].desc); // multiple type tags are ignored
+		}
+		
+		// @private
+		var privates = this.get("comment").getTag("private");
+		if (privates.length) {
+			this.set("isPrivate", true);
+		}
+		
+		// @ignore
+		var ignores = this.get("comment").getTag("ignore");
+		if (ignores.length) {
+			this.set("isIgnored", true);
+		}
+		
+		// @inherits ... as ...
+		var inherits = this.get("comment").getTag("inherits");
+		if (inherits.length) {
+			for (var i = 0; i < inherits.length; i++) {
+				if (/^\s*([a-z$0-9_.#]+)(?:\s+as\s+([a-z$0-9_.#]+))?/i.test(inherits[i].desc)) {
+					var inAlias = RegExp.$1;
+					var inAs = RegExp.$2 || inAlias;
+					
+					if (inAlias) inAlias = inAlias.replace(/\.prototype\.?/g, "#");
+					
+					if (inAs) {
+						inAs = inAs.replace(/\.prototype\.?/g, "#");
+						inAs = inAs.replace(/^this\.?/, "#");
+					}
+					if (inAs.indexOf(inAlias) != 0) { //not a full namepath
+						var joiner = ".";
+						if (this.get("alias").charAt(this.get("alias").length-1) == "#" || inAs.charAt(0) == "#") {
+							joiner = "";
+						}
+						inAs = this.get("alias") + joiner + inAs;
+					}
+				}
+
+				this.get("inherits").push({alias: inAlias, as: inAs});
+			}
+		}
+
+		// @augments
+		var augments = this.get("comment").getTag("augments");
+		if (augments.length) {
+			this.set("augments", augments);
+		}
+		
+		// @default
+		var defaults = this.get("comment").getTag("default");
+		if (defaults.length) {
+			if (this.is("OBJECT")) {
+				this.set("defaultValue", defaults[0].desc);
+			}
+		}
+		
+		// @memberOf
+		var memberofs = this.get("comment").getTag("memberof");
+		if (memberofs.length) {
+			this.set("memberof", memberofs[0].desc);
+		}
 	}
 }
 
-JSDOC.Symbol.prototype.setDescription = function(desc) {
-	this.desc = desc;
-}
-JSDOC.Symbol.prototype.getDescription = function() {
-	return this.desc;
-}
+JSDOC.Symbol.validKinds = ["CONSTRUCTOR", "FILE", "VIRTUAL", "FUNCTION", "OBJECT", "VOID"];
 
 JSDOC.Symbol.prototype.is = function(what) {
-	return this.isa === what;
+	return this.get("isa") === what;
 }
 
 JSDOC.Symbol.prototype.isBuiltin = function() {
-	return JSDOC.Lang.isBuiltin(this.alias);
+	return JSDOC.Lang.isBuiltin(this.get("alias"));
 }
 
+
 JSDOC.Symbol.prototype.isNamespace = function() {
-	return this._properties['isNamespace'];
+	return this.get("isNamespace");
 }
 
 JSDOC.Symbol.prototype.hasTag = function(tagTitle) {
-	for (var i = 0, l = this.doc.tags.length; i < l; i++) {
-		if (this.doc.tags[i].title == tagTitle)
+	for (var i = 0, l = this.get("comment").tags.length; i < l; i++) {
+		if (this.get("comment").tags[i].title == tagTitle)
 			return true;
 	}
 	return false;
 }
 
 /** Generate a comma separated list of the parameters. */
-JSDOC.Symbol.prototype.signature = function() {
+JSDOC.Symbol.prototype.signature = function(joiner) {
+	if (!joiner) joiner = ", ";
 	var result = [];
-	for (var i = 0; i < this.params.length; i++) {
-		if (this.params[i].name.indexOf(".") == -1) // config information does not appear in the signature
-			result.push(this.params[i].name);
+	var thisParams = this.get("params");
+	for (var i = 0, l = thisParams.length; i < l; i++) {
+		if (thisParams[i].name.indexOf(".") == -1) // config information does not appear in the signature
+			result.push(thisParams[i].name);
 	}
-	return result.join(", ");
+	return result.join(joiner);
 }
 
+//TODO why make distinction between properties and methods?
 JSDOC.Symbol.prototype.inherit = function(symbol) {
-	if (!this.hasMember(symbol.name)) {
-		if (symbol.isa == "FUNCTION" && !symbol.isInner)
-			this.methods.push(symbol);
-		else if (symbol.isa == "OBJECT")
-			this.properties.push(symbol);
+	if (!this.hasMember(symbol.get("name")) && !symbol.get("isInner")) {
+		if (symbol.is("FUNCTION"))
+			this.get("methods").push(symbol);
+		else if (symbol.is("OBJECT"))
+			this.get("properties").push(symbol);
 	}
 }
 
-JSDOC.Symbol.prototype.getMethods = function() {
-	return this.methods.filter(
-		function(method) {
-			if (!method.isEvent) return method;
-		}
-	);
-}
-
-JSDOC.Symbol.prototype.getProperties = function() {
-	return this.properties;
-}
-
-JSDOC.Symbol.prototype.getEvents = function() {
-	return this.methods.filter(
-		function(method) {
-			if (method.isEvent) return method;
-		}
-	);
+JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
+	alias = alias.replace(/\.prototype(\.|$)/g, "#");
+	var thisAlias = this.get("alias");
+	
+	var joiner = ".";
+	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
+		joiner = "";
+	}
+	this.set("alias", alias + joiner + thisAlias);
 }
 
 JSDOC.Symbol.prototype.hasMember = function(name) {
@@ -288,21 +372,46 @@ JSDOC.Symbol.prototype.hasMember = function(name) {
 }
 
 JSDOC.Symbol.prototype.hasMethod = function(name) {
-	for (var i = 0; i < this.methods.length; i++) {
-		if (this.methods[i].name == name) return true
+	var thisMethods = this.get("methods");
+	for (var i = 0, l = thisMethods.length; i < l; i++) {
+		if (thisMethods[i].get("name") == name) return true;
+		if (thisMethods[i].get("alias") == name) return true;
 	}
 	return false;
 }
 
 JSDOC.Symbol.prototype.hasProperty = function(name) {
-	for (var i = 0; i < this.properties.length; i++) {
-		if (this.properties[i].name == name) return true
+	var thisProperties = this.get("properties");
+	for (var i = 0, l = thisProperties.length; i < l; i++) {
+		if (thisProperties[i].get("name") == name) return true;
+		if (thisProperties[i].get("alias") == name) return true;
 	}
 	return false;
+}
+
+JSDOC.Symbol.prototype.getMethods = function() {
+	return this.get("methods");
+}
+
+JSDOC.Symbol.prototype.getProperties = function() {
+	return this.get("properties");
+}
+
+JSDOC.Symbol.prototype.getEvents = function() {
+//TODO
 }
 
 JSDOC.Symbol.setShortcuts = function(shortcuts) {
 	JSDOC.Symbol.shortcuts = eval("JSDOC.Symbol.shortcuts = "+shortcuts);
 }
+
 JSDOC.Symbol.shortcuts = {}; // holds map of shortcut names to full names
-JSDOC.Symbol.srcfile = ""; // running reference to the current file being parsed
+JSDOC.Symbol.srcFile = ""; // running reference to the current file being parsed
+
+
+
+JSDOC.Symbol.dox = {
+	"desc": "This is an example.",
+	"isa": "constructor",
+	"private": true
+}

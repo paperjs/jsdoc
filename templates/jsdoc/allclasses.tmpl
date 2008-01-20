@@ -41,11 +41,11 @@
 	<ul class="classList">
 		<for each="thisClass" in="data">
 		<li>{!
-			if (thisClass.alias == "_global_") {
-				output += "<i>"+new Link().toSymbol(thisClass.alias).target("classFrame")+"</i>";
+			if (thisClass.get('alias') == "_global_") {
+				output += "<i>"+new Link().toSymbol(thisClass.get('alias')).target("classFrame")+"</i>";
 			}
 			else {
-				output += new Link().toSymbol(thisClass.alias).target("classFrame");
+				output += new Link().toSymbol(thisClass.get('alias')).target("classFrame");
 			}
 		!}</li>
 		</for>

@@ -37,6 +37,7 @@ Dumper = {
 	_dump: function (obj) {
 		if (typeof obj == 'undefined') return 'undefined';
 		var out;
+		if (obj.serialize) { return obj.serialize(); }
 		var type = this._typeof(obj);
 		if (obj.circularReference) obj.circularReference++;
 		switch (type) {

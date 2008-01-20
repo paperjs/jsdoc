@@ -1,6 +1,7 @@
 IO.include("frame/Chain.js");
 IO.include("frame/Hash.js");
 IO.include("frame/Namespace.js");
+IO.include("frame/Reflection.js");
 
 function defined(o) {
 	return (o !== undefined);

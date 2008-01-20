@@ -30,7 +30,8 @@ new Namespace(
 			"=fileoverview":       "overview",
 			"=extends":            "augments",
 			"=base":               "augments",
-			"=projectdescription": "overview"
+			"=projectdescription": "overview",
+			"=classdescription":   "class"
 		}
 	}
 );

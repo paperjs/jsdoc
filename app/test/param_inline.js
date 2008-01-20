@@ -24,7 +24,10 @@ function Layout(/**int*/columns){
 	this.rotate = function(/**nothing*/) {
 	}
 	
-	/** @param z {zoppler}*/
+	/** 
+	@param x
+	@param y
+	@param z {zoppler}*/
 	this.init = function(x, y, /**abbler*/z) {
 		/** The xyz. */
 		this.xyz = x+y+z;

@@ -236,7 +236,7 @@ LOG.verbose = true
 IO.include("frame.js");
 IO.include("lib/JSDOC.js");
 IO.includeDir("plugins/");
-/*debug*///IO.include("frame/Dumper.js");
+/*debug*/IO.include("frame/Dumper.js");
 
 var jsdoc = new JSDOC.JsDoc(arguments);
 
@@ -248,13 +248,18 @@ if (JSDOC.opt.T) {
 else {
 	var myTemplate = JSDOC.opt.t;
 
-	var symbols = jsdoc.symbolGroup.getSymbols();
-	for (var i = 0, l = symbols.length; i < l; i++) {
-		var symbol = symbols[i];
-		/*debug*///print(Dumper.dump(symbol));
-		/*debug*///print("s> "+symbol.alias);
+	if (!myTemplate) {
+		IO.include("frame/Dumper.js");
+		var symbols = jsdoc.symbolGroup.getSymbols();
+		for (var i = 0, l = symbols.length; i < l; i++) {
+			var symbol = symbols[i];
+			print(Dumper.dump(symbol));
+			/*debug*///print("s> "+symbol.alias);
+		}
 	}
-
-	load(myTemplate+"/publish.js");
-	publish(jsdoc.symbolGroup);
+	else {
+		load(myTemplate+"/publish.js");
+		if (publish) publish(jsdoc.symbolGroup);
+		else LOG.warn("publish() is not defined in that template.");
+	}
 }
