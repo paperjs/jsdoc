@@ -174,3 +174,26 @@ function makeSrcFile(path, srcDir, name) {
 		IO.saveFile(srcDir, name+publish.conf.ext, src.hilited);
 	}
 }
+
+function makeSignature(params) {
+	if (!params) return "()";
+	var signature = "("
+	+
+	params.filter(
+		function($) {
+			return $.name.indexOf(".") == -1; // don't show config params in signature
+		}
+	).map(
+		function($) {
+			return (
+				($.type) ? 
+				"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>"
+				:
+				""
+			) + $.name;
+		}
+	).join(", ")
+	+
+	")";
+	return signature;
+}

@@ -10,6 +10,7 @@ JSDOC.PluginManager.registerPlugin(
 					currentParam = i;
 				}
 				else if (tags[i].title == "config" && currentParam != null) {
+					tags[i].title = "param";
 					if (tags[i].name.indexOf(tags[currentParam].name+".") != 0)
 						tags[i].name = tags[currentParam].name+"."+tags[i].name;
 					tags[currentParam].properties.push(tags[i]);

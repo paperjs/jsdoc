@@ -1,9 +1,8 @@
-<!-- #bbinclude "Mac OS X:Users:michael:workarea:Resources:jsdoc:placeholders:header.tmpl" -->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-        "http://www.w3.org/TR/html4/loose.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-	<meta http-equiv="content-type" content="text/html; charset={+JSDOC.opt.e+}">
+	<meta http-equiv="content-type" content="text/html; charset={+JSDOC.opt.e+}" />
 	<title>Summary</title>
 	
 	<script type="text/javascript">
@@ -21,18 +20,16 @@
 	</style>
 </head>
 <body>
-<!-- end bbinclude -->
 
-<hr>
+<hr />
 
 <h1 class="classTitle">{!output+=(data.isNamespace())?"Namespace":"Class";!} {+data.get('alias')+}</h1>
-<hr>
-
+<hr />
 
 <p>
 <if test="data.isBuiltin()">Buit-In</if>
 {!output+=(data.isNamespace())?"Namespace":"Class";!} <b>{+data.get('alias')+}</b>
-<if test="data.get('augments').length"><br>extends
+<if test="data.get('augments').length"><br />extends
 	{+
 		data.get('augments')
 		.sort()
@@ -45,11 +42,11 @@
 </p>
 <p class="description">{+data.get('classDesc')+}
 <if test="!data.isBuiltin()">{# isn't defined in any file #}
-<br><i>Defined in {+new Link().toSrc(data.get('srcFile')).from("../")+}</i>
+<br /><i>Defined in {+new Link().toSrc(data.get('srcFile')).from("../")+}</i>
 </if>
 </p>
 
-<hr>
+<hr />
 <if test="!data.isNamespace() && !data.isBuiltin()">{# have no documented constructor #}
 <table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class {+data.get('alias')+}.">
 	<caption>Constructor Summary</caption>
@@ -204,7 +201,7 @@
 	</if>
 </if>
 
-<hr>
+<hr />
 <if test="!data.isNamespace()  && !data.isBuiltin()">
 <div class="details">
 	<div class="sectionTitle">
@@ -286,7 +283,7 @@
 		<div class="description">
 			{+member.get('desc')+}
 			<if test="member.get('srcFile') != data.get('srcFile')">
-				<br>
+				<br />
 				<i>Defined in {+new Link().toSrc(member.get('srcFile')).from("../")+}</i>
 			</if>
 		</div>
@@ -301,7 +298,7 @@
 				</for>
 			</dl>
 		</if>
-		<hr>
+		<hr />
 	</for>
 </if>
 
@@ -318,22 +315,12 @@
 			if (member.get('type')) output += new Link().toSymbol(member.get('type')).from("../");
 			else output += "void";
 			
-			output += " <b>"+member.get('name')+"</b>"
-				+
-				"("
-				+
-				member.get('params').map(
-					function($) {
-						return (($.type)?"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>" : "")+$.name;
-					}
-				).join(", ")
-				+
-				")";
+			output += " <b>"+member.get('name')+"</b>" + makeSignature(member.get('params'));
 		!}</div>
 		<div class="description">
 			{+member.get('desc')+}
 			<if test="member.get('srcFile') != data.get('srcFile')">
-				<br>
+				<br />
 				<i>Defined in {+new Link().toSrc(member.get('srcFile')).from("../")+}</i>
 			</if>
 		</div>
@@ -364,7 +351,7 @@
 			<dl class="detailList">
 				<dt class="heading">Returns:</dt>
 				<for each="item" in="member.get('returns')">
-						<dd>{+item.desc+}</dd>
+						<dd>{+((item.type)?"&lt;"+(new Link().toSymbol(item.type).from("../"))+"&gt; " : "")+}{+item.desc+}</dd>
 				</for>
 			</dl>
 		</if>
@@ -390,7 +377,7 @@
 				</for>
 			</dl>
 		</if>
-		<hr>
+		<hr />
 	</for>
 </if>
 

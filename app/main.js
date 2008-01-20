@@ -253,7 +253,7 @@ else {
 		var symbols = jsdoc.symbolGroup.getSymbols();
 		for (var i = 0, l = symbols.length; i < l; i++) {
 			var symbol = symbols[i];
-			print(Dumper.dump(symbol));
+			//print(Dumper.dump(symbol));
 			/*debug*///print("s> "+symbol.alias);
 		}
 	}

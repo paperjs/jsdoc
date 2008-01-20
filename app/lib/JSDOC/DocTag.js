@@ -19,13 +19,13 @@ JSDOC.DocTag = function(src) {
 		
 			// should be @type foo but we'll accept @type {foo} too
 			if (this.title == "type") {
-			if (this.type) this.desc = this.type;
-			
-			// should be @type foo, bar, baz but we'll accept @type foo|bar||baz too
-			if (this.desc) {
-				this.desc = this.desc.replace(/\s*(,|\|\|?)\s*/g, ", ");
+				if (this.type) this.desc = this.type;
+				
+				// should be @type foo, bar, baz but we'll accept @type foo|bar||baz too
+				if (this.desc) {
+					this.desc = this.desc.replace(/\s*(,|\|\|?)\s*/g, ", ");
+				}
 			}
-		}
 
 			if (this.desc) {
 				if (this.title == "param" || this.title == "property") { // long tags like {type} [name] desc
@@ -56,14 +56,14 @@ JSDOC.DocTag = function(src) {
 				}
 				else if (this.title == "config") {
 					var m = this.desc.match(/^\s*\[([a-zA-Z0-9.$_]+)(?:\s*=([^\]]+))?\](?:\s+\{\s*([\S\s]+?)\s*\})?(?:\s+([\S\s]*\S))?/);
-					if (m) { // optional parameter
+					if (m) { // optional config parameter
 						this.isOptional = true; // bracketed name means optional
 						this.name = (m[1] || "");
 						this.defaultValue = (m[2] || undefined);
 						this.type = (m[3] || this.type);
 						this.desc = (m[4] || "");
 					}
-					else { // required parameter
+					else { // required config parameter
 						m = this.desc.match(/^\s*([a-zA-Z0-9.$_]+)(?:\s+\{\s*([\S\s]+?)\s*\})?(?:\s+([\S\s]*\S))?/);
 						if (m) {
 							this.isOptional = false;

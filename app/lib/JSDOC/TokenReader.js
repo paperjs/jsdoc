@@ -1,5 +1,5 @@
 /**
-	@constructor
+	@class Provides accessors to a JSDOC TokenStream.
 */
 JSDOC.TokenReader = function(opt) {
 	this.keepDocs = true;
@@ -7,7 +7,7 @@ JSDOC.TokenReader = function(opt) {
 	this.keepComments = false;
 }
 
-JSDOC.TokenReader.prototype.tokenize = function(/**TokenStream*/stream) {
+JSDOC.TokenReader.prototype.tokenize = function(/**JSDOC.TokenStream*/stream) {
 	var tokens = [];
 	/**@ignore*/ tokens.last = function() { return tokens[tokens.length-1]; }
 
@@ -28,7 +28,7 @@ JSDOC.TokenReader.prototype.tokenize = function(/**TokenStream*/stream) {
 	return tokens;
 }
 
-JSDOC.TokenReader.prototype.read_word = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_word = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	while (!stream.look().eof && JSDOC.Lang.isWordChar(stream.look())) {
 		found += stream.next();
@@ -45,7 +45,7 @@ JSDOC.TokenReader.prototype.read_word = function(stream, tokens) {
 	}
 }
 
-JSDOC.TokenReader.prototype.read_punc = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_punc = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	var name;
 	while (!stream.look().eof && JSDOC.Lang.punc(found+stream.look())) {
@@ -61,7 +61,7 @@ JSDOC.TokenReader.prototype.read_punc = function(stream, tokens) {
 	}
 }
 
-JSDOC.TokenReader.prototype.read_space = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_space = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	
 	while (!stream.look().eof && JSDOC.Lang.isSpace(stream.look())) {
@@ -78,7 +78,7 @@ JSDOC.TokenReader.prototype.read_space = function(stream, tokens) {
 	}
 }
 
-JSDOC.TokenReader.prototype.read_newline = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_newline = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	
 	while (!stream.look().eof && JSDOC.Lang.isNewline(stream.look())) {
@@ -95,7 +95,7 @@ JSDOC.TokenReader.prototype.read_newline = function(stream, tokens) {
 	}
 }
 
-JSDOC.TokenReader.prototype.read_mlcomment = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_mlcomment = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() == "/" && stream.look(1) == "*") {
 		var found = stream.next(2);
 		
@@ -110,7 +110,7 @@ JSDOC.TokenReader.prototype.read_mlcomment = function(stream, tokens) {
 	return false;
 }
 
-JSDOC.TokenReader.prototype.read_slcomment = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_slcomment = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found;
 	if (
 		(stream.look() == "/" && stream.look(1) == "/" && (found=stream.next(2)))
@@ -130,7 +130,7 @@ JSDOC.TokenReader.prototype.read_slcomment = function(stream, tokens) {
 	return false;
 }
 
-JSDOC.TokenReader.prototype.read_dbquote = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_dbquote = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() == "\"") {
 		// find terminator
 		var string = stream.next();
@@ -160,7 +160,7 @@ JSDOC.TokenReader.prototype.read_dbquote = function(stream, tokens) {
 	return false; // error! unterminated string
 }
 
-JSDOC.TokenReader.prototype.read_snquote = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_snquote = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() == "'") {
 		// find terminator
 		var string = stream.next();
@@ -182,7 +182,7 @@ JSDOC.TokenReader.prototype.read_snquote = function(stream, tokens) {
 	return false; // error! unterminated string
 }
 
-JSDOC.TokenReader.prototype.read_numb = function(stream, tokens) {
+JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() === "0" && stream.look(1) == "x") {
 		return JSDOC.Lang.read_hex(stream, tokens);
 	}
@@ -203,7 +203,10 @@ JSDOC.TokenReader.prototype.read_numb = function(stream, tokens) {
 	}
 }
 
-JSDOC.TokenReader.prototype.read_hex = function(stream, tokens) {
+/**
+	@returns {Boolean} Was the token found?
+ */
+JSDOC.TokenReader.prototype.read_hex = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = stream.next(2);
 	
 	while (!stream.look().eof) {
@@ -218,7 +221,10 @@ JSDOC.TokenReader.prototype.read_hex = function(stream, tokens) {
 	return false;
 }
 
-JSDOC.TokenReader.prototype.read_regx = function(stream, tokens) {
+/**
+	@returns {Boolean} Was the token found?
+ */
+JSDOC.TokenReader.prototype.read_regx = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (
 		stream.look() == "/"
 		&& 

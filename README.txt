@@ -53,12 +53,12 @@ The output documentation files will be saved to a new directory named
 
 For help (usage notes) enter this on the command line:
 
-$ java -jar jsrun.jar app/main.js -h
+$ java -jar jsrun.jar app/main.js --help
 
 To run the suite of unit tests included with JsDoc Toolkit enter this
 on the command line:
 
-$ java -jar jsrun.jar app/main.js -T
+$ java -jar jsrun.jar app/main.js --test
 
 More information about the various command line options used by JsDoc
 Toolkit are available on the project wiki.

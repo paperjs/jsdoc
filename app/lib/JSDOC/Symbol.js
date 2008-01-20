@@ -1,3 +1,4 @@
+/** @constructor */
 JSDOC.Symbol = function() {
 	var properties = {
 		_addOn: "",
@@ -228,8 +229,9 @@ JSDOC.Symbol = function() {
 		
 		// @return
 		var returns = this.get("comment").getTag("return");
-		if (returns.length) {
+		if (returns.length) { // there can be many return tags in a single doclet
 			this.set("returns", returns);
+			this.set("type", returns.map(function($){return $.type}).join(" ,"));
 		}
 		
 		// @exception
@@ -335,17 +337,18 @@ JSDOC.Symbol.prototype.hasTag = function(tagTitle) {
 }
 
 /** Generate a comma separated list of the parameters. */
-JSDOC.Symbol.prototype.signature = function(joiner) {
+/*JSDOC.Symbol.prototype.signature = function(joiner) {
 	if (!joiner) joiner = ", ";
 	var result = [];
 	var thisParams = this.get("params");
 	for (var i = 0, l = thisParams.length; i < l; i++) {
+print("name is "+thisParams[i].name);
 		if (thisParams[i].name.indexOf(".") == -1) // config information does not appear in the signature
 			result.push(thisParams[i].name);
 	}
-	return result.join(joiner);
+	return result.join("*"+joiner);
 }
-
+*/
 //TODO why make distinction between properties and methods?
 JSDOC.Symbol.prototype.inherit = function(symbol) {
 	if (!this.hasMember(symbol.get("name")) && !symbol.get("isInner")) {
