@@ -233,10 +233,9 @@
 		<dl class="detailList">
 			<dt class="heading">See:</dt>
 			<for each="item" in="data.get('see')">
-				<dt>
+				<dd>
 					{+new Link().toSymbol(item.name).from("../")+}
-				</dt>
-				<if test="item.desc"><dd>{+item.desc+}</dd></if>
+				</dd>
 			</for>
 		</dl>
 	</if>
@@ -271,9 +270,8 @@
 				<dt class="heading">See:</dt>
 				<for each="item" in="member.get('see')">
 					<dt>
-						{+new Link().toSymbol(item.get('name')).from("../")+}
+						{+new Link().toSymbol(item).from("../")+}
 					</dt>
-					<if test="item.desc"><dd>{+item.desc+}</dd></if>
 				</for>
 			</dl>
 		</if>
@@ -350,9 +348,8 @@
 				<dt class="heading">See:</dt>
 				<for each="item" in="member.get('see')">
 					<dt>
-						{+new Link().toSymbol(item.name).from("../")+}
+						{+new Link().toSymbol(item).from("../")+}
 					</dt>
-					<if test="item.desc"><dd>{+item.desc+}</dd></if>
 				</for>
 			</dl>
 		</if>

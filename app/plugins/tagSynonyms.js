@@ -31,7 +31,8 @@ new Namespace(
 			"=extends":            "augments",
 			"=base":               "augments",
 			"=projectdescription": "overview",
-			"=classdescription":   "class"
+			"=classdescription":   "class",
+			"=link":               "see"
 		}
 	}
 );

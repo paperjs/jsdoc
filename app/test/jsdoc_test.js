@@ -97,6 +97,7 @@ Shape.prototype.getCoords = function(){
 /**
  * Get the color of this shape.
  * @see #setColor
+ * @link Shape
  * @type Color
  */
 Shape.prototype.getColor = function(){

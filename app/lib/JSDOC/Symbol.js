@@ -27,7 +27,7 @@ JSDOC.Symbol = function() {
 		_properties: [],
 		_requires: [],
 		_returns: [],
-		_see: "",
+		_see: [],
 		_since: "",
 		_srcFile: {},
 		_type: "",
@@ -140,7 +140,8 @@ JSDOC.Symbol = function() {
 		// @see
 		var sees = this.get("comment").getTag("see");
 		if (sees.length) {
-			this.set("see", sees.map(function($){return $.desc;}).join(", "));
+			var thisSee = this.get("see");
+			sees.map(function($){thisSee.push($.desc);});
 		}
 		
 		// @class

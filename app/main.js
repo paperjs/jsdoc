@@ -253,8 +253,9 @@ else {
 		var symbols = jsdoc.symbolGroup.getSymbols();
 		for (var i = 0, l = symbols.length; i < l; i++) {
 			var symbol = symbols[i];
-			//print(Dumper.dump(symbol));
-			/*debug*///print("s> "+symbol.alias);
+			if (symbol.get("alias") == "Shape#getColor")
+			print(Dumper.dump(symbol));
+			/*debug*///print("s> "+symbol.get("alias"));
 		}
 	}
 	else {

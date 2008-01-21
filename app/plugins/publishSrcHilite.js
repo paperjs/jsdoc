@@ -2,6 +2,9 @@ JSDOC.PluginManager.registerPlugin(
 	"JSDOC.publishSrcHilite",
 	{
 		onPublishSrc: function(src) {
+			if (src in JsHilite.cache) return; // already generated src code
+			else JsHilite.cache[src] = true;
+			
 			try {
 				var sourceCode = IO.readFile(src.path);
 			}
@@ -26,7 +29,8 @@ function JsHilite(src, charset) {
 	tr.keepWhite = true;
 	
 	this.tokens = tr.tokenize(new JSDOC.TextStream(src));
-
+	
+	// TODO is redefining toString() the best way?
 	JSDOC.Token.prototype.toString = function() { 
 		return "<span class=\""+this.type+"\">"+this.data.replace(/</g, "&lt;")+"</span>";
 	}
@@ -45,6 +49,8 @@ function JsHilite(src, charset) {
 	this.footer = "</pre></body></html>";
 	this.showLinenumbers = true;
 }
+
+JsHilite.cache = {};
 
 JsHilite.prototype.hilite = function() {
 	var hilited = this.tokens.join("");
