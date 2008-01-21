@@ -40,7 +40,7 @@
 	+}.
 </if>
 </p>
-<p class="description">{+data.get('classDesc')+}
+<p class="description">{+resolveLinks(data.get('classDesc'))+}
 <if test="!data.isBuiltin()">{# isn't defined in any file #}
 <br /><i>Defined in {+new Link().toSrc(data.get('srcFile')).from("../")+}</i>
 </if>

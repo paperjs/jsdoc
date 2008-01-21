@@ -197,3 +197,13 @@ function makeSignature(params) {
 	")";
 	return signature;
 }
+
+function resolveLinks(str) { // for inline @link tags
+	str = str.replace(/\{@link ([^} ]+) ?\}/gi,
+		function(match, symbolName) {
+			return _makeSymbolLink(symbolName);
+		}
+	);
+	
+	return str;
+}
