@@ -276,15 +276,16 @@ Square.prototype.setHeight = function(height){
  * Create a new Circle instance based on a radius.
  * @class Circle class is another subclass of Shape
  * @extends Shape
- * @param {int} radius The optional radius of this Circle
+ * @param {int} radius The optional radius of this {@link Circle }
  */
 function Circle(radius){
    if (radius) {
+      /** The radius of the this Circle. */
       this.radius = radius;
    }
 }
 
-/* Circle inherits from Shape */
+/* Circle inherits from {@link Shape} */
 Circle.prototype = new Shape();
 
 /** 
@@ -312,7 +313,7 @@ Circle.prototype.getRadius = function(){
 
 /** 
  * Set the radius value for this Circle
- * @param {int} radius The radius value to set
+ * @param {int} radius The {@link Circle#radius} value to set
  * @see #getRadius
  */
 Circle.prototype.setRadius = function(radius){
