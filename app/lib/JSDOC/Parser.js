@@ -173,8 +173,9 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		
 		// like Foo = Class.create(BaseClass,{})
 		var nextName = ts.look(2);
-		if (nextName.is("NAME") && nextName.data == "Class.create" && ts.look(3).data == "(") {
+		if (nextName.is("NAME") && nextName.data == "Class.create" && ts.look(3).data == "(" && ts.look(4).data != ")") { // skip pre 1.6 type of Class.create() syntax
 			if (defined(JSDOC.PluginManager)) {
+print("got Class.create for "+name);
 				var addComment = new JSDOC.Token("", "COMM", "JSDOC");
 				JSDOC.PluginManager.run("onPrototypeClassCreate", {"name":name, "comment": doc, "addComment":addComment});
 				ts.insertAhead(addComment)

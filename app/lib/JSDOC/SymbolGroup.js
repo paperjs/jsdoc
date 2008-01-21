@@ -237,10 +237,11 @@ JSDOC.SymbolGroup.prototype.resolveMembers = function() {
 			for(var ii = 0, il = members.length; ii < il; ii++) {
 				var member = members[ii];
 				if (member.is("FUNCTION")) {
-					if (!symbol.hasMember(member.get("alias"))) symbol.get("methods").push(member);
+					symbol.addMethod(member);
 				}
 				if (member.is("OBJECT")) {
-					if (!symbol.hasMember(member.get("alias"))) symbol.get("properties").push(member);
+					symbol.addProperty(member)
+					//if (!symbol.hasMember(member.get("alias"))) symbol.get("properties").push(member);
 				}
 			}
 		}

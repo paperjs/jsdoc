@@ -373,6 +373,18 @@ JSDOC.Symbol.prototype.hasMethod = function(name) {
 	return false;
 }
 
+JSDOC.Symbol.prototype.addMethod = function(symbol) {
+	var methodAlias = symbol.get("alias");
+	var thisMethods = this.get("methods");
+	for (var i = 0, l = thisMethods.length; i < l; i++) {
+		if (thisMethods[i].get("alias") == methodAlias) {
+			thisMethods[i] = symbol; // overwriting previous method
+			return;
+		}
+	}
+	thisMethods.push(symbol); // new method with this alias
+}
+
 JSDOC.Symbol.prototype.hasProperty = function(name) {
 	var thisProperties = this.get("properties");
 	for (var i = 0, l = thisProperties.length; i < l; i++) {
@@ -380,6 +392,18 @@ JSDOC.Symbol.prototype.hasProperty = function(name) {
 		if (thisProperties[i].get("alias") == name) return true;
 	}
 	return false;
+}
+
+JSDOC.Symbol.prototype.addProperty = function(symbol) {
+	var propertyAlias = symbol.get("alias");
+	var thisProperties = this.get("properties");
+	for (var i = 0, l = thisProperties.length; i < l; i++) {
+		if (thisProperties[i].get("alias") == propertyAlias) {
+			thisProperties[i] = symbol; // overwriting previous property
+			return;
+		}
+	}
+	thisProperties.push(symbol); // new property with this alias
 }
 
 JSDOC.Symbol.prototype.getMethods = function() {
