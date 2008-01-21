@@ -39,6 +39,8 @@ function publish(symbolGroup) {
 // 		IO.mkPath(srcDir.split("/"));
  		makeSrcFile(file, srcDir);
  	}
+ 	
+	publish.classesIndex = classesTemplate.process(classes);
 	
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
@@ -48,11 +50,11 @@ function publish(symbolGroup) {
 		IO.saveFile(publish.conf.outDir+"symbols/", symbol.get("alias")+publish.conf.ext, output);
 	}
 	
-	var classesIndex = classesTemplate.process(classes);
-	IO.saveFile(publish.conf.outDir, "allclasses-frame"+publish.conf.ext, classesIndex)
+	
+	//IO.saveFile(publish.conf.outDir, "allclasses-frame"+publish.conf.ext, classesIndex)
 
-	var filesIndex = filesTemplate.process(files);
-	IO.saveFile(publish.conf.outDir, "allFiles-frame"+publish.conf.ext, filesIndex)
+	//var filesIndex = filesTemplate.process(files);
+	//IO.saveFile(publish.conf.outDir, "allFiles-frame"+publish.conf.ext, filesIndex)
 
 	// handle static files
 	if (publish.conf.outDir) {
@@ -184,14 +186,7 @@ function makeSignature(params) {
 			return $.name.indexOf(".") == -1; // don't show config params in signature
 		}
 	).map(
-		function($) {
-			return (
-				($.type) ? 
-				"<span class=\"light\">/**"+(new Link().toSymbol($.type).from("../"))+"*/</span>"
-				:
-				""
-			) + $.name;
-		}
+		function($) {return $.name;}
 	).join(", ")
 	+
 	")";

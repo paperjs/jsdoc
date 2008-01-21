@@ -47,7 +47,7 @@ JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {
 			var keep = true;
 			
 			if (symbol.is("FILE")) keep = true;
-			else if (symbol.get("desc") == "undocumented" && !(options.a ||options.A)) keep = false;
+			else if (!symbol.get("comment").userComment && !(options.a ||options.A)) keep = false;
 			else if (/(^|[.#-])_/.test(symbol.get("alias")) && !options.A) keep = false;
 			else if (symbol.get("isPrivate") && !options.p) keep = false;
 			else if (symbol.get("isIgnored")) keep = false;

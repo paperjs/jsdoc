@@ -5,7 +5,11 @@
 	@constructor
 */ 
 JSDOC.DocComment = function(/**String*/comment) {
-	if (!comment) comment = "/** @desc undocumented */";
+	this.userComment = true;
+	if (!comment) {
+		comment = "/** @desc */";
+		this.userComment = false;
+	}
 	
 	this.src = JSDOC.DocComment.unwrapComment(comment);
 	
