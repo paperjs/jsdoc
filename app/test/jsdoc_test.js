@@ -235,7 +235,7 @@ Rectangle.prototype.getArea = function(){
 
 /**
  * Create a new Square instance.
- * @class A Square is a subclass of <a href="Rectangle.html#">Rectangle</a>
+ * @class A Square is a subclass of {@link Rectangle}
  * @param {int} width The optional width for this Rectangle
  * @param {int} height The optional height for this Rectangle
  * @augments Rectangle

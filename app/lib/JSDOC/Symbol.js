@@ -148,7 +148,8 @@ JSDOC.Symbol = function() {
 		var classes = this.get("comment").getTag("class");
 		if (classes.length) {
 			this.set("isa", "CONSTRUCTOR");
-			this.set("classDesc", this.get("desc")); // desc can't apply to the constructor as there is none.
+			this.set("classDesc", classes[0].desc); // desc can't apply to the constructor as there is none.
+			
 		}
 		
 		// @namespace
