@@ -103,7 +103,7 @@ JSDOC.TokenReader.prototype.read_mlcomment = function(/**JSDOC.TokenStream*/stre
 			found += stream.next();
 		}
 		
-		if (/^\/\*\*[^*]/.test(found) && this.keepDocs) tokens.push(new JSDOC.Token(found, "COMM", "JSDOC"));
+		if (/^\/\*\*\*?[^*]/.test(found) && this.keepDocs) tokens.push(new JSDOC.Token(found, "COMM", "JSDOC"));
 		else if (this.keepComments) tokens.push(new JSDOC.Token(found, "COMM", "MULTI_LINE_COMM"));
 		return true;
 	}

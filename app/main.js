@@ -94,7 +94,7 @@ IO = {
 
 	readFile: function(path) {
 		if (!IO.exists(path)) {
-			throw new java.io.FileNotFoundException("File doesn't exist there: "+path);
+			throw "File doesn't exist there: "+path;
 		}
 		return readFile(path, IO.encoding);
 	},
