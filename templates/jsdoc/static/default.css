@@ -2,7 +2,7 @@
 body
 {
 	font: 12px "Lucida Grande", Tahoma, Arial, Helvetica, sans-serif;
-	width: 790px;
+	width: 800px;
 }
 
 .header
@@ -74,8 +74,8 @@ h2 { font-size: 110%; }
 	color: #fff;
 	font-size:130%;
 	text-align: left;
-	padding: 4px 6px 4px 6px;
-	margin: 0px;
+	padding: 2px 6px 2px 6px;
+	margin: 12px 0 0 0;
 	border: 1px #7F8FB1 solid;
 }
 
@@ -117,7 +117,7 @@ td.attributes, .fixedFont
 {
 	font: 13px Palatino,Garamond,serif;
 	padding: 4px;
-	padding-left: 18px;
+	padding-left: 4px;
 }
 
 .summaryTable { margin-bottom: 8px; }
@@ -129,7 +129,10 @@ ul.inheritsList
 	padding-left: 0;
 }
 
-.detailList { margin-left: 20px; }
+.detailList {
+	margin-left: 20px; 
+	line-height: 15px;
+}
 .detailList dt { margin-left: 20px; }
 
 .detailList .heading
@@ -141,7 +144,7 @@ ul.inheritsList
 
 .light, td.attributes, .light a:link, .light a:visited
 {
-	color: #888;
+	color: #777;
 	font-style: italic;
 }
 
