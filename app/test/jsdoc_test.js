@@ -35,7 +35,7 @@ function Shape(){
    }
 
    /** 
-    * This is a private method, just used here as an example 
+    * This is an inner method, just used here as an example 
     */
    function addReference(){
        // Do nothing...
@@ -88,7 +88,7 @@ Shape.prototype.border = null;
  * about shapes in a 2D location here.
  * @requires Shape The shape class
  * @returns A Coordinate object representing the location of this Shape
- * @type Coordinate
+ * @type Coordinate[]
  */
 Shape.prototype.getCoords = function(){
    return this.coords;

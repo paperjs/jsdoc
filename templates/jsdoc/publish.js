@@ -36,7 +36,7 @@ function publish(symbolGroup) {
  		var file = files[i];
  		
  		var srcDir = publish.conf.outDir + "symbols/src/";
-// 		IO.mkPath(srcDir.split("/"));
+
  		makeSrcFile(file, srcDir);
  	}
  	
@@ -46,7 +46,7 @@ function publish(symbolGroup) {
 		var symbol = classes[i];
 		var output = "";
 		output = classTemplate.process(symbol);
-//		IO.mkPath(publish.conf.symbolsDir.split("/"));
+		
 		IO.saveFile(publish.conf.outDir+"symbols/", symbol.get("alias")+publish.conf.ext, output);
 	}
 	
@@ -140,12 +140,13 @@ function Link() {
 	}
 }
 
+/** Just the first sentence. */
 function summarize(desc) {
 	if (typeof desc != "undefined")
 		return desc.match(/([\w\W]+?\.)[^a-z0-9]/i)? RegExp.$1 : desc;
 }
 
-// sorters
+/** make a symbol sorter by some attribute */
 function makeSortby(attribute) {
 	return function(a, b) {
 		if (a.get(attribute) != undefined && b.get(attribute) != undefined) {

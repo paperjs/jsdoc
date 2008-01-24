@@ -57,7 +57,6 @@
 						<td class="attributes">{!
 							if (data.get('isPrivate')) output += "&lt;private&gt; ";
 							if (data.get('isInner')) output += "&lt;inner&gt; ";
-							else if (data.get('isStatic')) output += "&lt;static&gt; ";
 						!}</td>
 						<td class="nameDescription">
 							<div class="fixedFont">new <b>{+new Link().toSymbol(data.get('alias')).from("../")+}</b>{+ makeSignature(data.get('params')) +}</div>
@@ -70,7 +69,7 @@
 			
 <!-- property summary -->			
 			<if test="data.get('properties').length">
-				{! var ownProperties = data.getProperties().filter(function($){return $.get('memberof') == data.get('alias')}).sort(makeSortby("alias")); !}
+				{! var ownProperties = data.getProperties().filter(function($){return $.get('memberof') == data.get('alias')}).sort(makeSortby("name")); !}
 				<if test="ownProperties.length">
 				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class {+data.get('alias')+}.">
 					<caption>Field Summary</caption>
@@ -86,10 +85,12 @@
 							<td class="attributes">{!
 								if (member.get('isPrivate')) output += "&lt;private&gt; ";
 								if (member.get('isStatic')) output += "&lt;static&gt; ";
-								if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span>";
 							!}</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name')).from("../")+}</b></div>
+								<div class="fixedFont">
+								<if test="member.get('isStatic')">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name')).from("../")+}</b>
+								<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type')).from("../")+}</span></if>
+								</div>
 								<div class="description">{+resolveLinks(summarize(member.get('desc')))+}</div>
 							</td>
 						</tr>
@@ -128,7 +129,7 @@
 
 <!-- method summary -->			
 			<if test="data.get('methods').length">
-				{! var ownMethods = data.get('methods').filter(function($){return $.get('memberof') == data.get('alias')}).sort(makeSortby("alias")); !}
+				{! var ownMethods = data.get('methods').filter(function($){return $.get('memberof') == data.get('alias')}).sort(makeSortby("name")); !}
 				<if test="ownMethods.length">
 				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class {+data.get('alias')+}.">
 					<caption>Method Summary</caption>
@@ -145,11 +146,11 @@
 								if (member.get('isPrivate')) output += "&lt;private&gt; ";
 								if (member.get('isInner')) output += "&lt;inner&gt; ";
 								else if (member.get('isStatic')) output += "&lt;static&gt; ";
-								if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span>";
-								else output += "void"
 							!}</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name')).from("../")+}</b>{+makeSignature(member.get('params'))+}</div>
+								<div class="fixedFont"><if test="member.get('isStatic')">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name')).from("../")+}</b>{+makeSignature(member.get('params'))+}
+								<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type')).from("../")+}</span></if></div>
+								</div>
 								<div class="description">{+resolveLinks(summarize(member.get('desc')))+}</div>
 							</td>
 						</tr>
@@ -197,7 +198,6 @@
 				<div class="fixedFont">{!
 					if (data.get('isPrivate')) output += "&lt;private&gt; ";
 					if (data.get('isInner')) output += "&lt;inner&gt; ";
-					else if (data.get('isStatic')) output += "&lt;static&gt; ";
 					
 					output += "new <b>" + data.get('alias') + "</b>" + makeSignature(data.get('params'))
 				!}</div>
@@ -266,15 +266,14 @@
 					Field Detail
 				</div>
 				<for each="member" in="ownProperties">
-					<h2 id="{+member.get('name')+}">{+member.get('name')+}</h2>
-					<div class="fixedFont">{!
+					<div id="{+member.get('name')+}" class="fixedFont">{!
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 						else if (member.get('isStatic')) output += "&lt;static&gt; ";
-												
-						output += "<b>" + member.get('name') + "</b>";
-						if (member.get('type')) output += "<span class=\"light\"> : "+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
 					!}
+					
+					<if test="member.get('isStatic')"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>
+					<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type')).from("../")+}</span></if>
 					<if test="member.get('defaultValue')">(<i>Default: {+member.get('defaultValue')+}</i>)</if>
 			
 					</div>
@@ -305,16 +304,14 @@
 					Method Detail
 				</div>
 				<for each="member" in="ownMethods">
-					<h2 id="{+member.get('name')+}">{+member.get('name')+}</h2>
-					<div class="fixedFont">{!
+					<div id="{+member.get('name')+}" class="fixedFont">{!
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
-						else if (member.get('isStatic')) output += "&lt;static&gt; ";
-						
-						output += "<b>"+member.get('name')+"</b>" + makeSignature(member.get('params'));
-						if (member.get('type')) output += "<span class=\"light\"> : "+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
-						else output += "<span class=\"light\"> : void</span>";
-					!}</div>
+					!}
+					
+					<if test="member.get('isStatic')"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>{+makeSignature(member.get('params'))+}
+					<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type')).from("../")+}</span></if>
+					</div>
 					<div class="description">
 						{+resolveLinks(member.get('desc'))+}
 						<if test="member.get('srcFile') != data.get('srcFile')">

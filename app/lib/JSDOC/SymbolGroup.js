@@ -191,7 +191,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 							symbol.set("isInner", false);
 						break;
 						case '-' :
-							symbol.set("isStatic", true);
+							symbol.set("isStatic", false);
 							symbol.set("isInner", true);
 						break;
 					}
