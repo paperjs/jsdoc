@@ -271,9 +271,9 @@
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 						else if (member.get('isStatic')) output += "&lt;static&gt; ";
-						if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
-						
+												
 						output += "<b>" + member.get('name') + "</b>";
+						if (member.get('type')) output += "<span class=\"light\"> : "+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
 					!}
 					<if test="member.get('defaultValue')">(<i>Default: {+member.get('defaultValue')+}</i>)</if>
 			
@@ -310,10 +310,10 @@
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 						else if (member.get('isStatic')) output += "&lt;static&gt; ";
-						if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
-						else output += "void ";
 						
 						output += "<b>"+member.get('name')+"</b>" + makeSignature(member.get('params'));
+						if (member.get('type')) output += "<span class=\"light\"> : "+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
+						else output += "<span class=\"light\"> : void</span>";
 					!}</div>
 					<div class="description">
 						{+resolveLinks(member.get('desc'))+}
