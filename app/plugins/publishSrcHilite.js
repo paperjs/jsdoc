@@ -2,8 +2,10 @@ JSDOC.PluginManager.registerPlugin(
 	"JSDOC.publishSrcHilite",
 	{
 		onPublishSrc: function(src) {
-			if (src in JsHilite.cache) return; // already generated src code
-			else JsHilite.cache[src] = true;
+			if (src.path in JsHilite.cache) {
+				return; // already generated src code
+			}
+			else JsHilite.cache[src.path] = true;
 			
 			try {
 				var sourceCode = IO.readFile(src.path);

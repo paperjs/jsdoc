@@ -155,8 +155,7 @@ JSDOC.Symbol = function() {
 		// @namespace
 		var namespaces = this.get("comment").getTag("namespace");
 		if (namespaces.length) {
-			this.set("classDesc", this.get("desc")); // desc can't apply to the constructor as there is none.
-			this.set("classDesc", namespaces[0].desc);
+			this.set("classDesc", namespaces[0].desc+"\n"+this.get("desc")); // desc can't apply to the constructor as there is none.
 			this.set("isa", "CONSTRUCTOR");
 			this.set("isNamespace", true);
 		}

@@ -1,12 +1,15 @@
 /**
-	@class Provides accessors to a JSDOC TokenStream.
+	@class Search a {@link JSDOC.TokenStream} for language tokens.
 */
-JSDOC.TokenReader = function(opt) {
+JSDOC.TokenReader = function() {
 	this.keepDocs = true;
 	this.keepWhite = false;
 	this.keepComments = false;
 }
 
+/**
+	@type {JSDOC.Token[]}
+ */
 JSDOC.TokenReader.prototype.tokenize = function(/**JSDOC.TokenStream*/stream) {
 	var tokens = [];
 	/**@ignore*/ tokens.last = function() { return tokens[tokens.length-1]; }
@@ -14,20 +17,24 @@ JSDOC.TokenReader.prototype.tokenize = function(/**JSDOC.TokenStream*/stream) {
 	while (!stream.look().eof) {
 		if (this.read_mlcomment(stream, tokens)) continue;
 		if (this.read_slcomment(stream, tokens)) continue;
-		if (this.read_dbquote(stream, tokens)) continue;
-		if (this.read_snquote(stream, tokens)) continue;
-		if (this.read_regx(stream, tokens)) continue;
-		if (this.read_numb(stream, tokens)) continue;
-		if (this.read_punc(stream, tokens)) continue;
-		if (this.read_space(stream, tokens)) continue;
-		if (this.read_newline(stream, tokens)) continue;
-		if (this.read_word(stream, tokens)) continue;
+		if (this.read_dbquote(stream, tokens))   continue;
+		if (this.read_snquote(stream, tokens))   continue;
+		if (this.read_regx(stream, tokens))      continue;
+		if (this.read_numb(stream, tokens))      continue;
+		if (this.read_punc(stream, tokens))      continue;
+		if (this.read_space(stream, tokens))     continue;
+		if (this.read_newline(stream, tokens))   continue;
+		if (this.read_word(stream, tokens))      continue;
 		
-		tokens.push(new JSDOC.Token(stream.next(), "TOKN", "UNKNOWN_TOKEN")); // This is an error case.
+		// if execution reaches here then an error has happened
+		tokens.push(new JSDOC.Token(stream.next(), "TOKN", "UNKNOWN_TOKEN"));
 	}
 	return tokens;
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_word = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	while (!stream.look().eof && JSDOC.Lang.isWordChar(stream.look())) {
@@ -45,6 +52,9 @@ JSDOC.TokenReader.prototype.read_word = function(/**JSDOC.TokenStream*/stream, t
 	}
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_punc = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	var name;
@@ -61,6 +71,9 @@ JSDOC.TokenReader.prototype.read_punc = function(/**JSDOC.TokenStream*/stream, t
 	}
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_space = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	
@@ -78,6 +91,9 @@ JSDOC.TokenReader.prototype.read_space = function(/**JSDOC.TokenStream*/stream, 
 	}
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_newline = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found = "";
 	
@@ -95,6 +111,9 @@ JSDOC.TokenReader.prototype.read_newline = function(/**JSDOC.TokenStream*/stream
 	}
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_mlcomment = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() == "/" && stream.look(1) == "*") {
 		var found = stream.next(2);
@@ -110,6 +129,9 @@ JSDOC.TokenReader.prototype.read_mlcomment = function(/**JSDOC.TokenStream*/stre
 	return false;
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_slcomment = function(/**JSDOC.TokenStream*/stream, tokens) {
 	var found;
 	if (
@@ -130,6 +152,9 @@ JSDOC.TokenReader.prototype.read_slcomment = function(/**JSDOC.TokenStream*/stre
 	return false;
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_dbquote = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() == "\"") {
 		// find terminator
@@ -160,6 +185,9 @@ JSDOC.TokenReader.prototype.read_dbquote = function(/**JSDOC.TokenStream*/stream
 	return false; // error! unterminated string
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_snquote = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() == "'") {
 		// find terminator
@@ -182,6 +210,9 @@ JSDOC.TokenReader.prototype.read_snquote = function(/**JSDOC.TokenStream*/stream
 	return false; // error! unterminated string
 }
 
+/**
+	@returns {Boolean} Was the token found?
+ */
 JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() === "0" && stream.look(1) == "x") {
 		return JSDOC.Lang.read_hex(stream, tokens);
