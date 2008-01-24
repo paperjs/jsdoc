@@ -42,7 +42,7 @@ JSDOC.SymbolGroup.prototype.getOverview = function(path) {
 JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {			 
 	symbols = symbols.filter(
 		function(symbol) {
-			if (symbol.get("isInner")) symbol.get("isPrivate") = true;
+			if (symbol.get("isInner")) symbol.set("isPrivate", "true");
 			
 			var keep = true;
 			

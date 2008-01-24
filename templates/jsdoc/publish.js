@@ -186,7 +186,14 @@ function makeSignature(params) {
 			return $.name.indexOf(".") == -1; // don't show config params in signature
 		}
 	).map(
-		function($) {return $.name;}
+		function($) {
+			return (
+				($.type) ? 
+				"<span class=\"light\">"+(new Link().toSymbol($.type).from("../"))+" </span>"
+				:
+				""
+			) + $.name;
+		}
 	).join(", ")
 	+
 	")";

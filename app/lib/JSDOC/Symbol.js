@@ -337,6 +337,12 @@ JSDOC.Symbol.prototype.hasTag = function(tagTitle) {
 	return false;
 }
 
+JSDOC.Symbol.prototype.setType = function(/**String*/comment, /**Boolean*/overwrite) {
+	if (!overwrite && this.get("type")) return;
+	var typeComment = JSDOC.DocComment.unwrapComment(comment);
+	this.set("type",  typeComment);
+}
+
 
 //TODO why make distinction between properties and methods?
 JSDOC.Symbol.prototype.inherit = function(symbol) {

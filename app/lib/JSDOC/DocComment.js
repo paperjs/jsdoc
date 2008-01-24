@@ -5,13 +5,14 @@
 	@constructor
 */ 
 JSDOC.DocComment = function(/**String*/comment) {
-	this.userComment = true;
+	this.userComment = true; // is this a generated comment or one written by the user?
 	if (!comment) {
 		comment = "/** @desc */";
 		this.userComment = false;
 	}
 	
-	this.src = JSDOC.DocComment.unwrapComment(comment);
+	this.rawSrc = comment;
+	this.src = JSDOC.DocComment.unwrapComment(this.rawSrc);
 	
 	this.meta = "";
 	if (this.src.indexOf("#") == 0) {
@@ -57,6 +58,7 @@ JSDOC.DocComment.prototype.fixDesc = function() {
 	@type String
 */
 JSDOC.DocComment.unwrapComment = function(/**String*/comment) {
+	if (!comment) return "";
 	var unwrapped = comment.replace(/(^\/\*\*|\*\/$)/g, "").replace(/^\s*\* ?/gm, "");
 	return unwrapped;
 }

@@ -86,7 +86,7 @@
 							<td class="attributes">{!
 								if (member.get('isPrivate')) output += "&lt;private&gt; ";
 								if (member.get('isStatic')) output += "&lt;static&gt; ";
-								if (member.get('type')) output += new Link().toSymbol(member.get('type')).from("../");
+								if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span>";
 							!}</td>
 							<td class="nameDescription">
 								<div class="fixedFont"><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name')).from("../")+}</b></div>
@@ -145,7 +145,7 @@
 								if (member.get('isPrivate')) output += "&lt;private&gt; ";
 								if (member.get('isInner')) output += "&lt;inner&gt; ";
 								else if (member.get('isStatic')) output += "&lt;static&gt; ";
-								if (member.get('type')) output += new Link().toSymbol(member.get('type')).from("../");
+								if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span>";
 								else output += "void"
 							!}</td>
 							<td class="nameDescription">
@@ -209,7 +209,7 @@
 						<dt class="heading">Parameters:</dt>
 						<for each="item" in="data.get('params')">
 							<dt>
-								{+((item.type)?""+(new Link().toSymbol(item.type).from("../"))+" " : "")+} <b>{+item.name+}</b>
+								{+((item.type)?""+("<span class=\"light\">"+(new Link().toSymbol(item.type).from("../")+"</span>"))+" " : "")+} <b>{+item.name+}</b>
 								<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
 							</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
@@ -221,7 +221,7 @@
 						<dt class="heading">Exceptions:</dt>
 						<for each="item" in="data.get('exceptions')">
 							<dt>
-								{+((item.type)?"&lt;"+(new Link().toSymbol(item.type).from("../"))+"&gt; " : "")+} <b>{+item.name+}</b>
+								{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type).from("../"))+"</span> " : "")+} <b>{+item.name+}</b>
 							</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 						</for>
@@ -231,7 +231,7 @@
 					<dl class="detailList">
 						<dt class="heading">Returns:</dt>
 						<for each="item" in="data.get('returns')">
-								<dd>{+((item.type)?"&lt;"+(new Link().toSymbol(item.type).from("../"))+"&gt; " : "")+}{+resolveLinks(item.desc)+}</dd>
+								<dd>{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type).from("../"))+"</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
 						</for>
 					</dl>
 				</if>
@@ -271,7 +271,7 @@
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 						else if (member.get('isStatic')) output += "&lt;static&gt; ";
-						if (member.get('type')) output += ""+new Link().toSymbol(member.get('type')).from("../")+" ";
+						if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
 						
 						output += "<b>" + member.get('name') + "</b>";
 					!}
@@ -310,7 +310,7 @@
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 						else if (member.get('isStatic')) output += "&lt;static&gt; ";
-						if (member.get('type')) output += ""+new Link().toSymbol(member.get('type')).from("../")+" ";
+						if (member.get('type')) output += "<span class=\"light\">"+new Link().toSymbol(member.get('type')).from("../")+"</span> ";
 						else output += "void ";
 						
 						output += "<b>"+member.get('name')+"</b>" + makeSignature(member.get('params'));
@@ -327,7 +327,7 @@
 							<dt class="heading">Parameters:</dt>
 							<for each="item" in="member.get('params')">
 								<dt>
-									{+((item.type)?""+(new Link().toSymbol(item.type).from("../"))+" " : "")+}<b>{+item.name+}</b>
+									{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type).from("../"))+"</span> " : "")+}<b>{+item.name+}</b>
 									<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
 								</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
@@ -339,7 +339,7 @@
 							<dt class="heading">Exceptions:</dt>
 							<for each="item" in="member.get('exceptions')">
 								<dt>
-									{+((item.type)?"&lt;"+(new Link().toSymbol(item.type).from("../"))+"&gt; " : "")+} <b>{+item.name+}</b>
+									{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type).from("../"))+"</span> " : "")+} <b>{+item.name+}</b>
 								</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 							</for>
@@ -349,7 +349,7 @@
 						<dl class="detailList">
 							<dt class="heading">Returns:</dt>
 							<for each="item" in="member.get('returns')">
-									<dd>{+((item.type)?"&lt;"+(new Link().toSymbol(item.type).from("../"))+"&gt; " : "")+}{+resolveLinks(item.desc)+}</dd>
+									<dd>{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type).from("../"))+"</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
 							</for>
 						</dl>
 					</if>

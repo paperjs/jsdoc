@@ -101,7 +101,7 @@ div.sectionTitle { margin-bottom: 8px; }
 td.attributes, .fixedFont
 {
 	line-height: 15px;
-	color: #156E4D;
+	color: #002EBE;
 	font-family: "Courier New",Courier,monospace;
 	font-size: 13px;
 }
@@ -139,7 +139,11 @@ ul.inheritsList
 	margin-left: 0;
 }
 
-.light, td.attributes, .light a:link, .light a:visited { color: #888; }
+.light, td.attributes, .light a:link, .light a:visited
+{
+	color: #888;
+	font-style: italic;
+}
 
 .fineprint
 {

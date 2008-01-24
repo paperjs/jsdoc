@@ -76,6 +76,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		var body = "";
 		var paramTokens = [];
 		var params = [];
+		var typeDoc = "";
 		var isInner;
 		
 		// like function foo()
@@ -90,6 +91,8 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 				doc = ts.look(-2).data;
 			}
 			paramTokens = ts.balance("LEFT_PAREN");
+if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
+					
 			body = ts.balance("LEFT_CURLY");
 		}
 		
@@ -113,6 +116,9 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 				doc = ts.look(-2).data;
 			}
 			paramTokens = ts.balance("LEFT_PAREN");
+			
+if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
+
 			body = ts.balance("LEFT_CURLY");
 			
 			// like foo = function(n) {return n}(42)
@@ -143,8 +149,11 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			}
 			
 			var docComment = new JSDOC.DocComment(doc);
-			JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, params, isa, docComment));
-			if (isInner) JSDOC.Parser.symbols[JSDOC.Parser.symbols.length-1].isInner = true;
+			var newSymbol = new JSDOC.Symbol().init(name, params, isa, docComment);
+			JSDOC.Parser.symbols.push(newSymbol);
+			if (isInner) newSymbol.set("isInner", true);
+			if (typeDoc) newSymbol.setType(typeDoc.data);
+			
 			if (body) {
 				JSDOC.Parser.onFnBody(
 					new JSDOC.TokenStream(body),
@@ -217,6 +226,7 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 					if (ts.look(-1).is("JSDOC")) doc = ts.look(-1).data;
 					
 					var params = JSDOC.Parser.onParamList(ts.balance("LEFT_PAREN"));
+if (ts.look(1).is("JSDOC")) var typeDoc = ts.next();
 					var body = ts.balance("LEFT_CURLY");
 					
 					// like foo: function(n) {return n}(42)
@@ -225,7 +235,11 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 						ts.balance("LEFT_PAREN");
 					}
 					var docComment = new JSDOC.DocComment(doc);
-					JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, params, isa, docComment));
+					
+					var newSymbol = new JSDOC.Symbol().init(name, params, isa, docComment);
+					JSDOC.Parser.symbols.push(newSymbol);
+					if (typeDoc) newSymbol.setType(typeDoc.data);
+					
 					JSDOC.Parser.onFnBody(
 						new JSDOC.TokenStream(body),
 						name
