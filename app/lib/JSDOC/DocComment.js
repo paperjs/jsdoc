@@ -2,7 +2,6 @@
 	Create a new DocComment. This takes a raw documentation comment,
 	and wraps it in useful accessors.
 	@class Represents a documentation comment object.
-	@constructor
 */ 
 JSDOC.DocComment = function(/**String*/comment) {
 	this.userComment = true; // is this a generated comment or one written by the user?
