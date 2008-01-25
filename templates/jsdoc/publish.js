@@ -1,7 +1,7 @@
 function publish(symbolGroup) {
 	publish.conf = {  // trailing slash expected for dirs
 		ext: ".html",
-		outDir: SYS.pwd()+"../out/jsdox/",
+		outDir: SYS.pwd()+"../out/jsdoc/",
 		templatesDir: SYS.pwd()+"../templates/",
 		symbolsDir: "symbols/",
 		srcDir: "src/"
@@ -14,7 +14,7 @@ function publish(symbolGroup) {
 
 	try {
 		var classTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"jsdoc/class.tmpl");
-		var filesTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"jsdoc/allfiles.tmpl");
+		var indexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"jsdoc/index.tmpl");
 		var classesTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"jsdoc/allclasses.tmpl");
 	}
 	catch(e) {
@@ -31,7 +31,6 @@ function publish(symbolGroup) {
 	var classes = symbols.filter(isaClass).sort(makeSortby("alias"));
 
 	var files = JSDOC.opt.srcFiles;
-	
  	for (var i = 0, l = files.length; i < l; i++) {
  		var file = files[i];
  		
@@ -40,7 +39,8 @@ function publish(symbolGroup) {
  		makeSrcFile(file, srcDir);
  	}
  	
-	publish.classesIndex = classesTemplate.process(classes);
+ 	Link.base = "../";
+	publish.classesIndex = classesTemplate.process(classes); // kept in memory
 	
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
@@ -50,30 +50,28 @@ function publish(symbolGroup) {
 		IO.saveFile(publish.conf.outDir+"symbols/", symbol.get("alias")+publish.conf.ext, output);
 	}
 	
+	// regenrate the index with different relative links
+	Link.base = "";
+	publish.classesIndex = classesTemplate.process(classes);
 	
 	//IO.saveFile(publish.conf.outDir, "allclasses-frame"+publish.conf.ext, classesIndex)
-
-	//var filesIndex = filesTemplate.process(files);
-	//IO.saveFile(publish.conf.outDir, "allFiles-frame"+publish.conf.ext, filesIndex)
+	var index = indexTemplate.process(classes);
+	IO.saveFile(publish.conf.outDir, "index"+publish.conf.ext, index)
 
 	// handle static files
-	if (publish.conf.outDir) {
-		IO.copyFile(publish.conf.templatesDir+"jsdoc/static/index.html", publish.conf.outDir);
-	}
+	//if (publish.conf.outDir) {
+	//	IO.copyFile(publish.conf.templatesDir+"jsdoc/static/index.html", publish.conf.outDir);
+	//}
 
 }
 
 function Link() {
 	this.alias = "";
-	this.Src = "";
+	this.src = "";
+	this.file = "";
 	this.text = "";
-	this.relativeToPath = "./";
 	this.targetName = "";
 	
-	this.from = function(relativeToPath) {
-		if (defined(relativeToPath)) this.relativeToPath = relativeToPath;
-		return this;
-	}
 	this.target = function(targetName) {
 		if (defined(targetName)) this.targetName = targetName;
 		return this;
@@ -90,54 +88,80 @@ function Link() {
 		if (defined(alias)) this.alias = new String(alias);
 		return this;
 	}
+	this.toFile = function(file) {
+		if (defined(file)) this.file = file;
+		return this;
+	}
 	
 	this.toString = function() {
-		var relativeToPath = (this.relativeToPath)? this.relativeToPath : "";
-		var text = this.text;
-		var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
-				
-		function _makeSymbolLink(alias) {
-			var linkTo;
-			var linkPath;
-			
-			if (alias.charAt(0) == "#") var linkPath = alias;
-			// if there is no symbol by that name just return the name unaltered
-			else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
-			else {
-				linkPath = escape(linkTo.get('alias'))+publish.conf.ext;
-				if (!linkTo.is("CONSTRUCTOR")) {
-					linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
-					linkPath += publish.conf.ext+"#"+linkTo.get('name')
-				}
-				linkPath = path+linkPath
-			}
-			
-			if (!text) text = alias;
-			return "<a href=\""+linkPath+"\""+target+">"+text+"</a>";
-		}
-		
-		function _makeSrcLink(srcFilePath) {
-			var srcFile = srcFilePath.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
-			var outFilePath = "src/"+srcFile+publish.conf.ext;
+		var linkString;
+		var thisLink = this;
 
-			if (!text) text = JSDOC.Util.fileName(srcFilePath);//srcFile;
-			return "<a href=\""+outFilePath+"\""+target+">"+text+"</a>";
-		}
-		
 		if (this.alias) {
-			var path = relativeToPath+publish.conf.symbolsDir;
-			var linkString = this.alias;
-			linkString = linkString.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)\b/gi,
+			linkString = this.alias.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)\b/gi,
 				function(match, symbolName) {
-					return _makeSymbolLink(symbolName);
+					return thisLink._makeSymbolLink(symbolName);
 				}
 			);
 		}
 		else if (this.src) {
-			linkString = _makeSrcLink(this.src);
-		}		
+			linkString = thisLink._makeSrcLink(this.src);
+		}
+		else if (this.file) {
+			linkString = thisLink._makeFileLink(this.file);
+		}
 		return linkString;
 	}
+}
+
+/** Appended to the front of relative link paths. */
+Link.base = "";
+
+/** Create a link to a snother symbol. */
+Link.prototype._makeSymbolLink = function(alias) {
+	var linkBase = Link.base+publish.conf.symbolsDir;
+	var linkTo;
+	var linkPath;
+	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
+	
+	// is it an interfile link?
+	if (alias.charAt(0) == "#") var linkPath = alias;
+	// if there is no symbol by that name just return the name unaltered
+	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
+	// it's a symbol in another file
+	else {
+		linkPath = escape(linkTo.get('alias'))+publish.conf.ext;
+		if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
+			linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
+			linkPath += publish.conf.ext+"#"+linkTo.get('name')
+		}
+		linkPath = linkBase + linkPath
+	}
+	
+	if (!this.text) this.text = alias;
+	return "<a href=\""+linkPath+"\""+target+">"+this.text+"</a>";
+}
+
+/** Create a link to a source file. */
+Link.prototype._makeSrcLink = function(srcFilePath) {
+	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
+		
+	// transform filepath into a filename
+	var srcFile = srcFilePath.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
+	var outFilePath = publish.conf.srcDir+srcFile+publish.conf.ext;
+
+	if (!this.text) this.text = JSDOC.Util.fileName(srcFilePath);
+	return "<a href=\""+outFilePath+"\""+target+">"+this.text+"</a>";
+}
+
+/** Create a link to a source file. */
+Link.prototype._makeFileLink = function(filePath) {
+	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
+		
+	var outFilePath =  Link.base + filePath;
+
+	if (!this.text) this.text = filePath;
+	return "<a href=\""+outFilePath+"\""+target+">"+this.text+"</a>";
 }
 
 /** Just the first sentence. */
@@ -190,7 +214,7 @@ function makeSignature(params) {
 		function($) {
 			return (
 				($.type) ? 
-				"<span class=\"light\">"+(new Link().toSymbol($.type).from("../"))+" </span>"
+				"<span class=\"light\">"+(new Link().toSymbol($.type))+" </span>"
 				:
 				""
 			) + $.name;
@@ -201,11 +225,11 @@ function makeSignature(params) {
 	return signature;
 }
 
-function resolveLinks(str, from) { // for inline @link tags
-	if (!from) from = "../"; // within the same directory
+/** Find symbol {@link ...} strings in text and turn into html links */
+function resolveLinks(str, from) {
 	str = str.replace(/\{@link ([^} ]+) ?\}/gi,
 		function(match, symbolName) {
-			return new Link().toSymbol(symbolName).from(from);
+			return new Link().toSymbol(symbolName);
 		}
 	);
 	

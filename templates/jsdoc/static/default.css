@@ -116,6 +116,7 @@ td.attributes, .fixedFont
 .summaryTable td.nameDescription, .description
 {
 	font: 13px Palatino,Garamond,serif;
+	line-height: 15px;
 	padding: 4px;
 	padding-left: 4px;
 }

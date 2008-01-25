@@ -47,7 +47,7 @@ function Shape(){
  * Create a new Hexagon instance.
  * @extends Shape
  * @class Hexagon is a class that is a <i>logical</i> sublcass of 
- * <a href="Shape.html#">Shape</a> (thanks to the <code>&#64;extends</code> tag), but in 
+ * {@link Shape} (thanks to the <code>&#64;extends</code> tag), but in 
  * reality it is completely unrelated to Shape.
  * @param {int} sideLength The length of one side for the new Hexagon
  */
@@ -195,8 +195,8 @@ Rectangle.prototype.getWidth = function(){
 
 /**
  * Get the value of the height for the Rectangle.
- * Another getter is the <a href="Shape.html#getColor">Shape.getColor()</a> method in the 
- * <a href="Shape.html#">base Shape class</a>.  
+ * Another getter is the {@link Shape#getColor} method in the 
+ * {@link Shape} base class.  
  * @return The height of this Rectangle
  * @type int
  * @see #setHeight
@@ -264,7 +264,7 @@ Square.prototype.setWidth = function(width){
 
 /**
  * Set the height value for this Square 
- * Sets the <a href="Rectangle.html#height">height</a> attribute in the Rectangle.
+ * Sets the {@link Rectangle#height} attribute in the Rectangle.
  * @param {int} height The height value to be set
  */
 Square.prototype.setHeight = function(height){
@@ -407,8 +407,8 @@ function ShapeFactory(){
 
 ShapeFactory.prototype = {
    /** 
-    * Creates a new <a href="Shape.html#">Shape</a> instance.
-    * @return A new <a href="Shape.html#">Shape</a>
+    * Creates a new {@link Shape} instance.
+    * @return A new {@link Shape}
     * @type Shape
     */
    createShape: function(){
@@ -423,9 +423,9 @@ ShapeFactory.prototype = {
 MySingletonShapeFactory = new function(){
 
    /**
-    * Get the next <a href="Shape.html#">Shape</a> 
+    * Get the next {@link Shape}
     * @type Shape
-    * @return A new <a href="Shape.html#">Shape</a>
+    * @return A new {@link Shape}
     */
    this.getShape = function(){ 
       return null; 
