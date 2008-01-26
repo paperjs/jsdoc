@@ -273,7 +273,8 @@
 					Field Detail
 				</div>
 				<for each="member" in="ownProperties">
-					<div id="{+member.get('name')+}" class="fixedFont">{!
+					<a name="{+Link.symbolNameToLinkName(member)+}"> </a>
+					<div class="fixedFont">{!
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 						else if (member.get('isStatic')) output += "&lt;static&gt; ";
@@ -311,7 +312,8 @@
 					Method Detail
 				</div>
 				<for each="member" in="ownMethods">
-					<div id="{+member.get('name')+}" class="fixedFont">{!
+					<a name="{+Link.symbolNameToLinkName(member)+}"> </a>
+					<div class="fixedFont">{!
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 					!}

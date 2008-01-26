@@ -117,6 +117,14 @@ function Link() {
 /** Appended to the front of relative link paths. */
 Link.base = "";
 
+Link.symbolNameToLinkName = function(symbol) {
+	var linker = "";
+	if (symbol.get('isStatic')) linker = ".";
+	else if (symbol.get('isInner')) linker = "-";
+	
+	return linker+symbol.get("name");
+}
+
 /** Create a link to a snother symbol. */
 Link.prototype._makeSymbolLink = function(alias) {
 	var linkBase = Link.base+publish.conf.symbolsDir;
@@ -133,7 +141,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 		linkPath = escape(linkTo.get('alias'))+publish.conf.ext;
 		if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
 			linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
-			linkPath += publish.conf.ext+"#"+linkTo.get('name')
+			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
 		}
 		linkPath = linkBase + linkPath
 	}
