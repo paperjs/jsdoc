@@ -1,11 +1,13 @@
 /***
+ * @overview template-parsing resources
  * @namespace JSDOC.template.Util
  * @desc A collection of handy utilities for use in all templates
+ * @author Chris Scott
  */
 JSDOC.template.Util
 
 
-/***
+/**
  * @class JSDOC.template.Util
  * @singleton
  * A collection of template functions.  these methods can be included into an Ext.XTemplate constructor like so:
@@ -84,11 +86,11 @@ JSDOC.template.Util = function(){
             return str;
         }
     }
-}
+}();
 
-/***
+/**
  * @class JSDOC.template.Link
- * A class for creating different kinds of links on a doc
+ * A class for creating different kinds of links on a doc.  
  */
 JSDOC.template.Link = function() {
     // constructor   
@@ -206,7 +208,7 @@ JSDOC.template.Link.prototype = {
             var linkPath = alias;
         // if there is no symbol by that name just return the name unaltered
         else 
-            if (!(linkTo = Link.symbolGroup.getSymbol(alias))) 
+            if (!(linkTo = JSDOC.template.Link.symbolGroup.getSymbol(alias))) 
                 return alias;
             // it's a symbol in another file
             else {
@@ -250,3 +252,6 @@ JSDOC.template.Link.prototype = {
 
 /** Appended to the front of relative link paths. */
 JSDOC.template.Link.base = "";
+
+/** chris: I saw a ref to this in publish.js.  not sure what it's for */
+JSDOC.template.symbolGroup = null;
