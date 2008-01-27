@@ -8,8 +8,8 @@ function publish(symbolGroup) {
         templatesDir: SYS.pwd() + "../" + JSDOC.opt.t + '/',
 		symbolsDir: "symbols/",
 		srcDir: "src/"
-	};	   
-	
+	};	 
+        	
     // build template directory structure
     buildTemplate();    
         
@@ -100,7 +100,7 @@ function publish(symbolGroup) {
                                 
         // create output for Class.File.html
         //var output = classTpl.applyTemplate(symbol);
-        var output = '';
+        var output = '<h1>Symbol: ' + symbol.get('name') + '</h1>';
         
         
         /*{
