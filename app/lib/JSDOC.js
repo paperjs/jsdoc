@@ -29,3 +29,7 @@ JSDOC.usage = function() {
 }
 
 IO.includeDir("lib/JSDOC/");
+
+// include new resistor lib (christocracy)
+IO.include("lib/JSDOC/resistor/init.js");
+

@@ -79,6 +79,10 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		var typeDoc = "";
 		var isInner;
 		
+        // set PluginMgr's ear onto tokenstream.  it will fire events (using Ext.Observable) 
+        //when only when a plugin has defined an event-handler for a particular name
+        JSDOC.resistor.PluginMgr.onTokenStream(name, ts);
+        
 		// like function foo()
 		if (ts.look(-1).is("FUNCTION")) {
 			if (nspace) {
@@ -91,7 +95,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 				doc = ts.look(-2).data;
 			}
 			paramTokens = ts.balance("LEFT_PAREN");
-if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
+            if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 					
 			body = ts.balance("LEFT_CURLY");
 		}
@@ -117,7 +121,7 @@ if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 			}
 			paramTokens = ts.balance("LEFT_PAREN");
 			
-if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
+            if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 
 			body = ts.balance("LEFT_CURLY");
 			
