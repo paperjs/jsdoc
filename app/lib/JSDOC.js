@@ -30,6 +30,9 @@ JSDOC.usage = function() {
 
 IO.includeDir("lib/JSDOC/");
 
+// include template resources (JSDOC.template.Util)
+IO.include("../templates/util.js");
+
 // include new resistor lib (christocracy)
 IO.include("lib/JSDOC/resistor/init.js");
 

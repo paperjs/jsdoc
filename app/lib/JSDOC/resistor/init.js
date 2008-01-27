@@ -10,8 +10,6 @@
  */
 JSDOC.resistor = {};
 
-var pwd = SYS.pwd();
-
 // include ext-2.0 lib
 IO.include('lib/JSDOC/resistor/ext-2.0/init.js');
 

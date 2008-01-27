@@ -81,7 +81,9 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
             //print ("--- found case 2: class: " + extClass + ', super: ' + extSuper);
                          
         }
-                        
+        // pop off initially created Symbol so we can create a new one.  not sure how hackish this is but it works.
+        original = JSDOC.Parser.symbols.pop();
+                                        
         JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(extClass, [], "CONSTRUCTOR", new JSDOC.DocComment('')));                                                
     },
     

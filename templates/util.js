@@ -1,10 +1,10 @@
 /***
  * @overview template-parsing resources
- * @namespace JSDOC.template.Util
+ * @namespace JSDOC.template
  * @desc A collection of handy utilities for use in all templates
  * @author Chris Scott
  */
-JSDOC.template.Util
+JSDOC.template = {};
 
 
 /**

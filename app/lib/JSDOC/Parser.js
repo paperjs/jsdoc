@@ -17,7 +17,12 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 		if (JSDOC.Parser.findFunction(ts)) continue;
 		if (JSDOC.Parser.findVariable(ts)) continue;
 	}
-
+    
+    /*
+    for (var n=0,len=JSDOC.Parser.symbols.length;n<len;n++) {
+        print ("-- " + JSDOC.Parser.symbols[n].get('alias') + ', isa: ' + JSDOC.Parser.symbols[n].get('isa'));
+    }
+    */
 	return JSDOC.Parser.symbols;
 }
 

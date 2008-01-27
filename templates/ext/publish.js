@@ -14,14 +14,14 @@ function publish(symbolGroup) {
     buildTemplate();    
         
 	// used to check the details of things being linked to
-	tplResources.Link.symbolGroup = symbolGroup;
+	JSDOC.template.Link.symbolGroup = symbolGroup;
     
     // create XTemplate instances.                          
 	try {
-        var indexTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "index.tmpl"), tplResources).compile();
-        var classTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "class.tmpl"), tplResources).compile();        
-        var filesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allfiles.tmpl"), tplResources).compile();        
-        var classesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allclasses.tmpl"), tplResources).compile();		
+        var indexTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "index.tmpl"), JSDOC.template.Util).compile();
+        var classTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "class.tmpl"), JSDOC.template.Util).compile();        
+        var filesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allfiles.tmpl"), JSDOC.template.Util).compile();        
+        var classesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allclasses.tmpl"), JSDOC.template.Util).compile();		
 	}
 	catch(e) {
 		print(e.message);
@@ -34,7 +34,7 @@ function publish(symbolGroup) {
 	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace())}
 	
 	var symbols = symbolGroup.getSymbols();
-	var classes = symbols.filter(isaClass).sort(tplResources.makeSortby("alias"));
+	var classes = symbols.filter(isaClass).sort(JSDOC.template.Util.makeSortby("alias"));
     
     // create output dir-structure
     var srcDir = publish.conf.outDir + "src/";
@@ -199,153 +199,3 @@ function buildPackage(name, packages, classes) {
         children: children                
     };       
 }
-
-/***
- * tplResources.  wrap template functions in an object.  
- * we can pass this object to XTemplate constructor
- */
-var tplResources = {
-    getClassName : function(v) {
-        return v.split('.').pop();
-    },
-    
-    getPackageName : function(v) {
-        var path = v.split('.');
-        path.pop();
-        return path.join('.');    
-    },
-    
-    Link: function Link() {
-    	this.alias = "";
-    	this.Src = "";
-    	this.text = "";
-    	this.relativeToPath = "./";
-    	this.targetName = "";
-    	
-    	this.from = function(relativeToPath) {
-    		if (defined(relativeToPath)) this.relativeToPath = relativeToPath;
-    		return this;
-    	}
-    	this.target = function(targetName) {
-    		if (defined(targetName)) this.targetName = targetName;
-    		return this;
-    	}
-    	this.withText = function(text) {
-    		if (defined(text)) this.text = text;
-    		return this;
-    	}
-    	this.toSrc = function(filename) {
-    		if (defined(filename)) this.src = filename;
-    		return this;
-    	}
-    	this.toSymbol = function(alias) {
-    		if (defined(alias)) this.alias = new String(alias);
-    		return this;
-    	}
-    	
-    	this.toString = function() {
-    		var relativeToPath = (this.relativeToPath)? this.relativeToPath : "";
-    		var text = this.text;
-    		var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
-    				
-    		function _makeSymbolLink(alias) {
-    			var linkTo;
-    			var linkPath;
-    			
-    			if (alias.charAt(0) == "#") var linkPath = alias;
-    			// if there is no symbol by that name just return the name unaltered
-    			else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
-    			else {
-    				linkPath = escape(linkTo.get('alias'))+publish.conf.ext;
-    				if (!linkTo.is("CONSTRUCTOR")) {
-    					linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
-    					linkPath += publish.conf.ext+"#"+linkTo.get('name')
-    				}
-    				linkPath = path+linkPath
-    			}
-    			
-    			if (!text) text = alias;
-    			return "<a href=\""+linkPath+"\""+target+">"+text+"</a>";
-    		}
-    		
-    		function _makeSrcLink(srcFilePath) {
-    			var srcFile = srcFilePath.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
-    			var outFilePath = "src/"+srcFile+publish.conf.ext;
-    
-    			if (!text) text = JSDOC.Util.fileName(srcFilePath);//srcFile;    			
-                
-                return '<a href="' + outFilePath + '" target="_blank">' + text + '</a>';
-    		}
-    		
-    		if (this.alias) {
-    			var path = relativeToPath+publish.conf.symbolsDir;
-    			var linkString = this.alias;
-    			linkString = linkString.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)\b/gi,
-    				function(match, symbolName) {
-    					return _makeSymbolLink(symbolName);
-    				}
-    			);
-    		}
-    		else if (this.src) {
-    			linkString = _makeSrcLink(this.src);
-    		}		
-    		return linkString;
-    	}
-    },
-    summarize : function (desc) {
-    	if (typeof desc != "undefined")
-    		return desc.match(/([\w\W]+?\.)[^a-z0-9]/i)? RegExp.$1 : desc;
-    },
-    makeSortby : function (attribute) {
-    	return function(a, b) {
-    		if (a.get(attribute) != undefined && b.get(attribute) != undefined) {
-    			a = a.get(attribute).toLowerCase();
-    			b = b.get(attribute).toLowerCase();
-    			if (a < b) return -1;
-    			if (a > b) return 1;
-    			return 0;
-    		}
-    	}
-    },    
-    include : function (path) {
-    	var path = publish.conf.templatesDir+"jsdoc/"+path;
-    	return IO.readFile(path);
-    },
-    makeSrcFile : function (path, srcDir, name) {    	
-        if (!name) name = path.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");    	                
-    	var src = {path: path, name:name, hilited: ""};
-    	
-    	if (defined(JSDOC.PluginManager)) {            
-    		JSDOC.PluginManager.run("onPublishSrc", src);
-    	}                        
-    	if (src.hilited) {
-    		IO.saveFile(srcDir, name+publish.conf.ext, src.hilited);
-    	}
-    },
-    makeSignature : function (params) {
-    	if (!params) return "()";
-    	var signature = "("
-    	+
-    	params.filter(
-    		function($) {
-    			return $.name.indexOf(".") == -1; // don't show config params in signature
-    		}
-    	).map(
-    		function($) {return $.name;}
-    	).join(", ")
-    	+
-    	")";
-    	return signature;
-    },
-    
-    resolveLinks : function(str, from) { // for inline @link tags
-    	if (!from) from = "../"; // within the same directory
-    	str = str.replace(/\{@link ([^} ]+) ?\}/gi,
-    		function(match, symbolName) {
-    			return new Link().toSymbol(symbolName).from(from);
-    		}
-    	);
-    	
-    	return str;
-    }
-};    
