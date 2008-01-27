@@ -63,28 +63,70 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
      * @param {Object} param
      */
     onExtend : function(param) {
-        print ('Ext::onExtend ' + param);
-        
         var ts = param.ts;
-        if (ts.look(-1).is("ASSIGN") && ts.look(1).data == '(') {
+        var x = param.x;
+        
+        //print ('Ext::onExtend ' + param.name);
+        //print ('look-1: ' + ts.look(x).data);
+                       
+        var doc = '';
+        if (ts.look(-1).is("JSDOC")) doc = ts.look(-1).data;
+		else if (ts.look(-1).is("VAR") && ts.look(-2).is("JSDOC")) doc = ts.look(-2).data;
+        
+         
+        if (ts.look(x-1).is("ASSIGN") && ts.look(x+1).data == '(') {
             
-            extClass = ts.look(-2).data;                    
-            extSuper = ts.look(2).data;
+            extClass = ts.look(x-2).data;                    
+            extSuper = ts.look(x+2).data;
             
             //print ("--- found case 1: class: " + extClass + ', super: ' + extSuper);
             
         }
         else {
-            extClass = ts.look(2).data;
-            extSuper = ts.look(4).data;
+            extClass = ts.look(x+2).data;
+            extSuper = ts.look(x+4).data;
             
             //print ("--- found case 2: class: " + extClass + ', super: ' + extSuper);
                          
         }
+        
+        var pkg = extClass.split('.');
+        var alias = pkg.pop(); 
+            
+        var insert = doc+"/**\n"; 
+        if (!insert.match(/@package/)) {                                       
+            insert += "@package " + pkg.join('.') + "\n";
+        }                  
+        if (!insert.match(/@class/)) {                    
+            insert += "@class " + extClass + "\n";
+        }     
+        if (!insert.match(/@alias/)) {
+            insert += "@alias " + extClass + "\n";
+        }                           
+        if (!insert.match(/@constructor/)) {
+            insert += "@constructor\n";
+        }
+        if (!insert.match(/@extends/)) {
+            insert += "@augments " + extSuper + "\n";                    
+        }  
+        if (!insert.match(/@scope/)) {
+            insert += "@scope " + extClass + ".prototype\n";
+        }                                                            
+        insert += '*/';    			
+		insert = insert.replace(/\*\/\/\*\*/g, "\n");    			
+	    token.data = insert;                                
+                
+        var c = new JSDOC.Token("", "COMM", "JSDOC");
+	    c.data = insert;
+		ts.insertAhead(c);
+                                                                               
         // pop off initially created Symbol so we can create a new one.  not sure how hackish this is but it works.
         original = JSDOC.Parser.symbols.pop();
                                         
-        JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(extClass, [], "CONSTRUCTOR", new JSDOC.DocComment('')));                                                
+        // push new symbol
+        JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(extClass, [], "CONSTRUCTOR", new JSDOC.DocComment(insert)));  
+        
+                                                      
     },
     
     /***

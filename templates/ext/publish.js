@@ -63,7 +63,7 @@ function publish(symbolGroup) {
     // build package hash and list of classes.
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
-        print('symbol: ' + symbol.get('name') + ', isa: ' + symbol.get('isa'));
+        //print('symbol: ' + symbol.get('name') + ', isa: ' + symbol.get('isa'));
         
         var path = symbol.get('name').split('.');
         var className = path.pop(); // <-- remove last item Namespace.package.ClassName *pop*

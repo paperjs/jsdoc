@@ -77,12 +77,14 @@ JSDOC.resistor.PluginMgr = function() {
         /***
          * onTokenStream
          * @param {String} name from token stream
-         * @param {JSDOC.TokenStream} ts token stream                  
+         * @param {JSDOC.TokenStream} ts token stream 
+         * @param {Integer} x where in stream the NAME occurred                 
          */
-        onTokenStream : function(name, ts) {                        
+        onTokenStream : function(name, ts, x) {                        
             return this.fireEvent(name, {                
                 name: name,
-                ts: ts,                                                
+                ts: ts,   
+                x: x                                           
             });
         },
         
@@ -123,7 +125,7 @@ JSDOC.resistor.PluginMgr = function() {
          * @param {Boolean}
          */  
         fireEvent : function(name, param) {     
-            var event = name.replace(/\./, "").toLowerCase();                              
+            var event = name.replace(/\./, "").toLowerCase();                                                      
             return (_antenna.hasListener(event)) ? _antenna.fireEvent(event, param) : false;                                                       
         }                              
     }

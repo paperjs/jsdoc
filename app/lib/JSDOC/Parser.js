@@ -16,8 +16,8 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 		if (JSDOC.Parser.findDocComment(ts)) continue;
 		if (JSDOC.Parser.findFunction(ts)) continue;
 		if (JSDOC.Parser.findVariable(ts)) continue;
-	}
-                
+	}  
+                    
 	return JSDOC.Parser.symbols;
 }
 
@@ -70,7 +70,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 /*debug*///print("~~ JSDOC.Parser.findFunction() "+ts.look());
 	if (ts.look().is("NAME")) {
 		var name = ts.look().data.replace(/\.prototype(\.|$)/g, "#");
-					
+		        			
 		var doc = "";
 		var isa = null;
 		var body = "";
@@ -78,19 +78,9 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		var params = [];
 		var typeDoc = "";
 		var isInner;
-		
-        // set PluginMgr's ear onto tokenstream.  it will fire events (using Ext.Observable) 
-        //when only when a plugin has defined an event-handler for a particular name
-                
-        /***
-         * give PluginMgr a chance to handle current Token.
-         */                        
-        if (JSDOC.resistor.PluginMgr.onTokenStream(name, ts)) {  
-            // do nothing?                        
-        }
-        
+		                                                          
 		// like function foo()
-		else if (ts.look(-1).is("FUNCTION")) {
+		if (ts.look(-1).is("FUNCTION")) {
 			if (nspace) {
 				name = nspace+"-"+name;
 				isInner = true;
@@ -105,7 +95,13 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 					
 			body = ts.balance("LEFT_CURLY");
 		}
-		
+		/***
+         * give PluginMgr a chance to handle current Token.
+         */                        
+        else if (JSDOC.resistor.PluginMgr.onTokenStream(name, ts, 0)) {  
+            // do nothing?                                                
+        }
+        
 		// like foo = function() or var foo = new function()
 		else if (
 			(ts.look(1).is("ASSIGN") && ts.look(2).is("FUNCTION"))
@@ -205,9 +201,8 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
         * stream.  I don't like how the existing JSDOC.PluginManager above has prototype-specific logic.  this is why I created
         * a different plugin manager.
         */         
-        else if (nextName.is("NAME") && JSDOC.resistor.PluginMgr.onTokenStream(nextName.data, ts)) {  
-            
-                                    
+        else if (nextName.is("NAME") && JSDOC.resistor.PluginMgr.onTokenStream(nextName.data, ts, 2)) {  
+            // do nothing?                                                                    
         }
         
 		else if (doc) { // we only keep these if they're documented
@@ -221,7 +216,7 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		}
 		
 		// like foo = {
-		if (ts.look(2).is("LEFT_CURLY")) {
+		if (ts.look(2).is("LEFT_CURLY")) {            
 			JSDOC.Parser.onObLiteral(
 				new JSDOC.TokenStream(ts.balance("LEFT_CURLY")),
 				name
@@ -235,7 +230,7 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
 /*debug*///print("~~ JSDOC.Parser.onObLiteral with nspace: "+nspace);
 	while (ts.look()) {
-		if (!ts.look().is("VOID")) {
+		if (!ts.look().is("VOID")) {            
 			if (ts.look().is("NAME") && ts.look(1).is("COLON")) {
 				var name = nspace+((nspace.charAt(nspace.length-1)=="#")?"":".")+ts.look().data;
 				
