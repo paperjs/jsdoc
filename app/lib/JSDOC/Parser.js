@@ -200,6 +200,16 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			}
 		
 		}
+        /***
+        * @hack query JSDOC.resistor.PluginMgr when any NAME is found.  give all plugins a chace to respond to any entity in teh 
+        * stream.  I don't like how the existing JSDOC.PluginManager above has prototype-specific logic.  this is why I created
+        * a different plugin manager.
+        */         
+        else if (nextName.is("NAME") && JSDOC.resistor.PluginMgr.onTokenStream(nextName.data, ts)) {  
+            
+                                    
+        }
+        
 		else if (doc) { // we only keep these if they're documented
 			var docComment = new JSDOC.DocComment(doc);
 			var isInner = (nspace && ts.look(-1).is("VAR"));

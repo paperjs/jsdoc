@@ -46,7 +46,7 @@ function publish(symbolGroup) {
 		var symbol = classes[i];
 		var output = "";
 		output = classTemplate.process(symbol);
-		
+                        		
 		IO.saveFile(publish.conf.outDir+"symbols/", symbol.get("alias")+publish.conf.ext, output);
 	}
 	
