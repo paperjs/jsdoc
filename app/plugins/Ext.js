@@ -63,7 +63,7 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
      * @param {Object} param
      */
     onExtend : function(param) {
-        //print ('Ext::onExtend ' + param);
+        print ('Ext::onExtend ' + param);
         
         var ts = param.ts;
         if (ts.look(-1).is("ASSIGN") && ts.look(1).data == '(') {

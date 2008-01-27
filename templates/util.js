@@ -17,7 +17,28 @@ JSDOC.template = {};
 JSDOC.template.Util = function(){
     
     return {
-                
+        
+        /***
+         * getClassName
+         * if classname == "Foo.util.Bar", className will be "Bar"
+         * @param {Object} v
+         */
+        getClassName : function(v) {
+            return v.split('.').pop();
+        },
+    
+        /***
+         * getPackageName    
+         * if classname == 'Foo.util.Bar', package name will be Foo.util      
+         * @param {String} class/alias
+         * @return {String}
+         */
+        getPackageName : function(v) {
+            var path = v.split('.');
+            path.pop();
+            return path.join('.');    
+        },
+      
         /** Just the first sentence. */
         summarize : function(desc) {
             if (typeof desc != "undefined") 

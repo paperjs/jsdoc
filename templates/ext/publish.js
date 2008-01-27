@@ -63,6 +63,7 @@ function publish(symbolGroup) {
     // build package hash and list of classes.
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
+        print('symbol: ' + symbol.get('name') + ', isa: ' + symbol.get('isa'));
         
         var path = symbol.get('name').split('.');
         var className = path.pop(); // <-- remove last item Namespace.package.ClassName *pop*
@@ -86,21 +87,23 @@ function publish(symbolGroup) {
         }    
         var filename = symbol.get("alias") + publish.conf.ext;
         
-        // class tree-node   
-        list.push({
-            id: 'cls-' + symbol.get('name'),
-            parent: parent,
-            text: className,
-            iconCls: 'icon-cls',
-            leaf: true,
-            href: 'symbols/' + filename,
-            cls: 'cls',            
-            children: []
-        });
-                                
-        // create output for Class.File.html
-        //var output = classTpl.applyTemplate(symbol);
-        var output = '<h1>Symbol: ' + symbol.get('name') + '</h1>';
+        if (symbol.get("alias") != '') { // sometimes a symbol wiht no alias is getting through
+            // class tree-node   
+            list.push({
+                id: 'cls-' + symbol.get('name'),
+                parent: parent,
+                text: className,
+                iconCls: 'icon-cls',
+                leaf: true,
+                href: 'symbols/' + filename,
+                cls: 'cls',
+                children: []
+            });
+            
+            // create output for Class.File.html
+            var output = classTpl.applyTemplate(symbol);
+            //var output = '<h1>Symbol: ' + symbol.get('name') + '</h1>';
+        }
         
         
         /*{

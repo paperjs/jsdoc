@@ -12,7 +12,7 @@ JSDOC.resistor.PluginMgr = function() {
                     
     // create simple observable instance to fireEvents from and add plugins as listeners to.            
     var Antenna = function() {
-        this.addEvents({
+        this.addEvents({    // <-- see Ext docs: Ext.util.Observable
             
             /***
              * @event commentsrc
@@ -32,6 +32,10 @@ JSDOC.resistor.PluginMgr = function() {
     Ext.extend(Antenna, Ext.util.Observable);
     
     // antenna as in "radio antenna".  plugins can listen-in upon this Observable.  PluginManager will fire events through it.
+    // eg:  
+    // var plugin = new Plugin();
+    // _antenna.on('commenttags', plugin.onFoo, plugin); // <-- 3rd param is scope to call method in (plugin)
+    //    
     var _antenna = new Antenna();
             
     // PluginManager singleton methods....
@@ -54,7 +58,7 @@ JSDOC.resistor.PluginMgr = function() {
             for (var key in events) {
                 var event = key.replace(/\./, '').toLowerCase();    // <-- normalize event-name to please Ext.Observalbe
                                                 
-                // add error-checking...make sure user-plugin return a valid function
+                // add error-checking...make sure user-plugin returns a valid function
                 if (typeof(events[key]) != 'function') {
                     print("JSDOC.resistor.PluginMgr ERROR -- user plugin " + plugin.name + ' did not provide a valid handler for event " ' + key + '"');
                 }
@@ -76,7 +80,7 @@ JSDOC.resistor.PluginMgr = function() {
          * @param {JSDOC.TokenStream} ts token stream                  
          */
         onTokenStream : function(name, ts) {                        
-            this.fireEvent(name, {                
+            return this.fireEvent(name, {                
                 name: name,
                 ts: ts,                                                
             });
@@ -87,8 +91,7 @@ JSDOC.resistor.PluginMgr = function() {
          * @param {JSDOC.Doclet} doclet
          * fire 'doclet' event to give plugin listeners a chance to respond.          
          */
-        onDocCommentSrc : function(comment) {
-            //print ("PluginMgr::onDocCommentSrc");
+        onDocCommentSrc : function(comment) {            
             this.fireEvent('commentsrc', comment);                    
         },
         
@@ -107,8 +110,7 @@ JSDOC.resistor.PluginMgr = function() {
          * @private
          * @param {String} name from token stream
          */
-        hasListener : function(name) {
-            
+        hasListener : function(name) {            
             // NOTE: Ext.Observable doesn't like Dot.In.Name -> dotinname               
             return _antenna.hasListener(name.replace(/\./, "").toLowerCase())
         },
@@ -120,12 +122,9 @@ JSDOC.resistor.PluginMgr = function() {
          * @param {Object} hook
          * @param {Boolean}
          */  
-        fireEvent : function(name, param) {
-            var event = name.replace(/\./, "").toLowerCase();                        
-            if (_antenna.hasListener(event)) {
-                //print('PluginMgr found listeners for event ' + event);
-                _antenna.fireEvent(event, param);                    
-            }            
+        fireEvent : function(name, param) {     
+            var event = name.replace(/\./, "").toLowerCase();                              
+            return (_antenna.hasListener(event)) ? _antenna.fireEvent(event, param) : false;                                                       
         }                              
     }
 }();
@@ -153,7 +152,7 @@ JSDOC.plugins.Base = function(name) {
 JSDOC.plugins.Base.prototype = {
     
     /***
-     * @public {String} name
+     * @property {String} name
      * this plugin's name
      */
     name : '',
@@ -162,29 +161,5 @@ JSDOC.plugins.Base.prototype = {
      * initPlugin
      * @desc Meant to be overridden by plugin extension
      */   
-     initPlugin : function() {},
-                          
-    /***
-     * @public execute
-     * @deprecated
-     * meant to be overridden
-     * @param {JSDOC.TokenStream} ts
-     * @param {Integer} index, index of name that plugin responded to
-     * @param {Object} param, {name, comment}
-     * @return JSDOC.Token
-     */
-     execute : function(ts, index, param) {  
-        this.ts = ts;
-        this.index = index;
-        this.entity = ts.look(index).data;
-                  
-        // delegate to plugin extension now     
-        var token = this.onExecute(param);
-        
-        if (! token instanceof JSDOC.Token) {
-            print ("JSDOC.plugins.Base::execute -- plugin did not return a Token.  creating default Token");
-            var token = new JSDOC.Token("", "COMM", "JSDOC");            
-        }                      
-        return token;                   
-    }
+     initPlugin : function() {}                              
 };

@@ -21,8 +21,8 @@ IO.include("lib/JSDOC/resistor/PluginMgr.js");
  * Add new valid ISA to JSDOC.Symbol (CONFIG & EVENT)
  */
 
-//JSDOC.Symbol.validKinds.push("CONFIG");
-//JSDOC.Symbol.validKinds.push("EVENT");
+JSDOC.Symbol.validKinds.push("CONFIG");
+JSDOC.Symbol.validKinds.push("EVENT");
 
 //= ["CONSTRUCTOR", "FILE", "VIRTUAL", "FUNCTION", "OBJECT", "VOID"];
 

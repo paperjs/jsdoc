@@ -17,12 +17,7 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 		if (JSDOC.Parser.findFunction(ts)) continue;
 		if (JSDOC.Parser.findVariable(ts)) continue;
 	}
-    
-    /*
-    for (var n=0,len=JSDOC.Parser.symbols.length;n<len;n++) {
-        print ("-- " + JSDOC.Parser.symbols[n].get('alias') + ', isa: ' + JSDOC.Parser.symbols[n].get('isa'));
-    }
-    */
+                
 	return JSDOC.Parser.symbols;
 }
 
@@ -86,10 +81,16 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		
         // set PluginMgr's ear onto tokenstream.  it will fire events (using Ext.Observable) 
         //when only when a plugin has defined an event-handler for a particular name
-        JSDOC.resistor.PluginMgr.onTokenStream(name, ts);
+                
+        /***
+         * give PluginMgr a chance to handle current Token.
+         */                        
+        if (JSDOC.resistor.PluginMgr.onTokenStream(name, ts)) {  
+            // do nothing?                        
+        }
         
 		// like function foo()
-		if (ts.look(-1).is("FUNCTION")) {
+		else if (ts.look(-1).is("FUNCTION")) {
 			if (nspace) {
 				name = nspace+"-"+name;
 				isInner = true;
@@ -152,7 +153,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			}
 		}
 
-		if (isa && name) {
+		if (isa && name) {            
 			if (isa == "FUNCTION") {
 				params = JSDOC.Parser.onParamList(paramTokens);
 			}

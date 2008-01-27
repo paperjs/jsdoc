@@ -45,7 +45,7 @@ JSDOC.Symbol = function() {
 		this.set("name", name);
 		this.set("alias", this.get("name"));
 		this.set("params", params);
-		this.set("isa", isa);
+		this.set("isa", isa);                
 		this.set("comment", comment);
 		this.set("srcFile", JSDOC.Symbol.srcFile);
 		
@@ -104,7 +104,7 @@ JSDOC.Symbol = function() {
 		for (var p in properties) keys.push(p);
 		keys = keys.sort();		
 		for (var k in keys) {
-			out += keys[k].substring(1)+" => "+Dumper.dump(properties[keys[k]])+",\n";
+			out += keys[k].substring(1)+" => "+Dumper.dump(properties[keys[k]])+",\n";            
 		}
 		
 		out += "}\n";
