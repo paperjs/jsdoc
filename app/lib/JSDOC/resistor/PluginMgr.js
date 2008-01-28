@@ -75,7 +75,7 @@ JSDOC.resistor.PluginMgr = function() {
         
         registerEvents : function(antenna, plugin, events) {
             for (var key in events) {
-                var event = key.replace(/\./, '').toLowerCase();    // <-- normalize event-name to please Ext.Observalbe
+                var event = key.replace(/\./g, '').toLowerCase();    // <-- normalize event-name to please Ext.Observalbe
                                                                 
                 // add error-checking...make sure user-plugin returns a valid function
                 if (typeof(events[key]) != 'function') {
@@ -87,7 +87,7 @@ JSDOC.resistor.PluginMgr = function() {
                         event: true
                     });
                     
-                    // register plugin as a listener on this event.                    
+                    // register plugin as a listener on this event. {String}, {Function}, {JSDOC.plugin.Base}                   
                     antenna.on(event, events[key], plugin);
                 }                                               
             }              

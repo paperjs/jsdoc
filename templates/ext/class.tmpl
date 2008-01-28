@@ -17,7 +17,7 @@
     <h1>Class {[values.get("alias")]}</h1>     
     <table cellspacing="0">
         <tr><td class="label">Package:</td><td class="hd-info">{[this.getPackageName(values.get("alias"))]}</td></tr>
-        <tr><td class="label">Defined In:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[this.linker.toSrc(values.get("srcFile")).toString(false)]}">{[JSDOC.Util.fileName(values.get("srcFile"))]}</a></td></tr>
+        <tr><td class="label">Defined In:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[new JSDOC.template.Link().toSrc(values.get("srcFile")).toString(false)]}">{[JSDOC.Util.fileName(values.get("srcFile"))]}</a></td></tr>
         <tr><td class="label">Class:</td><td class="hd-info">{[this.getClassName(values.get("alias"))]}</td></tr>
         <tr><td class="label">Subclasses:</td><td class="hd-info">this could be figured out</td></tr>
         <tr><td class="label">Extends:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[this.linker.toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a></td></tr>        
