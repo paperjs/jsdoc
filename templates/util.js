@@ -16,12 +16,19 @@ JSDOC.template = {};
  */
 JSDOC.template.Util = function(){
     
+    // cache for some common collections of Symbol.  set to null initially to signal that not yet cached.  
+    var properties = null;
+    var events = null;
+    var methods = null;
+    var cfg = null;
+     
     return {
         
         /***
          * getClassName
-         * if classname == "Foo.util.Bar", className will be "Bar"
-         * @param {Object} v
+         * if alias == "Foo.util.Bar", returned className will be "Bar"
+         * @param {String} v
+         * @return (String)
          */
         getClassName : function(v) {
             return v.split('.').pop();
@@ -105,7 +112,100 @@ JSDOC.template.Util = function(){
             });
             
             return str;
+        },
+        
+        /***
+         * getConfig
+         * get this Symbol's associated @cfg params
+         * @param {JSDOC.Symbol} s
+         * @return {Array} the array of config params
+         */
+        getCfg : function(s) {
+            if (cfg === null) {
+                cfg = s.getProperties().filter(function($) {return $.get('isCfg') == true});
+            }
+            return cfg;    
+        },
+        
+        /***
+         * hasCfg
+         * does this Symbol have any @cfg params?
+         * @param {JSDOC.Symbol} s
+         * @return {Boolean} 
+         */
+        hasCfg : function(s) {            
+            return (this.getCfg(s).length > 0) ? true : false;  
+        },
+                      
+        /***
+         * getProperties
+         * get this Symbol's associated @property params
+         * @param {JSDOC.Symbol} s
+         * @return {Array} the array of properties
+         */
+        getProperties : function(s) {
+            if (properties === null) {
+                properties = s.getProperties().filter(function($) {return $.get('isCfg') == false});
+            }
+            return properties;    
+        },
+        
+        /***
+         * hasCfg
+         * does this Symbol have any @cfg params?
+         * @param {JSDOC.Symbol} s
+         * @return {Boolean} 
+         */
+        hasCfg : function(s) {            
+            return (this.getCfg(s).length > 0) ? true : false;  
+        },
+                     
+        /***
+         * getMethods
+         * return this Symbols's methods.  if they don't exist in local cache, query the Symbol for them.
+         * @param {JSDOC.Symbol} s
+         * @return {Array} the methods
+         */
+        getMethods : function(s) {
+            if (methods === null) {
+                methods = s.get('methods').filter(function($) {return $.get('isEvent') == false});
+            }
+            return methods;
+        },
+        
+        /***
+         * hasMethods
+         * does this Symbol have any methods?
+         * @param {JSDOC.Symbol} s
+         * @return {Boolean} 
+         */
+        hasMethods : function(s) {            
+            return (this.getMethods(s).length > 0) ? true : false;  
+        },
+        
+         /***
+         * getEvents
+         * get this Symbol's associated @events
+         * @param {JSDOC.Symbol} s
+         * @return {Array} the array of Symbols
+         */
+        getEvents : function(s) {
+            if (events === null) {
+                events = s.get('methods').filter(function($) {return $.get('isEvent') == true});
+            }
+            return events;    
+        },
+        
+        /***
+         * hasEvents
+         * does this Symbol have any events?
+         * @param {JSDOC.Symbol} s
+         * @return {Boolean} 
+         */
+        hasEvents : function(s) {            
+            return (this.getEvents(s).length > 0) ? true : false;  
         }
+        
     }
 }();
 

@@ -11,33 +11,41 @@
 JSDOC.resistor.PluginMgr = function() {
                     
     // create simple observable instance to fireEvents from and add plugins as listeners to.            
-    var Antenna = function() {
-        this.addEvents({    // <-- see Ext docs: Ext.util.Observable
-            
-            /***
-             * @event commentsrc
-             * fires when a new JSDOC.DocComment is created      
-             * @param {JSDOC.Doclet} doclet        
-             */
-            "commentsrc" : true,
-            
-            /***
-             * @event commenttags             
-             * fires when a new JSDOC.DocTag is created
-             * @param {JSDOC.DocTag} doctag
-             */
-            "commenttags" : true
-        });
-    };        
-    Ext.extend(Antenna, Ext.util.Observable);
+        
+    var CommentAntenna = Ext.extend(Ext.util.Observable, {
+        initComponent : function() {
+            this.addEvents({
+                 /***
+                 * @event commentsrc
+                 * fires when a new JSDOC.DocComment is created      
+                 * @param {JSDOC.Doclet} doclet        
+                 */
+                "commentsrc" : true,
+                
+                /***
+                 * @event commenttags             
+                 * fires when a new JSDOC.DocTag is created
+                 * @param {JSDOC.DocTag} doctag
+                 */
+                "commenttags" : true    
+            });
+        }
+    });        
     
-    // antenna as in "radio antenna".  plugins can listen-in upon this Observable.  PluginManager will fire events through it.
-    // eg:  
-    // var plugin = new Plugin();
-    // _antenna.on('commenttags', plugin.onFoo, plugin); // <-- 3rd param is scope to call method in (plugin)
-    //    
-    var _antenna = new Antenna();
-            
+    // build an Antennas object, containing 3 Observables.  plugins will register different classes of events.
+    // tokens, comments and fnBody events.   
+    var fnbody = new Ext.util.Observable();
+    fnbody.addEvents({});
+    
+    var tokens = new Ext.util.Observable();
+    tokens.addEvents({});
+                
+    var _antenna = {
+        comments : new CommentAntenna(),
+        fnbody : fnbody,
+        tokens : tokens
+    };
+        
     // PluginManager singleton methods....
     return {
                         
@@ -54,24 +62,35 @@ JSDOC.resistor.PluginMgr = function() {
          * eg: Class.create -> classcreate.
          *          
          */
-        register : function(plugin, events) {                           
+        register : function(plugin, events) {                         
+            // loop through each class of event that this plugin has defined.  they can be
+            // either "tokens", "fnBody" and "comments".
+            for (var key in events) {                
+                if (typeof(_antenna[key]) != 'undefined') {                    
+                    this.registerEvents(_antenna[key], plugin, events[key]);
+                }    
+            } 
+                                           
+        },
+        
+        registerEvents : function(antenna, plugin, events) {
             for (var key in events) {
                 var event = key.replace(/\./, '').toLowerCase();    // <-- normalize event-name to please Ext.Observalbe
-                                                
+                                                                
                 // add error-checking...make sure user-plugin returns a valid function
                 if (typeof(events[key]) != 'function') {
                     print("JSDOC.resistor.PluginMgr ERROR -- user plugin " + plugin.name + ' did not provide a valid handler for event " ' + key + '"');
                 }
                 else {
                     // add event-handler to PluginMgr's Observable object.
-                    _antenna.addEvents({
+                    antenna.addEvents({
                         event: true
                     });
                     
                     // register plugin as a listener on this event.                    
-                    _antenna.on(event, events[key], plugin);
+                    antenna.on(event, events[key], plugin);
                 }                                               
-            }                                 
+            }              
         },
         
         /***
@@ -81,11 +100,23 @@ JSDOC.resistor.PluginMgr = function() {
          * @param {Integer} x where in stream the NAME occurred                 
          */
         onTokenStream : function(name, ts, x) {                        
-            return this.fireEvent(name, {                
+            return this.fireEvent(_antenna.tokens, name, {                
                 name: name,
                 ts: ts,   
                 x: x                                           
             });
+        },
+        
+        /***
+         * onFnBody
+         * @param {JSDOC.TokenStream} ts
+         * @param {String} nspace
+         */
+        onFnBody : function(ts, nspace) {
+            return this.fireEvent(_antenna.fnbody, ts.look().data, {                
+                ts: ts,
+                nspace: nspace
+            });    
         },
         
         /***
@@ -94,7 +125,7 @@ JSDOC.resistor.PluginMgr = function() {
          * fire 'doclet' event to give plugin listeners a chance to respond.          
          */
         onDocCommentSrc : function(comment) {            
-            this.fireEvent('commentsrc', comment);                    
+            this.fireEvent(_antenna.comments, 'commentsrc', comment);                    
         },
         
         /***
@@ -103,7 +134,7 @@ JSDOC.resistor.PluginMgr = function() {
          * fire the 'doctag' event to give plugins listeners a chace to repond.
          */
         onDocCommentTags : function(comment) {
-            this.fireEvent('commenttags', comment);            
+            this.fireEvent(_antenna.comments, 'commenttags', comment);            
         },
         
         /***
@@ -112,7 +143,7 @@ JSDOC.resistor.PluginMgr = function() {
          * @private
          * @param {String} name from token stream
          */
-        hasListener : function(name) {            
+        hasListener : function(name) {                       
             // NOTE: Ext.Observable doesn't like Dot.In.Name -> dotinname               
             return _antenna.hasListener(name.replace(/\./, "").toLowerCase())
         },
@@ -124,9 +155,9 @@ JSDOC.resistor.PluginMgr = function() {
          * @param {Object} hook
          * @param {Boolean}
          */  
-        fireEvent : function(name, param) {     
-            var event = name.replace(/\./, "").toLowerCase();                                                      
-            return (_antenna.hasListener(event)) ? _antenna.fireEvent(event, param) : false;                                                       
+        fireEvent : function(antenna, name, param) {                           
+            var event = name.replace(/\./g, "").toLowerCase();                                                                                                  
+            return (antenna.hasListener(event)) ? antenna.fireEvent(event, param) : false;                                                       
         }                              
     }
 }();

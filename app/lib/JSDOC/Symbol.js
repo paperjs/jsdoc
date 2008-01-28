@@ -5,7 +5,7 @@ JSDOC.Symbol = function() {
 		_alias: "",
 		_augments: [],
 		_classDesc: "",
-		_comment: {},
+		_comment: {},        
 		_deprecated: "",
 		_desc: "",
 		_events: [],
@@ -14,6 +14,7 @@ JSDOC.Symbol = function() {
 		_inheritsFrom: [],
 		_isa: "OBJECT",
 		_isEvent: false,
+        _isCfg: false,    // <-- added by chris to handle @cfg tag.  @cfg is a kind of @property.  handled as event's "isEvent" is to method.
 		_isIgnored: false,
 		_isInner: false,
 		_isNamespace: false,
@@ -49,6 +50,12 @@ JSDOC.Symbol = function() {
 		this.set("comment", comment);
 		this.set("srcFile", JSDOC.Symbol.srcFile);
 		
+        // cache some common collections of Symbol.  they're set to null initially to signal not-yet-cached.
+        this.cfg = null;
+        this.properties = null;
+        this.methods = null;
+        this.events = null;
+        
 		this.processTags();
 		
 		if (defined(JSDOC.PluginManager)) {
@@ -202,7 +209,7 @@ JSDOC.Symbol = function() {
 		
 		// @event
 		var events = this.get("comment").getTag("event");
-		if (events.length) {
+		if (events.length) {            
 			this.set("isa", "FUNCTION");
 			this.set("isEvent", true);
 		}
@@ -227,6 +234,13 @@ JSDOC.Symbol = function() {
 				thisProperties.push(properties[i]);
 			}
 		}
+        
+        // @cfg, by chris.
+		var cfg = this.get("comment").getTag("cfg");
+		if (cfg.length) {
+			this.set('isCfg', true);
+		}
+        
 		
 		// @return
 		var returns = this.get("comment").getTag("return");
@@ -411,6 +425,7 @@ JSDOC.Symbol.prototype.addProperty = function(symbol) {
 	thisProperties.push(symbol); // new property with this alias
 }
 
+/* @see re-written below
 JSDOC.Symbol.prototype.getMethods = function() {
 	return this.get("methods");
 }
@@ -418,10 +433,98 @@ JSDOC.Symbol.prototype.getMethods = function() {
 JSDOC.Symbol.prototype.getProperties = function() {
 	return this.get("properties");
 }
+*/
 
-JSDOC.Symbol.prototype.getEvents = function() {
-//TODO
+/***
+ * getCfg  
+ * get this Symbol's associated @cfg params
+ * @author Chris Scott 
+ * @return {Array} the array of config params 
+ */
+JSDOC.Symbol.prototype.getCfg = function() {
+    if (this.cfg === null) {
+        this.cfg = this.get('properties').filter(function($){
+            return $.get('isCfg') == true
+        });
+    }
+    return this.cfg;
+}; 
+
+/***
+ * hasCfg
+ * does this Symbol have any @cfg params?
+ * @author Chris Scott
+ * @return {Boolean}
+ */
+JSDOC.Symbol.prototype.hasCfg = function() { return (this.getCfg().length > 0) ? true : false; };
+ 
+/***
+ * getProperties
+ * get this Symbol's associated @property params
+ * @author Chris Scott
+ * @return {Array} the array of properties
+ */
+JSDOC.Symbol.prototype.getProperties = function(){
+    if (this.properties === null) {
+        this.properties = this.get("properties").filter(function($){
+            return $.get("isCfg") == false
+        });
+    }
+    return this.properties;
 }
+
+/***
+ * hasProperties
+ * does this Symbol have any @property params?
+ * @author Chris Scott
+ * @return {Boolean}
+ */
+JSDOC.Symbol.prototype.hasProperties = function() { return (this.getProperties().length > 0) ? true : false; };
+
+/***
+ * getMethods
+ * return this Symbols's methods.  if they don't exist in local cache, query the Symbol for them.
+ * @author Chris Scott
+ * @return {Array} the methods
+ */
+JSDOC.Symbol.prototype.getMethods = function(){
+    if (this.methods === null) {
+        this.methods = this.get('methods').filter(function($){
+            return $.get('isEvent') == false
+        });
+    }
+    return this.methods;
+};
+
+/***
+ * hasMethods
+ * does this Symbol have any methods?
+ * @author Chris Scott
+ * @return {Boolean}
+ */
+JSDOC.Symbol.prototype.hasMethods = function() { return (this.getMethods().length > 0) ? true : false; }; 
+
+/***
+ * getEvents
+ * get this Symbol's associated @events
+ * @author Chris Scott
+ * @return {Array} the array of Symbols
+ */
+JSDOC.Symbol.prototype.getEvents = function(){
+    if (this.events === null) {
+        this.events = this.get('methods').filter(function($){
+            return $.get('isEvent') == true
+        });
+    }
+    return this.events;
+};
+/***
+ * hasEvents
+ * does this Symbol have any events?
+ * @author Chris Scott
+ * @return {Boolean}
+ */
+JSDOC.Symbol.prototype.hasEvents = function() { return ( this.getEvents().length > 0) ? true : false; };      
 
 JSDOC.Symbol.setShortcuts = function(shortcuts) {
 	JSDOC.Symbol.shortcuts = eval("JSDOC.Symbol.shortcuts = "+shortcuts);

@@ -16,8 +16,20 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 		if (JSDOC.Parser.findDocComment(ts)) continue;
 		if (JSDOC.Parser.findFunction(ts)) continue;
 		if (JSDOC.Parser.findVariable(ts)) continue;
+        
+        // hook resistor.PluginMgr onto TokenStream
+        if (ts.look().is("NAME")) {
+            JSDOC.resistor.PluginMgr.onTokenStream(ts.look().data, ts, 0);
+            continue;
+        }      
 	}  
-                    
+    /***
+     debug
+    var list = JSDOC.Parser.symbols;
+    for (var n=0,len=list.length;n<len;n++) {
+        print('-- name: ' + list[n].get('name') + ', isa: ' + list[n].get('isa'));
+    }       
+    */         
 	return JSDOC.Parser.symbols;
 }
 
@@ -68,7 +80,8 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 
 JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
 /*debug*///print("~~ JSDOC.Parser.findFunction() "+ts.look());
-	if (ts.look().is("NAME")) {
+	
+    if (ts.look().is("NAME")) {
 		var name = ts.look().data.replace(/\.prototype(\.|$)/g, "#");
 		        			
 		var doc = "";
@@ -78,7 +91,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		var params = [];
 		var typeDoc = "";
 		var isInner;
-		                                                          
+		                                                                 
 		// like function foo()
 		if (ts.look(-1).is("FUNCTION")) {
 			if (nspace) {
@@ -98,9 +111,9 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		/***
          * give PluginMgr a chance to handle current Token.
          */                        
-        else if (JSDOC.resistor.PluginMgr.onTokenStream(name, ts, 0)) {  
+        //else if (JSDOC.resistor.PluginMgr.onTokenStream(name, ts, 0)) {  
             // do nothing?                                                
-        }
+        //}
         
 		// like foo = function() or var foo = new function()
 		else if (
@@ -173,8 +186,9 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 }
 
 JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
-/*debug*///print("~~ JSDOC.Parser.findVariable() "+ts.look());
-	if (ts.look().is("NAME") && ts.look(1).is("ASSIGN")) {
+/*debug*///print("~~ JSDOC.Parser.findVariable() "+ts.look());*/
+	                       
+    if (ts.look().is("NAME") && ts.look(1).is("ASSIGN")) {
 		
 		// like foo = 
 		var name = ts.look().data;
@@ -201,9 +215,9 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
         * stream.  I don't like how the existing JSDOC.PluginManager above has prototype-specific logic.  this is why I created
         * a different plugin manager.
         */         
-        else if (nextName.is("NAME") && JSDOC.resistor.PluginMgr.onTokenStream(nextName.data, ts, 2)) {  
+        //else if (nextName.is("NAME") && JSDOC.resistor.PluginMgr.onTokenStream(nextName.data, ts, 2)) {  
             // do nothing?                                                                    
-        }
+        //}
         
 		else if (doc) { // we only keep these if they're documented
 			var docComment = new JSDOC.DocComment(doc);
@@ -229,8 +243,8 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 
 JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
 /*debug*///print("~~ JSDOC.Parser.onObLiteral with nspace: "+nspace);
-	while (ts.look()) {
-		if (!ts.look().is("VOID")) {            
+	while (ts.look()) {                        
+		if (!ts.look().is("VOID")) {                       
 			if (ts.look().is("NAME") && ts.look(1).is("COLON")) {
 				var name = nspace+((nspace.charAt(nspace.length-1)=="#")?"":".")+ts.look().data;
 				
@@ -279,9 +293,8 @@ if (ts.look(1).is("JSDOC")) var typeDoc = ts.next();
 					if (ts.look(-1).is("JSDOC")) { // we only grab these if they are documented
 						var isa = "OBJECT";
 						var doc = ts.look(-1).data;
-						var docComment = new JSDOC.DocComment(doc);
-						
-						JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], isa, docComment));
+						var docComment = new JSDOC.DocComment(doc);						
+						JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], isa, docComment));                                                
 					}
 					
 					// skip to end of RH value ignoring values like foo: bar({blah, blah}),
@@ -300,13 +313,18 @@ if (ts.look(1).is("JSDOC")) var typeDoc = ts.next();
 JSDOC.Parser.onFnBody = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
 /*debug*///print(">   ~~ JSDOC.Parser.onFnBody with nspace: "+nspace+" and look = "+ts.look());
 	while (ts.look()) {
+        
 		if (!ts.look().is("VOID")) {
 			if (JSDOC.Parser.findDocComment(ts)) {
 			}
 			else if (JSDOC.Parser.findFunction(ts, nspace)) {
 			}
 			else if (JSDOC.Parser.findVariable(ts, nspace)) {
-			}
+			}  
+                                             
+            else if (ts.look().is("NAME") && typeof(nspace) != 'undefined') {    // <-- hook in JSDOC.resistor.PluginMgr                
+                JSDOC.resistor.PluginMgr.onFnBody(ts, nspace);        
+            }
 		}
 		if (!ts.next()) break;
 	}

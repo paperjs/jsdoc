@@ -10,20 +10,63 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
      * initPlugin
      */    
     initPlugin : function() {
-        return {     
-                  
-            // Ext inheritance
-            'Ext.extend' : this.onExtend,              
-                        
-            // Ext inheritance
-            'Ext.override' : this.onOverride,
+        var events = {     
+            fnbody : {
+                'this.addEvents' : this.onAddEvents    
+            },
+            tokens : {
+                // Ext inheritance
+                'Ext.extend' : this.onExtend,              
                             
-            // comment src
-            'commentsrc' : this.onCommentSrc,
+                // Ext inheritance
+                'Ext.override' : this.onOverride   
+            },                                     
+            comments: {                
+                // comment src
+                'commentsrc' : this.onCommentSrc,
             
-            // comment tag                
-            'commenttags' : this.onCommentTags,                               
+                // comment tag                
+                'commenttags' : this.onCommentTags
+            }                               
         };
+        return events;        
+    },
+    
+    /***
+     * onAddEvents
+     * this.addEvents({
+     *     ***
+     *     * @event onfoo
+     *     * @param {Object} this
+     *     *         
+     * });
+     * @param {Object} param
+     */
+    onAddEvents : function(param) {
+        //print ("---- Ext plugin found this.addEvents " + param.nspace);   
+        
+        var object = param.nspace.split('#').shift();
+        
+        //print ('object : ' + object);
+        
+        // create a new Stream and hunt for @event comments.                        
+        var block = new JSDOC.TokenStream(param.ts.balance("LEFT_CURLY"));
+        while (block.look()) {
+            if (!block.look().is("VOID") && block.look().is("JSDOC")) {               		                        
+                // we need to discover the scope of this event and add a @scope tag to this comment.
+                // after doing so, we'll create a new Symbol.
+                
+                var comment = new JSDOC.DocComment(block.look().data);                                                
+                var ename = comment.getTag('event').toString().split("\n").shift();                                                                                                                                              
+                var event = new JSDOC.Symbol().init(object + "#" + ename, [], "FUNCTION", comment);
+                                
+                JSDOC.Parser.symbols.push(event);
+                
+            }
+            if (!block.next()) break;
+        }                            
+        
+         
     },
     
     /***
@@ -31,7 +74,7 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
      * @param {Object} param
      */        
     onCommentSrc : function(param) {
-        //print ('Ext::onCommentSrc ' + param);  
+        //print ('Ext::onCommentSrc ' + param.nspace);  
     },
     
     /***
@@ -73,7 +116,7 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
         if (ts.look(-1).is("JSDOC")) doc = ts.look(-1).data;
 		else if (ts.look(-1).is("VAR") && ts.look(-2).is("JSDOC")) doc = ts.look(-2).data;
         
-         
+        // case 1: Foo = Ext.extend(Bar, {});                                
         if (ts.look(x-1).is("ASSIGN") && ts.look(x+1).data == '(') {
             
             extClass = ts.look(x-2).data;                    
@@ -82,6 +125,7 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
             //print ("--- found case 1: class: " + extClass + ', super: ' + extSuper);
             
         }
+        // case 2: Ext.extend(Foo, Bar, {});     
         else {
             extClass = ts.look(x+2).data;
             extSuper = ts.look(x+4).data;
@@ -124,84 +168,7 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
         original = JSDOC.Parser.symbols.pop();
                                         
         // push new symbol
-        JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(extClass, [], "CONSTRUCTOR", new JSDOC.DocComment(insert)));  
-        
-                                                      
-    },
-    
-    /***
-     * onExecute
-     * implements JSDOC.plugins.Base::execute
-     * @param {String} entity, the name which caused this plugin to react.    
-     * @return JSDOC.Token     
-     */
-    onExecute : function(param) {
-        print ("Ext.onExecute: " + this.entity);
-                                               
-        var mode = 0;
-                                                                
-        switch (this.entity) {
-            case 'Ext.extend':
-                var token = new JSDOC.Token("", "COMM", "JSDOC");
-                                
-                var extClass = '';
-                var extSuper = '';
-                var name = '';
-                var comment = '';                            
-                                
-                // case 1: Foo = Ext.extend(Bar, {});                                                                                                                                                             
-                if (this.ts.look(this.index -1).is("ASSIGN") && this.ts.look(this.index + 1).data == '(') {                                                                           
-                    comment = param.comment;                                  
-                    extClass = this.ts.look(this.index - 2).data;                    
-                    extSuper = this.ts.look(this.index + 2).data;                                             			      			                                                                                  
-                }                
-                else { // case 2: Ext.extend(Foo, Bar, {});                    
-                    extClass = this.ts.look(this.index + 2).data;
-                     extSuper = this.ts.look(this.index + 4).data;                     
-                                                            
-                    // This is a special case with Ext, where the constructor and comment have been defined and we're currently
-                    // processing the Ext.extend(Child, Parent, {}) part.  A symbol for this name has already been added, so
-                    // we're going to look for it and remove it.  this method is going to add a new one.  if we don't remove it,
-                    // we'll have duplicate entries for this class. 
-                                                                    
-                    constructor = JSDOC.Parser.symbols.pop();                                           
-                    comment = "/***\n" + constructor.get('comment') + "*/"; // <-- need to re-wrap comment because DocComment provides no accessors.                                                                                                                                                                                                                                                                
-                }
-                               
-                var pkg = extClass.split('.');
-                var alias = pkg.pop(); 
-                    
-                var insert = comment+"/**\n"; 
-                if (!insert.match(/@package/)) {                                       
-                    insert += "@package " + pkg.join('.') + "\n";
-                }                  
-                if (!insert.match(/@class/)) {                    
-                    insert += "@class " + extClass + "\n";
-                }     
-                if (!insert.match(/@alias/)) {
-                    insert += "@alias " + alias + "\n";
-                }                           
-                if (!insert.match(/@constructor/)) {
-                    insert += "@constructor\n";
-                }
-                if (!insert.match(/@extends/)) {
-                    insert += "@augments " + extSuper + "\n";                    
-                }  
-                if (!insert.match(/@scope/)) {
-                    insert += "@scope " + extClass + ".prototype\n";
-                }                                                            
-                insert += '*/';    			
-    			insert = insert.replace(/\*\/\/\*\*/g, "\n");    			
-    		    token.data = insert;                                
-                
-                // push new symbol
-                JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(extClass, [], "CONSTRUCTOR", new JSDOC.DocComment(insert)));
-                                
-                return token;
-                                     
-                break;
-        }
-                
+        JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(extClass, [], "CONSTRUCTOR", new JSDOC.DocComment(insert)));                                                                                           
     }       
 });
 

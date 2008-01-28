@@ -99,9 +99,12 @@ function publish(symbolGroup) {
                 cls: 'cls',
                 children: []
             });
+                                   
             
             // create output for Class.File.html
-            var output = classTpl.applyTemplate(symbol);
+            var output = classTpl.applyTemplate(symbol);           
+            IO.saveFile(publish.conf.outDir + "symbols/", filename, output);
+            
             //var output = '<h1>Symbol: ' + symbol.get('name') + '</h1>';
         }
         
@@ -120,7 +123,7 @@ function publish(symbolGroup) {
         });
         */
         
-        IO.saveFile(publish.conf.outDir + "symbols/", filename, output);
+        
 		
 		//output = classTemplate.process(symbol);
 //		IO.mkPath(publish.conf.symbolsDir.split("/"));
