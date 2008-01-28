@@ -170,8 +170,7 @@ Ext.extend(MainPanel, Ext.TabPanel, {
     },
 
     onClick: function(e, target){
-        console.log('onClick: ', target);
-        
+                
         if(target = e.getTarget('a:not(.exi)', 3)){
             var cls = Ext.fly(target).getAttributeNS('ext', 'cls');
             e.stopEvent();
@@ -206,12 +205,12 @@ Ext.extend(MainPanel, Ext.TabPanel, {
                 autoLoad.callback = function(){
                     Ext.getCmp(id).scrollToMember(member);
                 }
-            }
+            }                                                                        
             var p = this.add(new DocPanel({
                 id: id,
                 cclass : cls,
                 autoLoad: autoLoad,
-                iconCls: Docs.icons[cls]
+                iconCls: 'icon-cls'
             }));
             this.setActiveTab(p);
         }
