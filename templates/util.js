@@ -45,7 +45,18 @@ JSDOC.template.Util = function(){
             path.pop();
             return path.join('.');    
         },
-      
+        
+        /***
+         * isInherited
+         * is this member inherited from another class?
+         * @param {JSDOC.Symbol} subject the one being compared
+         * @param {JSDOC.Symbol} [from] the one being compared *to*
+         */
+        isInherited : function(subject, from) {
+            from = (typeof(from) != 'undefined') ? from : subject;
+            return (subject.get("memberof") != from.get("alias")) ? true : false;      
+        },
+        
         /** Just the first sentence. */
         summarize : function(desc) {
             if (typeof desc != "undefined") 

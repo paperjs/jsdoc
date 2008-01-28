@@ -17,7 +17,7 @@
     <h1>Class {[values.get("alias")]}</h1>     
     <table cellspacing="0">
         <tr><td class="label">Package:</td><td class="hd-info">{[this.getPackageName(values.get("alias"))]}</td></tr>
-        <tr><td class="label">Defined In:</td><td class="hd-info"><a ext:cls="" ext:member="" href="{[this.linker.toSrc(values.get("srcFile")).toString(false)]}">{[JSDOC.Util.fileName(values.get("srcFile"))]}</a></td></tr>
+        <tr><td class="label">Defined In:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[this.linker.toSrc(values.get("srcFile")).toString(false)]}">{[JSDOC.Util.fileName(values.get("srcFile"))]}</a></td></tr>
         <tr><td class="label">Class:</td><td class="hd-info">{[this.getClassName(values.get("alias"))]}</td></tr>
         <tr><td class="label">Subclasses:</td><td class="hd-info">this could be figured out</td></tr>
         <tr><td class="label">Extends:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[this.linker.toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a></td></tr>        
@@ -38,7 +38,7 @@
         </tr>
         
         <tpl for="getCfg()">     
-        <tr class="config-row inherited expandable">
+        <tr class="config-row expandable{[this.isInherited(values, parent) ? " inherited" : ""]}">
             <td class="micon"><a class="exi" href="#expand">&nbsp;</a></td>
             <td class="sig">
                 <a id="Ext.data.DataProxy-listeners"></a>
@@ -51,8 +51,8 @@
                 </div>
             </td>
             <td class="msource">
-                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a class="{[values.get("memberof") == parent.get("alias") ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+                <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         </tpl>
@@ -70,7 +70,7 @@
         
         <tpl for="getProperties()">
                     
-        <tr class="property-row">
+        <tr class="property-row{[this.isInherited(values, parent) ? " inherited" : ""]}">
             <td class="micon">
                 <a class="exi" href="#expand">&nbsp;</a>
             </td>
@@ -81,9 +81,9 @@
                     {[values.get("desc")]}                        
                 </div>
             </td>
-            <td class="msource">
-                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a class="{[values.get("memberof") == parent.get("alias") ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+            <td class="msource">                
+                <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         
@@ -114,7 +114,7 @@
         </tr>
         
         <tpl for="getMethods()">        
-        <tr class="method-row inherited expandable">
+        <tr class="method-row expandable{[this.isInherited(values, parent) ? " inherited" : ""]}">
             <td class="micon"><a class="exi" href="#expand">&nbsp;</a></td>
             <td class="sig">
                 <a id="Ext.data.DataProxy-addEvents"></a>                
@@ -143,8 +143,8 @@
                 </div>
             </td>
             <td class="msource">
-                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a class="{[values.get("memberof") == parent.get("alias") ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+                <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         </tpl>                                                  
@@ -159,7 +159,7 @@
             <th class="msource-header">Defined By</th>
         </tr>
         <tpl for="getEvents()">
-        <tr class="event-row expandable">
+        <tr class="event-row expandable{[this.isInherited(values, parent) ? " inherited" : ""]}">
             <td class="micon"><a class="exi" href="#expand">&nbsp;</a></td>
             <td class="sig">
                 <a id="Ext.data.DataProxy-beforeload"></a>
@@ -184,8 +184,8 @@
                 </div>
             </td>   
             <td class="msource">
-                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+                <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>                                 
         </tr>
         </tpl>            
