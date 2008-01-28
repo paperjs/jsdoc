@@ -33,8 +33,7 @@ function publish(symbolGroup) {
         var link = new JSDOC.template.Link();
         JSDOC.template.Util.linker = link;
         var indexTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "index.tmpl"), JSDOC.template.Util).compile();
-        var classTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "class.tmpl"), JSDOC.template.Util).compile();        
-        var filesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allfiles.tmpl"), JSDOC.template.Util).compile();                	
+        var classTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "class.tmpl"), JSDOC.template.Util).compile();                                	
 	}
 	catch(e) {
 		print(e.message);
@@ -53,7 +52,7 @@ function publish(symbolGroup) {
     var srcDir = publish.conf.outDir + "src/";
 	var files = JSDOC.opt.srcFiles;	
  	for (var i = 0, l = files.length; i < l; i++) { 		 		
-        //JSDOC.template.Util.makeSrcFile(files[i], srcDir);
+        JSDOC.template.Util.makeSrcFile(files[i], srcDir);
  	}
      	       	
 	print ("num classes: " + classes.length);
