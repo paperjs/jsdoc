@@ -1,10 +1,20 @@
+/***
+ * @overview Ext template publisher.
+ * @author Chris Scott <christocracy@gmail.com>
+ *
+ */
+
+/***
+ * publish
+ * @param {Object} symbolGroup
+ * 
+ */
 function publish(symbolGroup) {
                     
     var outDir = (typeof(JSDOC.opt.d) != 'undefined') ? JSDOC.opt.d : SYS.pwd() + "../out/jsdox/";
 	publish.conf = {  // trailing slash expected for dirs
 		ext: ".html",
-		outDir: outDir + "/",
-		//templatesDir: SYS.pwd()+"../templates/",
+		outDir: outDir + "/",		
         templatesDir: SYS.pwd() + "../" + JSDOC.opt.t + '/',
 		symbolsDir: "symbols/",
 		srcDir: "src/"
@@ -14,14 +24,17 @@ function publish(symbolGroup) {
     buildTemplate();    
         
 	// used to check the details of things being linked to
-	JSDOC.template.Link.symbolGroup = symbolGroup;
+	JSDOC.template.symbolGroup = symbolGroup;
+    JSDOC.template.Link.base = publish.conf.symbolsDir;
+    JSDOC.template.ext = publish.conf.ext;
     
     // create XTemplate instances.                          
 	try {
+        var link = new JSDOC.template.Link();
+        JSDOC.template.Util.linker = link;
         var indexTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "index.tmpl"), JSDOC.template.Util).compile();
         var classTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "class.tmpl"), JSDOC.template.Util).compile();        
-        var filesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allfiles.tmpl"), JSDOC.template.Util).compile();        
-        var classesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allclasses.tmpl"), JSDOC.template.Util).compile();		
+        var filesTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "allfiles.tmpl"), JSDOC.template.Util).compile();                	
 	}
 	catch(e) {
 		print(e.message);
@@ -36,19 +49,16 @@ function publish(symbolGroup) {
 	var symbols = symbolGroup.getSymbols();
 	var classes = symbols.filter(isaClass).sort(JSDOC.template.Util.makeSortby("alias"));
     
-    // create output dir-structure
+    // create output syntax-highlighted src-files
     var srcDir = publish.conf.outDir + "src/";
 	var files = JSDOC.opt.srcFiles;	
- 	for (var i = 0, l = files.length; i < l; i++) { 		
- 		// DISABLE SRC FILES FOR NOW
-        //tplResources.makeSrcFile(files[i], srcDir);
+ 	for (var i = 0, l = files.length; i < l; i++) { 		 		
+        //JSDOC.template.Util.makeSrcFile(files[i], srcDir);
  	}
-    
- 	       
-	//publish.classesIndex = classesTemplate.process(classes);
+     	       	
 	print ("num classes: " + classes.length);
     
-    // create data hash for index.tmpl
+    // create root-node for Tree in index.tmpl
     var treeData = {    
         "id": "apidocs",
         "text": "API Documentation",
@@ -99,35 +109,10 @@ function publish(symbolGroup) {
                 cls: 'cls',
                 children: []
             });
-                                   
-            
-            // create output for Class.File.html
-            var output = classTpl.applyTemplate(symbol);           
-            IO.saveFile(publish.conf.outDir + "symbols/", filename, output);
-            
-            //var output = '<h1>Symbol: ' + symbol.get('name') + '</h1>';
-        }
-        
-        
-        /*{
-            alias: symbol.get('alias'),
-            name: symbol.get('name'),            
-            pkg: symbol.get('package'),
-            srcFile: symbol.get('srcFile'),
-            augments: symbol.get('augments'),
-            augments_src: 'symbols/' + symbol.get('augments') + publish.conf.ext,
-            config: [],
-            properties: [],
-            methods: symbol.get('methods'),
-            events: []
-        });
-        */
-        
-        
-		
-		//output = classTemplate.process(symbol);
-//		IO.mkPath(publish.conf.symbolsDir.split("/"));
-		//IO.saveFile(publish.conf.outDir+"symbols/", symbol.get("alias")+publish.conf.ext, output);
+                                               
+            // render output for Class.File.html                       
+            IO.saveFile(publish.conf.outDir + "symbols/", filename, classTpl.applyTemplate(symbol));                        
+        }                                       				
 	}
 	    
     // build recursive Package tree.
@@ -136,23 +121,12 @@ function publish(symbolGroup) {
             treeData.children.push(buildPackage(pkg, packages, list));
         }        
     }         
-        
+    
+    // create index file    
 	IO.saveFile(publish.conf.outDir, 'index.html', indexTpl.applyTemplate({
         classData : Ext.encode(treeData)
-    }));
-    
-	//IO.saveFile(publish.conf.outDir, "allclasses-frame"+publish.conf.ext, classesIndex)
-
-	//var filesIndex = filesTemplate.process(files);
-	//IO.saveFile(publish.conf.outDir, "allFiles-frame"+publish.conf.ext, filesIndex)
-
-	// handle static files
-	if (publish.conf.outDir) {
-        // don't copy /static/index.html anymore.
-		//IO.copyFile(publish.conf.templatesDir+"/static/index.html", publish.conf.outDir);
-	} 
+    }));    		
 }
-
 
 /***
  * buildTemplate

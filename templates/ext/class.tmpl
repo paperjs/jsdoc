@@ -1,33 +1,34 @@
+
 <div class="body-wrap">
     <div class="top-tools">
-        <a class="inner-link" href="#Ext.data.DataProxy-props"><img src="resources/s.gif" class="item-icon icon-prop">Properties</a>
-        <a class="inner-link" href="#Ext.data.DataProxy-methods"><img src="resources/s.gif" class="item-icon icon-method">Methods</a>
-        <a class="inner-link" href="#Ext.data.DataProxy-events"><img src="resources/s.gif" class="item-icon icon-event">Events</a>
-        <a class="inner-link" href="#Ext.data.DataProxy-configs"><img src="resources/s.gif" class="item-icon icon-config">Config Options</a>
-        <a class="bookmark" href="../docs/?class=Ext.data.DataProxy"><img src="resources/s.gif" class="item-icon icon-fav">Direct Link</a>
+        <a class="inner-link" href="#{[values.get("alias")]}-props"><img src="resources/s.gif" class="item-icon icon-prop">Properties</a>
+        <a class="inner-link" href="#{[values.get("alias")]}-methods"><img src="resources/s.gif" class="item-icon icon-method">Methods</a>
+        <a class="inner-link" href="#{[values.get("alias")]}-events"><img src="resources/s.gif" class="item-icon icon-event">Events</a>
+        <a class="inner-link" href="#{[values.get("alias")]}-configs"><img src="resources/s.gif" class="item-icon icon-config">Config Options</a>
+        <a class="bookmark" href="NEED_TO_CREATE_DIRECT_LINK_HREF"><img src="resources/s.gif" class="item-icon icon-fav">Direct Link</a>
     </div>
     
     <div class="inheritance res-block">
         <pre class="res-block-inner">
-            <a ext:cls="Ext.util.Observable" ext:member="" href="output/Ext.util.Observable.html">Observable</a>
-            <img src="resources/elbow-end.gif"/>DataProxy
+    <a ext:cls="{[values.get("augments")]}" ext_member="" href="{[this.linker.toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a>
+    <img src="resources/elbow-end.gif"/>{[values.get("alias")]}
         </pre>
     </div>
-    <h1>Class {[values.get("alias")]}</h1>
+    <h1>Class {[values.get("alias")]}</h1>     
     <table cellspacing="0">
         <tr><td class="label">Package:</td><td class="hd-info">{[this.getPackageName(values.get("alias"))]}</td></tr>
-        <tr><td class="label">Defined In:</td><td class="hd-info">{[values.get("srcFile")]}</td></tr>
+        <tr><td class="label">Defined In:</td><td class="hd-info"><a ext:cls="" ext:member="" href="{[this.linker.toSrc(values.get("srcFile")).toString(false)]}">{[JSDOC.Util.fileName(values.get("srcFile"))]}</a></td></tr>
         <tr><td class="label">Class:</td><td class="hd-info">{[this.getClassName(values.get("alias"))]}</td></tr>
         <tr><td class="label">Subclasses:</td><td class="hd-info">this could be figured out</td></tr>
-        <tr><td class="label">Extends:</td><td class="hd-info"><a ext:cls="Ext.util.Observable" ext:member="" href="">{[values.get("augments")]}</a></td></tr>
+        <tr><td class="label">Extends:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[this.linker.toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a></td></tr>        
     </table>
     
     <div class="description">
-                
+        {[values.get("desc")]} 
     </div>
     
     <div class="hr"></div>
-    <a id="Ext.data.DataProxy-configs"></a>
+    <a id="{[values.get("alias")]}-configs"></a>
     <h2>Config Options</h2>
     <tpl if="!hasCfg()"><p>This class has no config options.</p></tpl>
     <table cellspacing="0" class="{[(values.hasCfg()) ? "member-table" : "x-hidden"]}">
@@ -50,13 +51,14 @@
                 </div>
             </td>
             <td class="msource">
-                <a ext:cls="{[parent.get("name")]}" ext:member="#{[values.get("name")]}" href="{[parent.get("src")]}">{[this.getClassName(parent.get("alias"))]}</a>
+                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a class="{[values.get("memberof") == parent.get("alias") ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         </tpl>
         
     </table>
-    <a id="Ext.data.DataProxy-props"></a>      
+    <a id="{[values.get("alias")]}-props"></a>      
     
     <h2>Public Properties</h2> 
     <tpl if="!hasProperties()"><p>This class has no public properties.</p></tpl>        
@@ -80,7 +82,8 @@
                 </div>
             </td>
             <td class="msource">
-                <a ext:cls="{[parent.get("alias")]}" ext:member="#{[values.get("name")]}" href="{[parent.get("href")]}">{[this.getClassName(parent.get("alias"))]}</a>
+                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a class="{[values.get("memberof") == parent.get("alias") ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         
@@ -101,7 +104,7 @@
         -->
     </table>
                    
-    <a id="Ext.data.DataProxy-methods"></a>
+    <a id="{[values.get("alias")]}-methods"></a>
     <h2>Public Methods</h2>    
     <tpl if="!hasMethods()"><p>This class has no public methods</p></tpl>
     <table cellspacing="0" class="{[values.hasMethods() ? "member-table" : "x-hidden"]}">
@@ -140,13 +143,14 @@
                 </div>
             </td>
             <td class="msource">
-                <a ext:cls="{[this.getClassName(values.get("alias"))]}" ext:member="{[values.get("alias")]}" href="{[values.get("href")]}">{[this.getClassName(parent.get("alias"))]}</a>
+                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a class="{[values.get("memberof") == parent.get("alias") ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         </tpl>                                                  
     </table>
     
-    <a id="Ext.data.DataProxy-events"></a>
+    <a id="{[values.get("alias")]}-events"></a>
     <h2>Public Events</h2>
     <tpl if="!hasEvents()"><p>This class has no events</p></tpl>
     <table cellspacing="0" class="{[(values.hasEvents()) ? "member-table" : "x-hidden"]}">        
@@ -180,7 +184,8 @@
                 </div>
             </td>   
             <td class="msource">
-                <a ext:cls="{[this.getClassName(parent.get("alias"))]}" ext:member="{[values.get("alias")]}" href="{[values.get("href")]}">{[this.getClassName(parent.get("alias"))]}</a>
+                <tpl if="get('memberof') == parent.get('alias')">{[this.getClassName(values.get("memberof"))]}</tpl>
+                <a ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>                                 
         </tr>
         </tpl>            

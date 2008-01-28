@@ -170,6 +170,8 @@ Ext.extend(MainPanel, Ext.TabPanel, {
     },
 
     onClick: function(e, target){
+        console.log('onClick: ', target);
+        
         if(target = e.getTarget('a:not(.exi)', 3)){
             var cls = Ext.fly(target).getAttributeNS('ext', 'cls');
             e.stopEvent();

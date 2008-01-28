@@ -1,7 +1,7 @@
 /***
  * @overview template-parsing resources
  * @namespace JSDOC.template
- * @desc A collection of handy utilities for use in all templates
+ * @desc A collection of handy utilities for use in all templates.  I found most of these methods in the jsdoc template's publsh.js
  * @author Chris Scott
  */
 JSDOC.template = {};
@@ -112,99 +112,9 @@ JSDOC.template.Util = function(){
             });
             
             return str;
-        },
-        
-        /***
-         * getConfig
-         * get this Symbol's associated @cfg params
-         * @param {JSDOC.Symbol} s
-         * @return {Array} the array of config params
-         */
-        getCfg : function(s) {
-            if (cfg === null) {
-                cfg = s.getProperties().filter(function($) {return $.get('isCfg') == true});
-            }
-            return cfg;    
-        },
-        
-        /***
-         * hasCfg
-         * does this Symbol have any @cfg params?
-         * @param {JSDOC.Symbol} s
-         * @return {Boolean} 
-         */
-        hasCfg : function(s) {            
-            return (this.getCfg(s).length > 0) ? true : false;  
-        },
-                      
-        /***
-         * getProperties
-         * get this Symbol's associated @property params
-         * @param {JSDOC.Symbol} s
-         * @return {Array} the array of properties
-         */
-        getProperties : function(s) {
-            if (properties === null) {
-                properties = s.getProperties().filter(function($) {return $.get('isCfg') == false});
-            }
-            return properties;    
-        },
-        
-        /***
-         * hasCfg
-         * does this Symbol have any @cfg params?
-         * @param {JSDOC.Symbol} s
-         * @return {Boolean} 
-         */
-        hasCfg : function(s) {            
-            return (this.getCfg(s).length > 0) ? true : false;  
-        },
-                     
-        /***
-         * getMethods
-         * return this Symbols's methods.  if they don't exist in local cache, query the Symbol for them.
-         * @param {JSDOC.Symbol} s
-         * @return {Array} the methods
-         */
-        getMethods : function(s) {
-            if (methods === null) {
-                methods = s.get('methods').filter(function($) {return $.get('isEvent') == false});
-            }
-            return methods;
-        },
-        
-        /***
-         * hasMethods
-         * does this Symbol have any methods?
-         * @param {JSDOC.Symbol} s
-         * @return {Boolean} 
-         */
-        hasMethods : function(s) {            
-            return (this.getMethods(s).length > 0) ? true : false;  
-        },
-        
-         /***
-         * getEvents
-         * get this Symbol's associated @events
-         * @param {JSDOC.Symbol} s
-         * @return {Array} the array of Symbols
-         */
-        getEvents : function(s) {
-            if (events === null) {
-                events = s.get('methods').filter(function($) {return $.get('isEvent') == true});
-            }
-            return events;    
-        },
-        
-        /***
-         * hasEvents
-         * does this Symbol have any events?
-         * @param {JSDOC.Symbol} s
-         * @return {Boolean} 
-         */
-        hasEvents : function(s) {            
-            return (this.getEvents(s).length > 0) ? true : false;  
         }
+        
+        
         
     }
 }();
@@ -280,23 +190,26 @@ JSDOC.template.Link.prototype = {
     
     /***
      * toString
+     * @param {Boolean} asHtml return html [true] set false to return just href
      */
-    toString : function(){
+    toString : function(asHtml){        
+        asHtml = (typeof(asHtml) != 'undefined') ? asHtml : true;
+                        
         var linkString;
         var thisLink = this;
         
         if (this.alias) {
             linkString = this.alias.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)\b/gi, function(match, symbolName){
-                return thisLink._makeSymbolLink(symbolName);
+                return thisLink._makeSymbolLink(symbolName, asHtml);
             });
         }
         else 
             if (this.src) {
-                linkString = thisLink._makeSrcLink(this.src);
+                linkString = thisLink._makeSrcLink(this.src, asHtml);
             }
             else 
                 if (this.file) {
-                    linkString = thisLink._makeFileLink(this.file);
+                    linkString = thisLink._makeFileLink(this.file, asHtml);
                 }
         return linkString;
     },
@@ -317,9 +230,15 @@ JSDOC.template.Link.prototype = {
         return linker + symbol.get("name");
     },
     
-    /** Create a link to a snother symbol. */
-    makeSymbolLink : function(alias){
-        var linkBase = Link.base + publish.conf.symbolsDir;
+    /** 
+     * _makeSymbolLink
+     * create a link to another symbol
+     * @private
+     * @param {Object} alias
+     * @param {Boolean} asHtml [true] set false to return just href     
+     */
+    _makeSymbolLink : function(alias, asHtml){                
+        var linkBase = JSDOC.template.Link.base;
         var linkTo;
         var linkPath;
         var target = (this.targetName) ? " target=\"" + this.targetName + "\"" : "";
@@ -329,11 +248,11 @@ JSDOC.template.Link.prototype = {
             var linkPath = alias;
         // if there is no symbol by that name just return the name unaltered
         else 
-            if (!(linkTo = JSDOC.template.Link.symbolGroup.getSymbol(alias))) 
+            if (!(linkTo = JSDOC.template.symbolGroup.getSymbol(alias))) 
                 return alias;
             // it's a symbol in another file
             else {
-                linkPath = escape(linkTo.get('alias')) + publish.conf.ext;
+                linkPath = escape(linkTo.get('alias')) + JSDOC.template.ext;
                 if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
                     linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
                     linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
@@ -343,11 +262,17 @@ JSDOC.template.Link.prototype = {
         
         if (!this.text) 
             this.text = alias;
-        return "<a href=\"" + linkPath + "\"" + target + ">" + this.text + "</a>";
+        return (asHtml === true) ? "<a href=\"" + linkPath + "\"" + target + ">" + this.text + "</a>" : linkPath;
     },
     
-    /** Create a link to a source file. */
-    _makeSrcLink : function(srcFilePath){
+    /** 
+     * _makeSrcLink      
+     * Create a link to a source file.   
+     * @private    
+     * @param {Object} srcFilePath
+     * @param {Boolean} asHtml [true] set false to return just href
+     */
+    _makeSrcLink : function(srcFilePath, asHtml){
         var target = (this.targetName) ? " target=\"" + this.targetName + "\"" : "";
         
         // transform filepath into a filename
@@ -356,18 +281,23 @@ JSDOC.template.Link.prototype = {
         
         if (!this.text) 
             this.text = JSDOC.Util.fileName(srcFilePath);
-        return "<a href=\"" + outFilePath + "\"" + target + ">" + this.text + "</a>";
+        return (asHtml === true) ? "<a href=\"" + outFilePath + "\"" + target + ">" + this.text + "</a>" : outFilePath;
     },
     
-    /** Create a link to a source file. */
-    _makeFileLink : function(filePath){
+    /** 
+     * Create a link to a source file.
+     * @private
+     * @param {Object} filePath
+     * @param {Boolean} asHtml [true] set false to return just href
+     */
+    _makeFileLink : function(filePath, asHtml){
         var target = (this.targetName) ? " target=\"" + this.targetName + "\"" : "";
         
         var outFilePath = Link.base + filePath;
         
         if (!this.text) 
             this.text = filePath;
-        return "<a href=\"" + outFilePath + "\"" + target + ">" + this.text + "</a>";
+        return (asHtml === true) ? "<a href=\"" + outFilePath + "\"" + target + ">" + this.text + "</a>" : outFilePath;
     }
 };
 
