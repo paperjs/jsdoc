@@ -8,10 +8,14 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
     
     /***
      * initPlugin
+     * called automatically by JSDOC.plugins.Base.  EVERY plugin MUST implement this method.  
+     * returns a hash of events that you want your plugin to listen-to.  Note how events are sub-categorized.
+     * @return {Object}
      */    
     initPlugin : function() {
-        var events = {     
+       return {     
             fnbody : {
+                // Ext-specific method for adding events to a class.  we need to document these
                 'this.addEvents' : this.onAddEvents    
             },
             tokens : {
@@ -22,14 +26,13 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
                 'Ext.override' : this.onOverride   
             },                                     
             comments: {                
-                // comment src
+                // for handling std JSDOC event onDocCommentSrc
                 'commentsrc' : this.onCommentSrc,
             
-                // comment tag                
+                // for handling std JSDOC event onDocCommentTag                 
                 'commenttags' : this.onCommentTags
             }                               
-        };
-        return events;        
+        };          
     },
     
     /***
@@ -54,8 +57,7 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
         while (block.look()) {
             if (!block.look().is("VOID") && block.look().is("JSDOC")) {               		                        
                 // we need to discover the scope of this event and add a @scope tag to this comment.
-                // after doing so, we'll create a new Symbol.
-                
+                // after doing so, we'll create a new Symbol.                
                 var comment = new JSDOC.DocComment(block.look().data);                                                
                 var ename = comment.getTag('event').toString().split("\n").shift();                                                                                                                                              
                 var event = new JSDOC.Symbol().init(object + "#" + ename, [], "FUNCTION", comment);
@@ -162,7 +164,7 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
                 
         var c = new JSDOC.Token("", "COMM", "JSDOC");
 	    c.data = insert;
-		ts.insertAhead(c);
+		ts.insertAhead(c);    //<-- this insertAhead is still a bit mysterious to me. 
                                                                                
         // pop off initially created Symbol so we can create a new one.  not sure how hackish this is but it works.
         original = JSDOC.Parser.symbols.pop();
