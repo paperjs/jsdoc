@@ -10,7 +10,16 @@
  * 
  */
 function publish(symbolGroup) {
-                    
+    
+    /***
+     * DISALBED
+     */        
+    print ("*********************************************************************");
+    print (" The Ext template is currently disabled -- please use jsdoc instead");
+    print ("*********************************************************************");
+    return false;
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+            
     var outDir = (typeof(JSDOC.opt.d) != 'undefined') ? JSDOC.opt.d : SYS.pwd() + "../out/jsdox/";
 	publish.conf = {  // trailing slash expected for dirs
 		ext: ".html",
@@ -29,9 +38,7 @@ function publish(symbolGroup) {
     JSDOC.template.ext = publish.conf.ext;
     
     // create XTemplate instances.                          
-	try {
-        var link = new JSDOC.template.Link();
-        JSDOC.template.Util.linker = link;
+	try {        
         var indexTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "index.tmpl"), JSDOC.template.Util).compile();
         var classTpl = new Ext.XTemplate(IO.readFile(publish.conf.templatesDir + "class.tmpl"), JSDOC.template.Util).compile();                                	
 	}
@@ -52,7 +59,7 @@ function publish(symbolGroup) {
     var srcDir = publish.conf.outDir + "src/";
 	var files = JSDOC.opt.srcFiles;	
  	for (var i = 0, l = files.length; i < l; i++) { 		 		
-        JSDOC.template.Util.makeSrcFile(files[i], srcDir);
+        //JSDOC.template.Util.makeSrcFile(files[i], srcDir);
  	}
      	       	
 	print ("num classes: " + classes.length);

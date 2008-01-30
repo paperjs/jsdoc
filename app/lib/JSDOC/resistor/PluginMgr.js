@@ -1,4 +1,6 @@
 /***
+ * NOTE: THIS CLASS IS DISABLED BECAUSE I HAD TO REMOVED EXT FROM JSDOC FRAMEWORK
+ * 
  * @class JSDOC.resistor.PluginMgr
  * @singleton 
  * @desc New event-based plugin manager singleton.  when a plugin is registered to it,
@@ -11,29 +13,25 @@
 JSDOC.resistor.PluginMgr = function() {
                     
     // create simple observable instance to fireEvents from and add plugins as listeners to.            
-        
+    
+    /*    
     var CommentAntenna = Ext.extend(Ext.util.Observable, {
         initComponent : function() {
             this.addEvents({
-                 /***
-                 * @event commentsrc
-                 * fires when a new JSDOC.DocComment is created      
-                 * @param {JSDOC.Doclet} doclet        
-                 */
+                 
                 "commentsrc" : true,
-                
-                /***
-                 * @event commenttags             
-                 * fires when a new JSDOC.DocTag is created
-                 * @param {JSDOC.DocTag} doctag
-                 */
+                                
                 "commenttags" : true    
             });
         }
     });        
-    
+    */
+   
     // build an Antennas object, containing 3 Observables.  plugins will register different classes of events.
     // tokens, comments and fnBody events.   
+    /***
+     * disabled
+     *
     var fnbody = new Ext.util.Observable();
     fnbody.addEvents({});
     
@@ -45,7 +43,10 @@ JSDOC.resistor.PluginMgr = function() {
         fnbody : fnbody,
         tokens : tokens
     };
-        
+    *
+    */
+    var _antenna = {};
+    
     // PluginManager singleton methods....
     return {
                         
@@ -62,18 +63,24 @@ JSDOC.resistor.PluginMgr = function() {
          * eg: Class.create -> classcreate.
          *          
          */
-        register : function(plugin, events) {                         
+        register : function(plugin) {    
+            /* DISABLED                   
             // loop through each class of event that this plugin has defined.  they can be
             // either "tokens", "fnBody" and "comments".
+            var events = plugin.getHandlers();
             for (var key in events) {                
                 if (typeof(_antenna[key]) != 'undefined') {                    
                     this.registerEvents(_antenna[key], plugin, events[key]);
                 }    
             } 
+            */
                                            
         },
         
         registerEvents : function(antenna, plugin, events) {
+            /* DISABLED 
+             * 
+             *
             for (var key in events) {
                 var event = key.replace(/\./g, '').toLowerCase();    // <-- normalize event-name to please Ext.Observalbe
                                                                 
@@ -90,7 +97,8 @@ JSDOC.resistor.PluginMgr = function() {
                     // register plugin as a listener on this event. {String}, {Function}, {JSDOC.plugin.Base}                   
                     antenna.on(event, events[key], plugin);
                 }                                               
-            }              
+            }    
+            */          
         },
         
         /***
@@ -143,9 +151,11 @@ JSDOC.resistor.PluginMgr = function() {
          * @private
          * @param {String} name from token stream
          */
-        hasListener : function(name) {                       
+        hasListener : function(name) {
+            // DISABLED
+            return false                      
             // NOTE: Ext.Observable doesn't like Dot.In.Name -> dotinname               
-            return _antenna.hasListener(name.replace(/\./, "").toLowerCase())
+            //return _antenna.hasListener(name.replace(/\./, "").toLowerCase())
         },
         
         /***
@@ -156,8 +166,9 @@ JSDOC.resistor.PluginMgr = function() {
          * @param {Boolean}
          */  
         fireEvent : function(antenna, name, param) {                           
-            var event = name.replace(/\./g, "").toLowerCase();                                                                                                  
-            return (antenna.hasListener(event)) ? antenna.fireEvent(event, param) : false;                                                       
+            var event = name.replace(/\./g, "").toLowerCase();   
+            // DISABLED                                                                                               
+            //return (antenna.hasListener(event)) ? antenna.fireEvent(event, param) : false;                                                       
         }                              
     }
 }();
@@ -179,7 +190,7 @@ JSDOC.plugins.Base = function(name) {
     this.name = name;   
             
     // register plugin with Manager
-    JSDOC.resistor.PluginMgr.register(this, this.initPlugin());               
+    JSDOC.resistor.PluginMgr.register(this);               
        
 };
 JSDOC.plugins.Base.prototype = {
@@ -191,8 +202,8 @@ JSDOC.plugins.Base.prototype = {
     name : '',
                     
     /***
-     * initPlugin
+     * getHandlers
      * @desc Meant to be overridden by plugin extension
      */   
-     initPlugin : function() {}                              
+     getHandlers : function() {}                              
 };

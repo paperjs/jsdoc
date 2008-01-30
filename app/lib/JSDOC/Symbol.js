@@ -7,6 +7,7 @@ JSDOC.Symbol = function() {
 		_classDesc: "",
 		_comment: {},        
 		_deprecated: "",
+        _defaultValue : "",    // chris: line 96: exception from uncaught JavaScript throw: Property "defaultValue" not defined in properties of class 
 		_desc: "",
 		_events: [],
 		_exceptions: [],

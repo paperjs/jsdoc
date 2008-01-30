@@ -10,10 +10,11 @@
  */
 JSDOC.resistor = {};
 
-// include ext-2.0 lib
-IO.include('lib/JSDOC/resistor/ext-2.0/init.js');
+// include ext-2.0 lib -- DISABLED
+//IO.include('lib/JSDOC/resistor/ext-2.0/init.js');
 
-// includes a new Ext-based Plugin manager.  This plugin Manager is implemented into
+// includes a new Plugin manager.  This plugin Manager is implemented into
+// LARGELY DISABLED SINCE I REMOVED EXT
 // JSDOC's lib/Parser.js.  a bit hackish, but not too bad.
 IO.include("lib/JSDOC/resistor/PluginMgr.js");
 

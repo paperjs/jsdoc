@@ -7,10 +7,10 @@
         <a class="inner-link" href="#{[values.get("alias")]}-configs"><img src="resources/s.gif" class="item-icon icon-config">Config Options</a>
         <a class="bookmark" href="NEED_TO_CREATE_DIRECT_LINK_HREF"><img src="resources/s.gif" class="item-icon icon-fav">Direct Link</a>
     </div>
-    
+        
     <div class="inheritance res-block">
         <pre class="res-block-inner">
-    <a ext:cls="{[values.get("augments")]}" ext_member="" href="{[this.linker.toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a>
+    <a ext:cls="{[values.get("augments")]}" ext_member="" href="{[new JSDOC.template.Link().toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a>
     <img src="resources/elbow-end.gif"/>{[values.get("alias")]}
         </pre>
     </div>
@@ -20,7 +20,7 @@
         <tr><td class="label">Defined In:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[new JSDOC.template.Link().toSrc(values.get("srcFile")).toString(false)]}">{[JSDOC.Util.fileName(values.get("srcFile"))]}</a></td></tr>
         <tr><td class="label">Class:</td><td class="hd-info">{[this.getClassName(values.get("alias"))]}</td></tr>
         <tr><td class="label">Subclasses:</td><td class="hd-info">this could be figured out</td></tr>
-        <tr><td class="label">Extends:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[this.linker.toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a></td></tr>        
+        <tr><td class="label">Extends:</td><td class="hd-info"><a ext:cls="{[values.get("alias")]}" ext:member="" href="{[new JSDOC.template.Link().toSymbol(values.get("augments")).toString(false)]}">{[values.get("augments")]}</a></td></tr>        
     </table>
     
     <div class="description">
@@ -52,7 +52,7 @@
             </td>
             <td class="msource">
                 <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[new JSDOC.template.Link().toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         </tpl>
@@ -83,7 +83,7 @@
             </td>
             <td class="msource">                
                 <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[new JSDOC.template.Link().toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         
@@ -144,7 +144,7 @@
             </td>
             <td class="msource">
                 <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[new JSDOC.template.Link().toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>
         </tr>
         </tpl>                                                  
@@ -185,7 +185,7 @@
             </td>   
             <td class="msource">
                 <tpl if="!this.isInherited(values, parent)">{[this.getClassName(values.get("memberof"))]}</tpl>
-                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[this.linker.toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
+                <a class="{[!this.isInherited(values, parent) ? "x-hidden" : ""]}" ext:cls="{[values.get("memberof")]}" ext:member="{[values.get("alias")]}" href="{[new JSDOC.template.Link().toSymbol(values.get("memberof")).toString(false)]}">{[this.getClassName(values.get("memberof"))]}</a>
             </td>                                 
         </tr>
         </tpl>            

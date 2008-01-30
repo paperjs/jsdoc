@@ -109,7 +109,7 @@ JSDOC.template.Util = function(){
             params.filter(function($){
                 return $.name.indexOf(".") == -1; // don't show config params in signature
             }).map(function($){
-                return (($.type) ? "<span class=\"light\">" + (new Link().toSymbol($.type)) + " </span>" : "") +
+                return (($.type) ? "<span class=\"light\">" + (new JSDOC.template.Link().toSymbol($.type)) + " </span>" : "") +
                 $.name;
             }).join(", ") +
             ")";
@@ -119,7 +119,7 @@ JSDOC.template.Util = function(){
         /** Find symbol {@link ...} strings in text and turn into html links */
         resolveLinks : function(str, from){
             str = str.replace(/\{@link ([^} ]+) ?\}/gi, function(match, symbolName){
-                return new Link().toSymbol(symbolName);
+                return new JSDOC.template.Link().toSymbol(symbolName);
             });
             
             return str;
@@ -266,7 +266,7 @@ JSDOC.template.Link.prototype = {
                 linkPath = escape(linkTo.get('alias')) + JSDOC.template.ext;
                 if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
                     linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
-                    linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
+                    linkPath += publish.conf.ext + "#" + this.symbolNameToLinkName(linkTo);
                 }
                 linkPath = linkBase + linkPath
             }
@@ -304,7 +304,7 @@ JSDOC.template.Link.prototype = {
     _makeFileLink : function(filePath, asHtml){
         var target = (this.targetName) ? " target=\"" + this.targetName + "\"" : "";
         
-        var outFilePath = Link.base + filePath;
+        var outFilePath = JSDOC.template.Link.base + filePath;
         
         if (!this.text) 
             this.text = filePath;

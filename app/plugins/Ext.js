@@ -1,18 +1,20 @@
-print ('Plugin Ext installed');
+//print ('Plugin Ext installed');
 
 /***
  * @class JSDOC.plugins.Ext
  * @param {String} name
  */
-JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
-    
+JSDOC.plugins.Ext = function() {};
+   
+ 
+JSDOC.plugins.Ext.prototype = {   
     /***
-     * initPlugin
-     * called automatically by JSDOC.plugins.Base.  EVERY plugin MUST implement this method.  
+     * getHandlers
+     * called by PluginMgr in register method.  EVERY plugin MUST implement this method.  
      * returns a hash of events that you want your plugin to listen-to.  Note how events are sub-categorized.
      * @return {Object}
      */    
-    initPlugin : function() {
+    getHandlers : function() {
        return {     
             fnbody : {
                 // Ext-specific method for adding events to a class.  we need to document these
@@ -172,11 +174,12 @@ JSDOC.plugins.Ext = Ext.extend(JSDOC.plugins.Base, {
         // push new symbol
         JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(extClass, [], "CONSTRUCTOR", new JSDOC.DocComment(insert)));                                                                                           
     }       
-});
+};
 
 /***
  * instantiate Ext plugin.  
  *  plugins automatically register themselves with JSDOC.resistor.PluginMgr
+ *  DISALBED
  */
 new JSDOC.plugins.Ext('ext');
 
