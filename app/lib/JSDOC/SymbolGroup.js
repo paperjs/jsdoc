@@ -228,7 +228,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 }
 
 JSDOC.SymbolGroup.prototype.resolveMembers = function() {
-    for (var i = 0, l = this.symbols.length; i < l; i++) {
+	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
 		if (symbol.is("FILE")) continue;
 		
@@ -239,8 +239,8 @@ JSDOC.SymbolGroup.prototype.resolveMembers = function() {
 				if (member.is("FUNCTION")) {
 					symbol.addMethod(member);
 				}
-				if (member.is("OBJECT")) {                    
-					symbol.addProperty(member);
+				if (member.is("OBJECT")) {
+					symbol.addProperty(member)
 					//if (!symbol.hasMember(member.get("alias"))) symbol.get("properties").push(member);
 				}
 			}

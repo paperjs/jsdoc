@@ -99,14 +99,13 @@ JSDOC.JsDoc.prototype.getSymbols = function() {
 
 		var tr = new JSDOC.TokenReader();
 		var tokens = tr.tokenize(new JSDOC.TextStream(src));
-        
+
 		symbols = symbols.concat(
 			JSDOC.Parser.parse(
 				new JSDOC.TokenStream(tokens),
 				srcFile
 			)
 		);
-		
 	}
 	this.symbols = symbols;
 	return this.symbols;
