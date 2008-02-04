@@ -9,6 +9,7 @@ JSDOC.Symbol = function() {
 		_deprecated: "",
 		_desc: "",
 		_events: [],
+		_example: "",
 		_exceptions: [],
 		_inherits: [],
 		_inheritsFrom: [],
@@ -135,6 +136,12 @@ JSDOC.Symbol = function() {
 		var deprecateds = this.get("comment").getTag("deprecated");
 		if (deprecateds.length) {
 			this.set("deprecated", deprecateds.map(function($){return $.desc;}).join("\n"));
+		}
+		
+		// @example
+		var examples = this.get("comment").getTag("example");
+		if (examples.length) {
+			this.set("example", examples[0]);
 		}
 		
 		// @see
