@@ -1,41 +1,48 @@
 /**
 	@constructor
+	@param [opt] Used to override the commandline options. Useful for testing.
 */
-JSDOC.JsDoc = function(opt) {
-	if (opt.constructor === Array) {
-		JSDOC.opt = JSDOC.Util.getOptions(opt, {d:'directory', c:'conf', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', v:'verbose', 'D[]':'define'});
+JSDOC.JsDoc = function(/**object*/ opt) {
+	if (opt) {
+		JSDOC.opt = opt;
 	}
-	else JSDOC.opt = opt;
 	
 	// the -c option: use a configuration file
 	if (JSDOC.opt.c) {
 		eval("JSDOC.conf = " + IO.readFile(JSDOC.opt.c));
+		
+		LOG.inform("Using configuration file at '"+JSDOC.opt.c+"'.");
 		
 		for (var c in JSDOC.conf) {
 			if (c !== "D" && !defined(JSDOC.opt[c])) { // commandline overrules config file
 				JSDOC.opt[c] = JSDOC.conf[c];
 			}
 		}
+		
+		if (typeof JSDOC.conf["_"] != "undefined") {
+			JSDOC.opt["_"] = JSDOC.opt["_"].concat(JSDOC.conf["_"]);
+		}
 	}
 	
 	// defend against options that are not sane 
 	if (JSDOC.opt.t === true) JSDOC.usage();
 
-
-	// the -v option: make verbose
-	if (LOG) LOG.verbose = JSDOC.opt.v;
-	
 	if (JSDOC.opt.h) {
 		JSDOC.usage();
 		quit();
 	}
 	
-	// the -e option: use character encoding
-	if (!JSDOC.opt.e) JSDOC.opt.e = "utf-8";
-	IO.setEncoding(JSDOC.opt.e);
+	if (JSDOC.opt.d) {
+		if (!JSDOC.opt.d.charAt(JSDOC.opt.d.length-1).match(/[\\\/]/)) {
+			JSDOC.opt.d = JSDOC.opt.d+"/";
+		}
+		LOG.inform("Output directory set to '"+JSDOC.opt.d+"'.");
+		IO.mkPath(JSDOC.opt.d);
+	}
+	if (JSDOC.opt.e) IO.setEncoding(JSDOC.opt.e);
 	
 	// the -r option: scan source directories recursively
-	if (typeof(JSDOC.opt.r) == "boolean") JSDOC.opt.r = 10;
+	if (typeof JSDOC.opt.r == "boolean") JSDOC.opt.r = 10;
 	else if (!isNaN(parseInt(JSDOC.opt.r))) JSDOC.opt.r = parseInt(JSDOC.opt.r);
 	else JSDOC.opt.r = 1;
 	

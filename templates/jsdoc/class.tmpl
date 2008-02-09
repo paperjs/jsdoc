@@ -95,7 +95,7 @@
 							!}</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<if test="member.get('isStatic')">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name'))+}</b>
+								<if test="member.get('isStatic') && member.get('memberof') != '_global_'">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name'))+}</b>
 								<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
 								</div>
 								<div class="description">{+resolveLinks(summarize(member.get('desc')))+}</div>
@@ -155,7 +155,7 @@
 								else if (member.get('isStatic')) output += "&lt;static&gt; ";
 							!}</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><if test="member.get('isStatic')">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name'))+}</b>{+makeSignature(member.get('params'))+}
+								<div class="fixedFont"><if test="member.get('isStatic') && member.get('memberof') != '_global_'">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name'))+}</b>{+makeSignature(member.get('params'))+}
 								<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
 								</div>
 								<div class="description">{+resolveLinks(summarize(member.get('desc')))+}</div>
@@ -286,7 +286,7 @@
 						else if (member.get('isStatic')) output += "&lt;static&gt; ";
 					!}
 					
-					<if test="member.get('isStatic')"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>
+					<if test="member.get('isStatic') && member.get('memberof') != '_global_'"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>
 					<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
 					<if test="member.get('defaultValue')">(<i>Default: {+member.get('defaultValue')+}</i>)</if>
 			
@@ -330,7 +330,7 @@
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
 					!}
 					
-					<if test="member.get('isStatic')"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>{+makeSignature(member.get('params'))+}
+					<if test="member.get('isStatic') && member.get('memberof') != '_global_'"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>{+makeSignature(member.get('params'))+}
 					<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
 					</div>
 					<div class="description">

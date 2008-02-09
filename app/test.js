@@ -210,7 +210,7 @@ var testCases = [
 		is('symbols[2].get("desc")', "Extension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
 		is('symbols[3].get("desc")', "A first in, first out data structure.", 'A description is not shared when outside a shared section.');
 		is('symbols[4].get("alias")', "Queue.rewind", 'Second shared tag can be started.');
-		is('symbols[5].get("alias")', "_global_#startOver", 'Shared tag doesnt cross over files.');
+		is('symbols[5].get("alias")', "_global_.startOver", 'Shared tag doesnt cross over files.');
 	
 	}
 	,

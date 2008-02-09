@@ -205,18 +205,18 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 			this.classIndex[symbol.get("memberof")].push(symbol);
 		}
 		else { // no parent constructor
-			symbol.set("alias", symbol.get("alias").replace(/^(_global_#)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4"));
+			symbol.set("alias", symbol.get("alias").replace(/^(_global_\.)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4"));
 			if (RegExp.$2 && RegExp.$4) symbol.set("name", RegExp.$2+"."+RegExp.$4);
 
 			if (!symbol.is("CONSTRUCTOR")) {
 				if (symbol.get("alias").indexOf("#") > -1) {
-					print("WARNING: Documentation found for instance member: "+symbol.get("name")+", but no documentation exists for parent class.");
+					LOG.warn("Documentation found for instance member: "+symbol.get("name")+", but no documentation exists for parent class.");
 					this.symbols[i] = null;
 					continue eachSymbol;
 				}
 				
 				symbol.set("memberof", "_global_");
-				symbol.set("alias", "_global_#"+symbol.get("name"));
+				symbol.set("alias", "_global_."+symbol.get("name"));
 			}
 			
 			symbol.set("isStatic", true);
