@@ -142,7 +142,6 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
 		if (symbol.get("alias") == "_global_" || symbol.is("FILE")) continue;
-
 		var nameChain = new Chain(symbol.get("alias").split(/([#.-])/));
 
 		// find the constructor closest in the chain to "this"

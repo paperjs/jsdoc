@@ -1,8 +1,8 @@
 function publish(symbolGroup) {
 	publish.conf = {  // trailing slash expected for dirs
 		ext: ".html",
-		outDir: SYS.pwd()+"../out/jsdoc/",
-		templatesDir: SYS.pwd()+"../templates/",
+		outDir: SYS.pwd+"../out/jsdoc/",
+		templatesDir: SYS.pwd+"../templates/",
 		symbolsDir: "symbols/",
 		srcDir: "src/"
 	};

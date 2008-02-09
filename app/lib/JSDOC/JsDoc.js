@@ -3,13 +3,13 @@
 */
 JSDOC.JsDoc = function(opt) {
 	if (opt.constructor === Array) {
-		JSDOC.opt = JSDOC.Util.getOptions(opt, {d:'directory', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', v:'verbose', 'D[]':'define'});
+		JSDOC.opt = JSDOC.Util.getOptions(opt, {d:'directory', c:'conf', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', v:'verbose', 'D[]':'define'});
 	}
 	else JSDOC.opt = opt;
 	
 	// the -c option: use a configuration file
 	if (JSDOC.opt.c) {
-		eval("JSDOC.conf = " + IO.readFile(SYS.pwd()+"../conf/"+JSDOC.opt.c));
+		eval("JSDOC.conf = " + IO.readFile(JSDOC.opt.c));
 		
 		for (var c in JSDOC.conf) {
 			if (c !== "D" && !defined(JSDOC.opt[c])) { // commandline overrules config file

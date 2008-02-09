@@ -9,7 +9,7 @@ function symbolize(opt) {
 
 var testCases = [
 	function() {
-		symbolize({a:true, p:true, _: [SYS.pwd()+"test/prototype.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype.js"]});
 //print(Dumper.dump(symbols[0].get("methods")));	
 
 		is('symbols[0].get("name")', "Article", 'Function set to constructor prototype with inner constructor name is found.');
@@ -22,7 +22,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/prototype_oblit.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/prototype_oblit.js"]});
 		
 		is('symbols[0].get("name")', "Article", 'Oblit set to constructor prototype name is found.');
 		is('symbols[0].get("memberof")', "", 'The memberof of prototype oblit is correct.');
@@ -37,7 +37,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, p:true, _: [SYS.pwd()+"test/prototype_oblit_constructor.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype_oblit_constructor.js"]});
 		
 		is('symbols[0].get("name")', "Article", 'Oblit set to constructor prototype with inner constructor name is found.');
 		is('symbols[0].get("methods")[0].get("name")', "init", 'The initializer method name of prototype oblit is correct.');
@@ -49,7 +49,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, p:true, _: [SYS.pwd()+"test/inner.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/inner.js"]});
 		
 		is('symbols[0].get("name")', "Outer", 'Outer constructor prototype name is found.');
 		is('symbols[0].get("methods").length', 1, 'Inner function doesnt appear as a method of the outer.');
@@ -63,7 +63,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/prototype_nested.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/prototype_nested.js"]});
 		
 		is('symbols[0].get("name")', "Word", 'Base constructor name is found.');
 		is('symbols[0].get("methods")[0].get("name")', "reverse", 'Base constructor method is found.');
@@ -77,7 +77,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/namespace_nested.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/namespace_nested.js"]});
 		
 		is('symbols[0].get("name")', "ns1", 'Base namespace name is found.');
 		is('symbols[0].get("memberof")', "", 'Base namespace memberof is empty (its a constructor).');
@@ -89,7 +89,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, p:true, _: [SYS.pwd()+"test/functions_nested.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/functions_nested.js"]});
 		
 		is('symbols[0].get("name")', "Zop", 'Any constructor name is found.');
 		is('symbols[0].get("isa")', "CONSTRUCTOR", 'It isa constructor.');
@@ -108,7 +108,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/memberof_constructor.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/memberof_constructor.js"]});
 		
 		is('symbols[1].get("name")', "Tangent", 'Constructor set on prototype using @member has correct name.');
 		is('symbols[1].get("memberof")', "Circle", 'Constructor set on prototype using @member has correct memberof.');
@@ -123,7 +123,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/inherits.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/inherits.js"]});
 //print(Dumper.dump(symbols));		
 		is('symbols[0].get("name")', "Layout", 'Constructor can be found.');
 		is('symbols[0].get("methods")[0].get("name")', "init", 'Constructor method name can be found.');
@@ -138,7 +138,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a: true, _: [SYS.pwd()+"test/augments.js", SYS.pwd()+"test/augments2.js"]});
+		symbolize({a: true, _: [SYS.pwd+"test/augments.js", SYS.pwd+"test/augments2.js"]});
 		
 		is('symbols[4].get("augments")[0]', "Layout", 'An augmented class can be found.');
 		is('symbols[4].get("methods")[0].get("alias")', "Page#reset", 'Method of augmenter can be found.');
@@ -159,7 +159,7 @@ var testCases = [
 	,
 
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/static_this.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/static_this.js"]});
 		
 		is('symbols[0].get("name")', "box.holder", 'Static namespace name can be found.');
 		is('symbols[1].get("name")', "foo", 'Static namespace method name can be found.');
@@ -171,7 +171,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/scope.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/scope.js"]});
 
 		is('symbols[0].get("name")', "Person", 'Class defined in scope comment is found.');
 		is('symbols[0].get("methods")[0].get("name")', "initialize", 'Scoped instance method name can be found.');
@@ -187,7 +187,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd()+"test/param_inline.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/param_inline.js"]});
 	
 		is('symbols[0].get("params")[0].type', "int", 'Inline param name is set.');
 		is('symbols[0].get("params")[0].desc', "The number of columns.", 'Inline param desc is set from comment.');
@@ -202,7 +202,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a: true, _: [SYS.pwd()+"test/shared.js", SYS.pwd()+"test/shared2.js"]});
+		symbolize({a: true, _: [SYS.pwd+"test/shared.js", SYS.pwd+"test/shared2.js"]});
 
 		is('symbols[1].get("name")', 'some', 'The name of a symbol in a shared section is found.');
 		is('symbols[1].get("alias")', 'Array#some', 'The alias of a symbol in a shared section is found.');
@@ -215,7 +215,7 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a: true, _: [SYS.pwd()+"test/config.js"]});
+		symbolize({a: true, _: [SYS.pwd+"test/config.js"]});
 		is('symbols[0].get("params")[0].name', 'person', 'The name of a param is found.');
 		is('symbols[0].get("params")[1].name', 'person.name', 'The name of a param set with a dot name is found.');
 		is('symbols[0].get("params")[2].name', 'person.age', 'The name of a param set with a dot name is found.');
@@ -226,6 +226,13 @@ var testCases = [
 		is('symbols[1].get("params")[2].name', 'persons.Mother', 'The name of a second param+config is found.');
 		is('symbols[1].get("params")[3].name', 'persons.Children', 'The name of a third param+config is found.');
 			
+	},
+
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/ignore.js"]});
+//print(Dumper.dump(symbols));	
+		is('symbols.length', 1, 'Only the global object is documented when a parent is ignored.');
+
 	}
 ];
 

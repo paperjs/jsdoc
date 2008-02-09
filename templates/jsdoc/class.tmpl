@@ -45,7 +45,7 @@
 				{+resolveLinks(data.get('classDesc'))+}
 				
 				<if test="!data.isBuiltin()">{# isn't defined in any file #}
-					<br /><i>Defined in {+new Link().toSrc(data.get('srcFile'))+}</i>
+					<br /><i>Defined in: </i> {+new Link().toSrc(data.get('srcFile'))+}.
 				</if>
 			</p>
 
@@ -210,6 +210,7 @@
 				!}</div>
 				<div class="description">
 					{+resolveLinks(data.get('desc'))+}
+					<if test="data.get('author')"><br /><i>Author: </i>{+data.get('author')+}.</if>
 				</div>
 				
 				<if test="data.get('example')">
@@ -294,8 +295,9 @@
 						{+resolveLinks(member.get('desc'))+}
 						<if test="member.get('srcFile') != data.get('srcFile')">
 							<br />
-							<i>Defined in {+new Link().toSrc(member.get('srcFile'))+}</i>
+							<i>Defined in: </i> {+new Link().toSrc(member.get('srcFile'))+}.
 						</if>
+						<if test="member.get('author')"><br /><i>Author: </i>{+member.get('author')+}.</if>
 					</div>
 					
 					<if test="member.get('example')">
@@ -335,8 +337,9 @@
 						{+resolveLinks(member.get('desc'))+}
 						<if test="member.get('srcFile') != data.get('srcFile')">
 							<br />
-							<i>Defined in {+new Link().toSrc(member.get('srcFile'))+}</i>
+							<i>Defined in: </i> {+new Link().toSrc(member.get('srcFile'))+}.
 						</if>
+						<if test="member.get('author')"><br /><i>Author: </i>{+member.get('author')+}.</if>
 					</div>
 					
 					<if test="member.get('example')">

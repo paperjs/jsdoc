@@ -4,6 +4,7 @@ JSDOC.Symbol = function() {
 		_addOn: "",
 		_alias: "",
 		_augments: [],
+		_author: "",
 		_classDesc: "",
 		_comment: {},
 		_deprecated: "",
@@ -46,7 +47,7 @@ JSDOC.Symbol = function() {
 		this.set("name", name);
 		this.set("alias", this.get("name"));
 		this.set("params", params);
-		this.set("isa", isa);
+		this.set("isa", (isa == "VIRTUAL")? "OBJECT":isa);
 		this.set("comment", comment);
 		this.set("srcFile", JSDOC.Symbol.srcFile);
 		
@@ -114,6 +115,12 @@ JSDOC.Symbol = function() {
 	}
 	
 	this.processTags = function() {
+		// @author
+		var authors = this.get("comment").getTag("author");
+		if (authors.length) {
+			this.set("author", authors.map(function($){return $.desc;}).join(", "));
+		}
+		
 		// @desc
 		var descs = this.get("comment").getTag("desc");
 		if (descs.length) {
