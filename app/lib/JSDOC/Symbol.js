@@ -7,6 +7,7 @@ JSDOC.Symbol = function() {
 		_author: "",
 		_classDesc: "",
 		_comment: {},
+		_defaultValue: undefined,
 		_deprecated: "",
 		_desc: "",
 		_events: [],
