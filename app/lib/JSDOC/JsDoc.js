@@ -1,6 +1,7 @@
 /**
 	@constructor
 	@param [opt] Used to override the commandline options. Useful for testing.
+	@version $Id$
 */
 JSDOC.JsDoc = function(/**object*/ opt) {
 	if (opt) {

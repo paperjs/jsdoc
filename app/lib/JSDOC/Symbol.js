@@ -52,6 +52,7 @@ JSDOC.Symbol = function() {
 		this.set("comment", comment);
 		this.set("srcFile", JSDOC.Symbol.srcFile);
 		
+		if (this.is("FILE") && !this.get("alias")) this.set("alias", this.get("srcFile"));
 		this.processTags();
 		
 		if (defined(JSDOC.PluginManager)) {
@@ -444,11 +445,3 @@ JSDOC.Symbol.setShortcuts = function(shortcuts) {
 
 JSDOC.Symbol.shortcuts = {}; // holds map of shortcut names to full names
 JSDOC.Symbol.srcFile = ""; // running reference to the current file being parsed
-
-
-
-JSDOC.Symbol.dox = {
-	"desc": "This is an example.",
-	"isa": "constructor",
-	"private": true
-}

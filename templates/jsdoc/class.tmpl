@@ -288,8 +288,7 @@
 					
 					<if test="member.get('isStatic') && member.get('memberof') != '_global_'"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>
 					<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
-					<if test="member.get('defaultValue')">(<i>Default: {+member.get('defaultValue')+}</i>)</if>
-			
+					
 					</div>
 					<div class="description">
 						{+resolveLinks(member.get('desc'))+}
@@ -304,16 +303,22 @@
 					<pre class="code">{+member.get('example')+}</pre>
 					</if>
 				
-					<if test="member.get('see').length">
-						<dl class="detailList">
+					<dl class="detailList">
+						<if test="member.get('see').length">
 							<dt class="heading">See:</dt>
 							<for each="item" in="member.get('see')">
-								<dt>
-									{+new Link().toSymbol(item)+}
-								</dt>
+							<dd>
+								{+new Link().toSymbol(item)+}
+							</dd>
 							</for>
-						</dl>
-					</if>
+						</if>
+						<if test="member.get('defaultValue')">
+							<dt class="heading">Default Value:</dt>
+							<dd>
+								{+resolveLinks(member.get('defaultValue'))+}
+							</dd>
+						</if>
+					</dl>
 					<if test="!$member_last"><hr /></if>
 				</for>
 			</if>

@@ -5,7 +5,6 @@
 IO.include("frame.js");
 IO.include("lib/JSDOC.js");
 IO.includeDir("plugins/");
-/*debug*///IO.include("frame/Dumper.js");
 
 JSDOC.opt = JSDOC.Util.getOptions(arguments, {d:'directory', c:'conf', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', v:'verbose', 'D[]':'define'});
 
@@ -32,7 +31,9 @@ else {
 		IO.include("frame/Dumper.js");
 		var symbols = jsdoc.symbolGroup.getSymbols();
 		for (var i = 0, l = symbols.length; i < l; i++) {
-			var symbol = symbols[i]; /*debug*///print("s> "+symbol.get("alias"));
+			var symbol = symbols[i];
+			print("s> "+symbol.get("alias"));
+			print(symbol.serialize());
 		}
 	}
 	else {
