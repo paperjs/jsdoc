@@ -52,7 +52,9 @@ JSDOC.Symbol = function() {
 		this.set("comment", comment);
 		this.set("srcFile", JSDOC.Symbol.srcFile);
 		
-		if (this.is("FILE") && !this.get("alias")) this.set("alias", this.get("srcFile"));
+		if (this.is("FILE")) {
+			if (!this.get("alias")) this.set("alias", this.get("srcFile"));
+		}
 		this.processTags();
 		
 		if (defined(JSDOC.PluginManager)) {
@@ -127,6 +129,17 @@ JSDOC.Symbol = function() {
 		var descs = this.get("comment").getTag("desc");
 		if (descs.length) {
 			this.set("desc", descs.map(function($){return $.desc;}).join("\n")); // multiple descriptions are concatenated into one
+		}
+		descs = null;
+		
+		if (this.is("FILE")) {
+			if (!this.get("alias")) this.set("alias", this.get("srcFile"));
+			
+			var overviews = this.get("comment").getTag("overview");
+			if (overviews.length) {
+				this.set("desc", [this.get("desc")].concat(overviews.map(function($){return $.desc;})).join("\n"));
+			}
+			overviews = null;
 		}
 		
 		// @since

@@ -2,9 +2,9 @@ function publish(symbolGroup) {
 	publish.conf = {  // trailing slash expected for dirs
 		ext: ".html",
 		outDir: JSDOC.opt.d || SYS.pwd+"../out/jsdoc/",
-		templatesDir: SYS.pwd+"../templates/",
+		templatesDir: SYS.pwd+"../templates/jsdoc/",
 		symbolsDir: "symbols/",
-		srcDir: "src/"
+		srcDir: "symbols/src/"
 	};
 	
 	IO.mkPath((publish.conf.outDir+"symbols/src").split("/"));
@@ -13,9 +13,8 @@ function publish(symbolGroup) {
 	Link.symbolGroup = symbolGroup;
 
 	try {
-		var classTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"jsdoc/class.tmpl");
-		var indexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"jsdoc/index.tmpl");
-		var classesTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"jsdoc/allclasses.tmpl");
+		var classTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"class.tmpl");
+		var classesTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"allclasses.tmpl");
 	}
 	catch(e) {
 		print(e.message);
@@ -28,19 +27,18 @@ function publish(symbolGroup) {
 	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace())}
 	
 	var symbols = symbolGroup.getSymbols();
-	var classes = symbols.filter(isaClass).sort(makeSortby("alias"));
-
+	
 	var files = JSDOC.opt.srcFiles;
  	for (var i = 0, l = files.length; i < l; i++) {
  		var file = files[i];
- 		
  		var srcDir = publish.conf.outDir + "symbols/src/";
-
- 		makeSrcFile(file, srcDir);
+		makeSrcFile(file, srcDir);
  	}
  	
- 	Link.base = "../";
-	publish.classesIndex = classesTemplate.process(classes); // kept in memory
+ 	var classes = symbols.filter(isaClass).sort(makeSortby("alias"));
+	
+	Link.base = "../";
+ 	publish.classesIndex = classesTemplate.process(classes); // kept in memory
 	
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
@@ -54,15 +52,37 @@ function publish(symbolGroup) {
 	Link.base = "";
 	publish.classesIndex = classesTemplate.process(classes);
 	
-	//IO.saveFile(publish.conf.outDir, "allclasses-frame"+publish.conf.ext, classesIndex)
-	var index = indexTemplate.process(classes);
-	IO.saveFile(publish.conf.outDir, "index"+publish.conf.ext, index)
+	try {
+		var classesindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"index.tmpl");
+	}
+	catch(e) { print(e.message); quit(); }
+	
+	var classesIndex = classesindexTemplate.process(classes);
+	IO.saveFile(publish.conf.outDir, "index"+publish.conf.ext, classesIndex);
+	classesindexTemplate = classesIndex = classes = null;
+	
+	try {
+		var fileindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"allfiles.tmpl");
+	}
+	catch(e) { print(e.message); quit(); }
+	
+	var documentedFiles = symbols.filter(isaFile);
+	var allFiles = [];
+	
+	for (var i = 0; i < files.length; i++) {
+		allFiles.push(new JSDOC.Symbol().init(files[i], [], "FILE", new JSDOC.DocComment("/** */")));
+	}
+	
+	for (var i = 0; i < documentedFiles.length; i++) {
+		var offset = files.indexOf(documentedFiles[i].get("alias"));
+		allFiles[offset] = documentedFiles[i];
+	}
+		
+	//allFiles.sort(makeSortby("alias"));
 
-	// handle static files
-	//if (publish.conf.outDir) {
-	//	IO.copyFile(publish.conf.templatesDir+"jsdoc/static/index.html", publish.conf.outDir);
-	//}
-
+	var filesIndex = fileindexTemplate.process(allFiles);
+	IO.saveFile(publish.conf.outDir, "files"+publish.conf.ext, filesIndex);
+	fileindexTemplate = filesIndex = files = null;
 }
 
 function Link() {
@@ -132,7 +152,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 	var linkPath;
 	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
 	
-	// is it an interfile link?
+	// is it an internal link?
 	if (alias.charAt(0) == "#") var linkPath = alias;
 	// if there is no symbol by that name just return the name unaltered
 	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
@@ -156,7 +176,7 @@ Link.prototype._makeSrcLink = function(srcFilePath) {
 		
 	// transform filepath into a filename
 	var srcFile = srcFilePath.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
-	var outFilePath = publish.conf.srcDir+srcFile+publish.conf.ext;
+	var outFilePath = Link.base + publish.conf.srcDir + srcFile + publish.conf.ext;
 
 	if (!this.text) this.text = JSDOC.Util.fileName(srcFilePath);
 	return "<a href=\""+outFilePath+"\""+target+">"+this.text+"</a>";
@@ -192,7 +212,7 @@ function makeSortby(attribute) {
 }
 
 function include(path) {
-	var path = publish.conf.templatesDir+"jsdoc/"+path;
+	var path = publish.conf.templatesDir+path;
 	return IO.readFile(path);
 }
 

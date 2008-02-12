@@ -4,32 +4,34 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset={+JSDOC.opt.e+}" />
 		<meta name="generator" content="JsDoc Toolkit" />
-		{!Link.base = "../"; /* all generated links will be relative to this */!}
+		{! Link.base = "../"; /* all generated links will be relative to this */ !}
 		<title>JsDoc Reference - {+data.get('alias')+}</title>
-		
+
 		<style type="text/css">
 			{+include("static/default.css")+}
 		</style>
 	</head>
-	
-	<body>
-	
-<!-- header -->	
-		{+include("static/header.html")+}
 
-<!-- class index -->		
+	<body>
+<!-- ============================== header ================================= -->	
+		<!-- begin static/header.html -->
+		{+include("static/header.html")+}
+		<!-- end static/header.html -->
+
+<!-- ============================== classes index ============================ -->
 		<div id="index">
+			<!-- begin publish.classesIndex -->
 			{+publish.classesIndex+}
+			<!-- end publish.classesIndex -->
 		</div>
 		
 		<div id="content">
-		
-<!-- title -->
+<!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
 				<if test="data.isBuiltin()">Built-In </if>{!output+=(data.isNamespace())?"Namespace ":"Class ";!}{+data.get('alias')+}
 			</h1>
 
-<!-- class summary -->			
+<!-- ============================== class summary ========================== -->			
 			<p class="description">
 				<if test="data.get('augments').length"><br />Extends
 					{+
@@ -49,7 +51,7 @@
 				</if>
 			</p>
 
-<!-- constructor summary -->			
+<!-- ============================== constructor summary ==================== -->			
 			<if test="!data.isNamespace() && !data.isBuiltin()">{# have no documented constructor #}
 			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class {+data.get('alias')+}.">
 				<caption>Constructor Summary</caption>
@@ -73,8 +75,8 @@
 				</tbody>
 			</table>
 			</if>
-			
-<!-- properties summary -->			
+
+<!-- ============================== properties summary ===================== -->
 			<if test="data.get('properties').length">
 				{! var ownProperties = data.getProperties().filter(function($){return $.get('memberof') == data.get('alias')}).sort(makeSortby("name")); !}
 				<if test="ownProperties.length">
@@ -134,7 +136,7 @@
 				</if>
 			</if>
 
-<!-- methods summary -->			
+<!-- ============================== methods summary ======================== -->
 			<if test="data.get('methods').length">
 				{! var ownMethods = data.get('methods').filter(function($){return $.get('memberof') == data.get('alias')}).sort(makeSortby("name")); !}
 				<if test="ownMethods.length">
@@ -195,7 +197,7 @@
 				</if>
 			</if>
 
-<!-- constructor details -->			
+<!-- ============================== constructor details ==================== -->		
 			<if test="!data.isNamespace()  && !data.isBuiltin()">
 			<div class="details">
 				<div class="sectionTitle">
@@ -217,8 +219,8 @@
 				<pre class="code">{+data.get('example')+}</pre>
 				</if>
 				
-				<if test="data.get('params').length">
-					<dl class="detailList">
+				<dl class="detailList">
+					<if test="data.get('params').length">
 						<dt class="heading">Parameters:</dt>
 						<for each="item" in="data.get('params')">
 							<dt>
@@ -227,10 +229,14 @@
 							</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 						</for>
-					</dl>
-				</if>
-				<if test="data.get('exceptions').length">
-					<dl class="detailList">
+					</if>
+					<if test="data.get('deprecated')">
+						<dt class="heading">Deprecated:</dt>
+						<dt>
+							{+data.get('deprecated')+}
+						</dt>
+					</if>
+					<if test="data.get('exceptions').length">
 						<dt class="heading">Exceptions:</dt>
 						<for each="item" in="data.get('exceptions')">
 							<dt>
@@ -238,18 +244,14 @@
 							</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 						</for>
-					</dl>
-				</if>
-				<if test="data.get('returns').length">
-					<dl class="detailList">
+					</if>
+					<if test="data.get('returns').length">
 						<dt class="heading">Returns:</dt>
 						<for each="item" in="data.get('returns')">
 								<dd>{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
 						</for>
-					</dl>
-				</if>
-				<if test="data.get('requires').length">
-					<dl class="detailList">
+					</if>
+					<if test="data.get('requires').length">
 						<dt class="heading">Requires:</dt>
 						<for each="item" in="data.get('requires')">
 							<dt>
@@ -257,23 +259,20 @@
 							</dt>
 							<dd>{+resolveLinks(item.desc)+}</dd>
 						</for>
-					</dl>
-				</if>
-				<if test="data.get('see').length">
-					<dl class="detailList">
+					</if>
+					<if test="data.get('see').length">
 						<dt class="heading">See:</dt>
-						
 						<for each="item" in="data.get('see')">
 							<dt>
 								{+new Link().toSymbol(item)+}
 							</dt>
 						</for>
-					</dl>
-				</if>
+					</if>
+				</dl>
 			</div>
 			</if>
-			
-<!-- properties details -->			
+
+<!-- ============================== field details ========================== -->		
 			<if test="defined(ownProperties) && ownProperties.length">
 				<div class="sectionTitle">
 					Field Detail
@@ -304,6 +303,12 @@
 					</if>
 				
 					<dl class="detailList">
+						<if test="member.get('deprecated')">
+							<dt class="heading">Deprecated:</dt>
+							<dt>
+								{+member.get('deprecated')+}
+							</dt>
+						</if>
 						<if test="member.get('see').length">
 							<dt class="heading">See:</dt>
 							<for each="item" in="member.get('see')">
@@ -323,7 +328,7 @@
 				</for>
 			</if>
 
-<!-- methods details -->			
+<!-- ============================== method details ========================= -->		
 			<if test="defined(ownMethods) && ownMethods.length">
 				<div class="sectionTitle">
 					Method Detail
@@ -351,65 +356,59 @@
 					<pre class="code">{+member.get('example')+}</pre>
 					</if>
 					
+					<dl class="detailList">
 					<if test="member.get('params').length">
-						<dl class="detailList">
-							<dt class="heading">Parameters:</dt>
-							<for each="item" in="member.get('params')">
-								<dt>
-									{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}<b>{+item.name+}</b>
-									<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
-								</dt>
-								<dd>{+resolveLinks(item.desc)+}</dd>
-							</for>
-						</dl>
+						<dt class="heading">Parameters:</dt>
+						<for each="item" in="member.get('params')">
+							<dt>
+								{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}<b>{+item.name+}</b>
+								<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
+							</dt>
+							<dd>{+resolveLinks(item.desc)+}</dd>
+						</for>
+					</if>
+					<if test="member.get('deprecated')">
+						<dt class="heading">Deprecated:</dt>
+						<dt>
+							{+member.get('deprecated')+}
+						</dt>
 					</if>
 					<if test="member.get('exceptions').length">
-						<dl class="detailList">
-							<dt class="heading">Exceptions:</dt>
-							<for each="item" in="member.get('exceptions')">
-								<dt>
-									{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+} <b>{+item.name+}</b>
-								</dt>
-								<dd>{+resolveLinks(item.desc)+}</dd>
-							</for>
-						</dl>
+						<dt class="heading">Exceptions:</dt>
+						<for each="item" in="member.get('exceptions')">
+							<dt>
+								{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+} <b>{+item.name+}</b>
+							</dt>
+							<dd>{+resolveLinks(item.desc)+}</dd>
+						</for>
 					</if>
 					<if test="member.get('returns').length">
-						<dl class="detailList">
-							<dt class="heading">Returns:</dt>
-							<for each="item" in="member.get('returns')">
-									<dd>{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
-							</for>
-						</dl>
+						<dt class="heading">Returns:</dt>
+						<for each="item" in="member.get('returns')">
+							<dd>{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
+						</for>
 					</if>
 					<if test="member.get('requires').length">
-						<dl class="detailList">
-							<dt class="heading">Requires:</dt>
-							<for each="item" in="member.get('requires')">
-								<dt>
-									{+new Link().toSymbol(item.name)+}
-								</dt>
-								<dd>{+resolveLinks(item.desc)+}</dd>
-							</for>
-						</dl>
+						<dt class="heading">Requires:</dt>
+						<for each="item" in="member.get('requires')">
+							<dd>{+new Link().toSymbol(item.name)+}<if test="item.desc"> - {+resolveLinks(item.desc)+}</if></dd>
+						</for>
 					</if>
 					<if test="member.get('see').length">
-						<dl class="detailList">
-							<dt class="heading">See:</dt>
-							<for each="item" in="member.get('see')">
-								<dt>
-									{+new Link().toSymbol(item)+}
-								</dt>
-							</for>
-						</dl>
+						<dt class="heading">See:</dt>
+						<for each="item" in="member.get('see')">
+							<dd>{+new Link().toSymbol(item)+}<if test="item.desc"> - {+resolveLinks(item.desc)+}</if></dd>
+						</for>
 					</if>
-					<if test="!$member_last"><hr /></if>
+					</dl>
+				<if test="!$member_last"><hr /></if>
 				</for>
 			</if>
+			
 			<hr />
 		</div>
 		
-<!-- footer -->		
+<!-- ============================== footer ================================= -->
 		<div class="fineprint" style="clear:both">
 			<if test="JSDOC.opt.D.copyright">&copy;{+JSDOC.opt.D.copyright+}<br /></if>
 			Documentation generated by <a href="http://www.jsdoctoolkit.org/" target="_blank">JsDoc Toolkit</a> {+JSDOC.VERSION+} on {+new Date()+}
