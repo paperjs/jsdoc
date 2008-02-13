@@ -91,6 +91,7 @@ function Link() {
 	this.file = "";
 	this.text = "";
 	this.innerName = "";
+	this.classLink = false;
 	this.targetName = "";
 	
 	this.target = function(targetName) {
@@ -112,6 +113,10 @@ function Link() {
 	this.toSymbol = function(alias) {
 		if (defined(alias)) this.alias = new String(alias);
 		return this;
+	}
+	this.toClass = function(alias) {
+		this.classLink = true;
+		return this.toSymbol(alias);
 	}
 	this.toFile = function(file) {
 		if (defined(file)) this.file = file;
@@ -170,7 +175,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 		}
 		else {
 			linkPath = escape(linkTo.get('alias'));
-			linkPath += publish.conf.ext + "#constructor";
+			linkPath += publish.conf.ext + (this.classLink? "":"#constructor");
 		}
 		linkPath = linkBase + linkPath
 	}

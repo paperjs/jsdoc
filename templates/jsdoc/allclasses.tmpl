@@ -5,10 +5,10 @@
 	<for each="thisClass" in="data">
 	<li>{!
 		if (thisClass.get('alias') == "_global_") {
-			output += "<i>"+new Link().toSymbol(thisClass.get('alias'))+"</i>";
+			output += "<i>"+new Link().toClass(thisClass.get('alias'))+"</i>";
 		}
 		else {
-			output += new Link().toSymbol(thisClass.get('alias'));
+			output += new Link().toClass(thisClass.get('alias'));
 		}
 	!}</li>
 	</for>
