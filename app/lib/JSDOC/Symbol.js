@@ -221,6 +221,9 @@ JSDOC.Symbol = function() {
 		var statics = this.get("comment").getTag("static");
 		if (statics.length) {
 			this.set("isStatic", true);
+			if (this.get("isa") == "CONSTRUCTOR") {
+				this.set("isNamespace", true);
+			}
 		}
 		
 		// @function
@@ -261,7 +264,7 @@ JSDOC.Symbol = function() {
 		var returns = this.get("comment").getTag("return");
 		if (returns.length) { // there can be many return tags in a single doclet
 			this.set("returns", returns);
-			this.set("type", returns.map(function($){return $.type}).join(" ,"));
+			this.set("type", returns.map(function($){return $.type}).join(", "));
 		}
 		
 		// @exception
@@ -273,7 +276,7 @@ JSDOC.Symbol = function() {
 		// @requires
 		var requires = this.get("comment").getTag("requires");
 		if (requires.length) {
-			this.set("requires", requires);
+			this.set("requires", requires.map(function($){return $.desc}));
 		}
 		
 		// @type

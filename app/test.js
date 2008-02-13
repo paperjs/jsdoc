@@ -194,7 +194,7 @@ var testCases = [
 		is('symbols[1].get("params")[0].name', "id", 'User defined param documentation takes precedence over parser defined.');
 		is('symbols[1].get("params")[0].isOptional', true, 'Default for param is to not be optional.');
 		is('symbols[1].get("params")[1].isOptional', false, 'Can mark a param as being optional.');
-		is('symbols[1].get("params")[1].type', "number, string", 'Type of inline param doc can have multiple values.');
+		is('symbols[1].get("params")[1].type', "number|string", 'Type of inline param doc can have multiple values.');
 		is('symbols[2].get("params")[0].type', "", 'Type can be not defined for some params.');
 		is('symbols[2].get("params")[2].type', "int", 'Type can be defined inline for only some params.');
 		is('symbols[4].get("params").length', 0, 'Docomments inside function sig is ignored without a param.');

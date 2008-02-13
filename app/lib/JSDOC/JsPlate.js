@@ -97,6 +97,6 @@ JSDOC.JsPlate.prototype.process = function(data) {
 		print("line "+e.lineNumber+": "+lines[e.lineNumber-1]);
 		print("");
 	}
+	/*debug*///print(this.code);
 	return output;
-	//print(this.code);
 }

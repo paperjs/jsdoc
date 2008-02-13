@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 	<head>
-		<meta http-equiv="content-type" content="text/html; charset={+JSDOC.opt.e+}" />
+		<meta http-equiv="content-type" content="text/html; charset={+IO.encoding+}" />
 		<meta name="generator" content="JsDoc Toolkit" />
 		{! Link.base = "../"; /* all generated links will be relative to this */ !}
 		<title>JsDoc Reference - {+data.get('alias')+}</title>
@@ -66,9 +66,13 @@
 						<td class="attributes">{!
 							if (data.get('isPrivate')) output += "&lt;private&gt; ";
 							if (data.get('isInner')) output += "&lt;inner&gt; ";
-						!}</td>
+							/*if (data.get('isStatic')) output += "&lt;static&gt; ";*/
+						!}&nbsp;</td>
 						<td class="nameDescription">
-							<div class="fixedFont">new <b>{+new Link().toSymbol(data.get('alias'))+}</b>{+ makeSignature(data.get('params')) +}</div>
+							<div class="fixedFont">
+							<if test="data.get('type')"><span class="light">{{+new Link().toSymbol(data.get('type'))+}}</span></if>
+							new <b>{+ new Link().toSymbol(data.get('alias')).inner('constructor')+}</b>{+ makeSignature(data.get('params')) +}
+							</div>
 							<div class="description">{+resolveLinks(summarize(data.get('desc')))+}</div>
 						</td>
 					</tr>
@@ -94,11 +98,10 @@
 							<td class="attributes">{!
 								if (member.get('isPrivate')) output += "&lt;private&gt; ";
 								if (member.get('isStatic')) output += "&lt;static&gt; ";
-							!}</td>
+							!}&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
 								<if test="member.get('isStatic') && member.get('memberof') != '_global_'">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name'))+}</b>
-								<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
 								</div>
 								<div class="description">{+resolveLinks(summarize(member.get('desc')))+}</div>
 							</td>
@@ -155,10 +158,9 @@
 								if (member.get('isPrivate')) output += "&lt;private&gt; ";
 								if (member.get('isInner')) output += "&lt;inner&gt; ";
 								else if (member.get('isStatic')) output += "&lt;static&gt; ";
-							!}</td>
+							!}&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont"><if test="member.get('isStatic') && member.get('memberof') != '_global_'">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name'))+}</b>{+makeSignature(member.get('params'))+}
-								<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
 								</div>
 								<div class="description">{+resolveLinks(summarize(member.get('desc')))+}</div>
 							</td>
@@ -199,7 +201,7 @@
 
 <!-- ============================== constructor details ==================== -->		
 			<if test="!data.isNamespace()  && !data.isBuiltin()">
-			<div class="details">
+			<div class="details"><a name="constructor"> </a>
 				<div class="sectionTitle">
 					Constructor Detail
 				</div>
@@ -207,9 +209,11 @@
 				<div class="fixedFont">{!
 					if (data.get('isPrivate')) output += "&lt;private&gt; ";
 					if (data.get('isInner')) output += "&lt;inner&gt; ";
-					
-					output += "new <b>" + data.get('alias') + "</b>" + makeSignature(data.get('params'))
-				!}</div>
+				!}
+					<if test="data.get('type')"><span class="light">{{+new Link().toSymbol(data.get('type'))+}}</span></if>
+					new <b>{+ data.get('alias') +}</b>{+ makeSignature(data.get('params')) +}
+				</div>
+				
 				<div class="description">
 					{+resolveLinks(data.get('desc'))+}
 					<if test="data.get('author')"><br /><i>Author: </i>{+data.get('author')+}.</if>
@@ -219,56 +223,63 @@
 				<pre class="code">{+data.get('example')+}</pre>
 				</if>
 				
-				<dl class="detailList">
+				
 					<if test="data.get('params').length">
+						<dl class="detailList">
 						<dt class="heading">Parameters:</dt>
 						<for each="item" in="data.get('params')">
 							<dt>
-								{+((item.type)?""+("<span class=\"light\">"+(new Link().toSymbol(item.type)+"</span>"))+" " : "")+} <b>{+item.name+}</b>
+								{+((item.type)?""+("<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type)+"}</span> ")) : "")+} <b>{+item.name+}</b>
 								<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
 							</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 						</for>
+						</dl>
 					</if>
 					<if test="data.get('deprecated')">
+						<dl class="detailList">
 						<dt class="heading">Deprecated:</dt>
 						<dt>
 							{+data.get('deprecated')+}
 						</dt>
+						</dl>
 					</if>
 					<if test="data.get('exceptions').length">
+						<dl class="detailList">
 						<dt class="heading">Exceptions:</dt>
 						<for each="item" in="data.get('exceptions')">
 							<dt>
-								{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+} <b>{+item.name+}</b>
+								{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+} <b>{+item.name+}</b>
 							</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 						</for>
+						</dl>
 					</if>
 					<if test="data.get('returns').length">
+						<dl class="detailList">
 						<dt class="heading">Returns:</dt>
 						<for each="item" in="data.get('returns')">
-								<dd>{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
+								<dd>{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
 						</for>
+						</dl>
 					</if>
 					<if test="data.get('requires').length">
+						<dl class="detailList">
 						<dt class="heading">Requires:</dt>
 						<for each="item" in="data.get('requires')">
-							<dt>
-								{+new Link().toSymbol(item.name)+}
-							</dt>
-							<dd>{+resolveLinks(item.desc)+}</dd>
+							<dd>{+ resolveLinks(item) +}</dd>
 						</for>
+						</dl>
 					</if>
 					<if test="data.get('see').length">
+						<dl class="detailList">
 						<dt class="heading">See:</dt>
 						<for each="item" in="data.get('see')">
-							<dt>
-								{+new Link().toSymbol(item)+}
-							</dt>
+							<dd>{+ resolveLinks(item) +}</dd>
 						</for>
+						</dl>
 					</if>
-				</dl>
+
 			</div>
 			</if>
 
@@ -302,28 +313,32 @@
 					<pre class="code">{+member.get('example')+}</pre>
 					</if>
 				
-					<dl class="detailList">
+					
 						<if test="member.get('deprecated')">
+							<dl class="detailList">
 							<dt class="heading">Deprecated:</dt>
 							<dt>
 								{+member.get('deprecated')+}
 							</dt>
+							</dl>
 						</if>
 						<if test="member.get('see').length">
+							<dl class="detailList">
 							<dt class="heading">See:</dt>
 							<for each="item" in="member.get('see')">
-							<dd>
-								{+new Link().toSymbol(item)+}
-							</dd>
+							<dd>{+ resolveLinks(item) +}</dd>
 							</for>
+							</dl>
 						</if>
 						<if test="member.get('defaultValue')">
+							<dl class="detailList">
 							<dt class="heading">Default Value:</dt>
 							<dd>
 								{+resolveLinks(member.get('defaultValue'))+}
 							</dd>
+							</dl>
 						</if>
-					</dl>
+
 					<if test="!$member_last"><hr /></if>
 				</for>
 			</if>
@@ -356,52 +371,64 @@
 					<pre class="code">{+member.get('example')+}</pre>
 					</if>
 					
-					<dl class="detailList">
-					<if test="member.get('params').length">
-						<dt class="heading">Parameters:</dt>
-						<for each="item" in="member.get('params')">
+					
+						<if test="member.get('params').length">
+							<dl class="detailList">
+							<dt class="heading">Parameters:</dt>
+							<for each="item" in="member.get('params')">
+								<dt>
+									{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}<b>{+item.name+}</b>
+									<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
+								</dt>
+								<dd>{+resolveLinks(item.desc)+}</dd>
+							</for>
+							</dl>
+						</if>
+						<if test="member.get('deprecated')">
+							<dl class="detailList">
+							<dt class="heading">Deprecated:</dt>
 							<dt>
-								{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}<b>{+item.name+}</b>
-								<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
+								{+member.get('deprecated')+}
 							</dt>
-							<dd>{+resolveLinks(item.desc)+}</dd>
-						</for>
-					</if>
-					<if test="member.get('deprecated')">
-						<dt class="heading">Deprecated:</dt>
-						<dt>
-							{+member.get('deprecated')+}
-						</dt>
-					</if>
-					<if test="member.get('exceptions').length">
-						<dt class="heading">Exceptions:</dt>
-						<for each="item" in="member.get('exceptions')">
-							<dt>
-								{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+} <b>{+item.name+}</b>
-							</dt>
-							<dd>{+resolveLinks(item.desc)+}</dd>
-						</for>
-					</if>
-					<if test="member.get('returns').length">
-						<dt class="heading">Returns:</dt>
-						<for each="item" in="member.get('returns')">
-							<dd>{+((item.type)?"<span class=\"light\">"+(new Link().toSymbol(item.type))+"</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
-						</for>
-					</if>
-					<if test="member.get('requires').length">
-						<dt class="heading">Requires:</dt>
-						<for each="item" in="member.get('requires')">
-							<dd>{+new Link().toSymbol(item.name)+}<if test="item.desc"> - {+resolveLinks(item.desc)+}</if></dd>
-						</for>
-					</if>
-					<if test="member.get('see').length">
-						<dt class="heading">See:</dt>
-						<for each="item" in="member.get('see')">
-							<dd>{+new Link().toSymbol(item)+}<if test="item.desc"> - {+resolveLinks(item.desc)+}</if></dd>
-						</for>
-					</if>
-					</dl>
-				<if test="!$member_last"><hr /></if>
+							</dl>
+						</if>
+						<if test="member.get('exceptions').length">
+							<dl class="detailList">
+							<dt class="heading">Exceptions:</dt>
+							<for each="item" in="member.get('exceptions')">
+								<dt>
+									{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+} <b>{+item.name+}</b>
+								</dt>
+								<dd>{+resolveLinks(item.desc)+}</dd>
+							</for>
+							</dl>
+						</if>
+						<if test="member.get('returns').length">
+							<dl class="detailList">
+							<dt class="heading">Returns:</dt>
+							<for each="item" in="member.get('returns')">
+								<dd>{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}{+resolveLinks(item.desc)+}</dd>
+							</for>
+							</dl>
+						</if>
+						<if test="member.get('requires').length">
+							<dl class="detailList">
+							<dt class="heading">Requires:</dt>
+							<for each="item" in="member.get('requires')">
+								<dd>{+ resolveLinks(item) +}</dd>
+							</for>
+							</dl>
+						</if>
+						<if test="member.get('see').length">
+							<dl class="detailList">
+							<dt class="heading">See:</dt>
+							<for each="item" in="member.get('see')">
+								<dd>{+ resolveLinks(item) +}</dd>
+							</for>
+							</dl>
+						</if>
+
+					<if test="!$member_last"><hr /></if>
 				</for>
 			</if>
 			

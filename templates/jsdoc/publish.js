@@ -78,7 +78,7 @@ function publish(symbolGroup) {
 		allFiles[offset] = documentedFiles[i];
 	}
 		
-	//allFiles.sort(makeSortby("alias"));
+	allFiles = allFiles.sort(makeSortby("name"));
 
 	var filesIndex = fileindexTemplate.process(allFiles);
 	IO.saveFile(publish.conf.outDir, "files"+publish.conf.ext, filesIndex);
@@ -90,10 +90,15 @@ function Link() {
 	this.src = "";
 	this.file = "";
 	this.text = "";
+	this.innerName = "";
 	this.targetName = "";
 	
 	this.target = function(targetName) {
 		if (defined(targetName)) this.targetName = targetName;
+		return this;
+	}
+	this.inner = function(inner) {
+		if (defined(inner)) this.innerName = inner;
 		return this;
 	}
 	this.withText = function(text) {
@@ -118,9 +123,9 @@ function Link() {
 		var thisLink = this;
 
 		if (this.alias) {
-			linkString = this.alias.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)\b/gi,
-				function(match, symbolName) {
-					return thisLink._makeSymbolLink(symbolName);
+			linkString = this.alias.replace(/(?:^|[^a-z$0-9_])(#[a-z$0-9_#-.]+|[a-z$0-9_#-.]+)(\|)?\b/gi,
+				function(match, symbolName, sep) {
+					return thisLink._makeSymbolLink(symbolName)+(sep? sep: "");
 				}
 			);
 		}
@@ -158,10 +163,14 @@ Link.prototype._makeSymbolLink = function(alias) {
 	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
 	// it's a symbol in another file
 	else {
-		linkPath = escape(linkTo.get('alias'))+publish.conf.ext;
+		
 		if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
 			linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
 			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
+		}
+		else {
+			linkPath = escape(linkTo.get('alias'));
+			linkPath += publish.conf.ext + "#constructor";
 		}
 		linkPath = linkBase + linkPath
 	}
@@ -240,12 +249,7 @@ function makeSignature(params) {
 		}
 	).map(
 		function($) {
-			return (
-				($.type) ? 
-				"<span class=\"light\">"+(new Link().toSymbol($.type))+" </span>"
-				:
-				""
-			) + $.name;
+			return $.name;
 		}
 	).join(", ")
 	+

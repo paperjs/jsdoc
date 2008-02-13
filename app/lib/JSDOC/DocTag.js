@@ -8,13 +8,13 @@ JSDOC.DocTag = function(src) {
 	this.desc = "";
 	
 	if (defined(src)) {
-		var parts = src.match(/^(\S+)(?:\s+\{\s*([\S\s]+?)\s*\})?\s*([\S\s]*\S)?/);
+		var parts = src.match(/^(\S+)(?:\s+\{\s*([^@][\S\s]*?)\s*\})?\s*([\S\s]*\S)?/);
 		
 		if (defined(parts) && parts != null) {
 			this.title = (parts[1].toLowerCase() || "");
 			this.type = (parts[2] || "");
 	
-			if (this.type) this.type = this.type.replace(/\s*(,|\|\|?)\s*/g, ", ");
+			if (this.type) this.type = this.type.replace(/\s*(,|\|\|)\s*/g, '|');
 			this.desc = (parts[3] || "");
 		
 			// should be @type foo but we'll accept @type {foo} too
@@ -23,7 +23,7 @@ JSDOC.DocTag = function(src) {
 				
 				// should be @type foo, bar, baz but we'll accept @type foo|bar||baz too
 				if (this.desc) {
-					this.desc = this.desc.replace(/\s*(,|\|\|?)\s*/g, ", ");
+					this.desc = this.desc.replace(/\s*(,|\|\|)\s*/g, '|');
 				}
 			}
 

@@ -86,7 +86,7 @@ Shape.prototype.border = null;
 /**
  * Get the coordinates of this shape. It is assumed that we're always talking
  * about shapes in a 2D location here.
- * @requires Shape The shape class
+ * @requires The {@link Shape} class
  * @returns A Coordinate object representing the location of this Shape
  * @type Coordinate[]
  */
@@ -97,7 +97,8 @@ Shape.prototype.getCoords = function(){
 /**
  * Get the color of this shape.
  * @see #setColor
- * @link Shape
+ * @see The <a href="example.com">Color</a> library.
+ * @link {@link Shape}s
  * @type Color
  */
 Shape.prototype.getColor = function(){
@@ -254,7 +255,7 @@ function Square(width, height){
 Square.prototype = new Rectangle();
 
 /**
- * Set the width value for this Square.
+ * Set the width value for this Shape.
  * @param {int} width The width value to be set
  * @see #getWidth
  */
@@ -263,7 +264,7 @@ Square.prototype.setWidth = function(width){
 }
 
 /**
- * Set the height value for this Square 
+ * Set the height value for this Shape 
  * Sets the {@link Rectangle#height} attribute in the Rectangle.
  * @param {int} height The height value to be set
  */
@@ -277,6 +278,7 @@ Square.prototype.setHeight = function(height){
  * @class Circle class is another subclass of Shape
  * @extends Shape
  * @param {int} radius The optional radius of this {@link Circle }
+ * @mixin Square.prototype.setWidth as this.setDiameter
  */
 function Circle(radius){
    if (radius) {
@@ -418,6 +420,7 @@ ShapeFactory.prototype = {
 
 /**
  * An example of a singleton class
+ * @param ... Arguments represent {@link coordinate}s in the shape.
  * @constructor
  */
 MySingletonShapeFactory = new function(){
