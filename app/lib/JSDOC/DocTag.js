@@ -14,6 +14,10 @@ JSDOC.DocTag = function(src) {
 			this.title = (parts[1].toLowerCase() || "");
 			this.type = (parts[2] || "");
 	
+			if (defined(JSDOC.PluginManager)) {
+				JSDOC.PluginManager.run("onDocTagSynonym", this);
+			}
+
 			if (this.type) this.type = this.type.replace(/\s*(,|\|\|)\s*/g, '|');
 			this.desc = (parts[3] || "");
 		
@@ -74,6 +78,11 @@ JSDOC.DocTag = function(src) {
 						}
 					}
 				}
+			}
+
+			// Process any additional tag types
+			if (defined(JSDOC.PluginManager)) {
+				JSDOC.PluginManager.run("onDocTag", this);
 			}
 		}
 	}

@@ -13,6 +13,13 @@ JSDOC.Util.fileName = function(path) {
 }
 
 /**
+ * Get the extension of a filename
+ */
+JSDOC.Util.fileExtension = function(filename) {
+   return filename.split(".").pop().toLowerCase();
+};
+
+/**
  * Turn a path into just the directory part.
  */
 JSDOC.Util.dir = function(path) {

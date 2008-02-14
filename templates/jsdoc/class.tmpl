@@ -66,11 +66,9 @@
 						<td class="attributes">{!
 							if (data.get('isPrivate')) output += "&lt;private&gt; ";
 							if (data.get('isInner')) output += "&lt;inner&gt; ";
-							/*if (data.get('isStatic')) output += "&lt;static&gt; ";*/
 						!}&nbsp;</td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							<if test="data.get('type')"><span class="light">{{+new Link().toSymbol(data.get('type'))+}}</span></if>
 							new <b>{+ new Link().toSymbol(data.get('alias')).inner('constructor')+}</b>{+ makeSignature(data.get('params')) +}
 							</div>
 							<div class="description">{+resolveLinks(summarize(data.get('desc')))+}</div>
@@ -157,7 +155,7 @@
 							<td class="attributes">{!
 								if (member.get('isPrivate')) output += "&lt;private&gt; ";
 								if (member.get('isInner')) output += "&lt;inner&gt; ";
-								else if (member.get('isStatic')) output += "&lt;static&gt; ";
+								if (member.get('isStatic')) output += "&lt;static&gt; ";
 							!}&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont"><if test="member.get('isStatic') && member.get('memberof') != '_global_'">{+member.get('memberof')+}.</if><b>{+new Link().toSymbol(member.get('alias')).withText(member.get('name'))+}</b>{+makeSignature(member.get('params'))+}
@@ -210,7 +208,6 @@
 					if (data.get('isPrivate')) output += "&lt;private&gt; ";
 					if (data.get('isInner')) output += "&lt;inner&gt; ";
 				!}
-					<if test="data.get('type')"><span class="light">{{+new Link().toSymbol(data.get('type'))+}}</span></if>
 					new <b>{+ data.get('alias') +}</b>{+ makeSignature(data.get('params')) +}
 				</div>
 				
@@ -242,6 +239,14 @@
 						<dt>
 							{+data.get('deprecated')+}
 						</dt>
+						</dl>
+					</if>
+					<if test="data.get('since').length">
+						<dl class="detailList">
+						<dt class="heading">Since:</dt>
+						<for each="item" in="data.get('since')">
+							<dd>{+ item +}</dd>
+						</for>
 						</dl>
 					</if>
 					<if test="data.get('exceptions').length">
@@ -293,11 +298,11 @@
 					<div class="fixedFont">{!
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
-						else if (member.get('isStatic')) output += "&lt;static&gt; ";
+						if (member.get('isStatic')) output += "&lt;static&gt; ";
 					!}
 					
+					<if test="member.get('type')"><span class="light">{{+new Link().toSymbol(member.get('type'))+}}</span></if>
 					<if test="member.get('isStatic') && member.get('memberof') != '_global_'"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>
-					<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
 					
 					</div>
 					<div class="description">
@@ -318,8 +323,14 @@
 							<dl class="detailList">
 							<dt class="heading">Deprecated:</dt>
 							<dt>
-								{+member.get('deprecated')+}
+								{+ member.get('deprecated') +}
 							</dt>
+							</dl>
+						</if>
+						<if test="member.get('since').length">
+							<dl class="detailList">
+							<dt class="heading">Since:</dt>
+								<dd>{+ member.get('since') +}</dd>
 							</dl>
 						</if>
 						<if test="member.get('see').length">
@@ -353,10 +364,12 @@
 					<div class="fixedFont">{!
 						if (member.get('isPrivate')) output += "&lt;private&gt; ";
 						if (member.get('isInner')) output += "&lt;inner&gt; ";
+						if (member.get('isStatic')) output += "&lt;static&gt; ";
 					!}
 					
+					<if test="member.get('type')"><span class="light">{{+new Link().toSymbol(member.get('type'))+}}</span></if>
 					<if test="member.get('isStatic') && member.get('memberof') != '_global_'"><span class="light">{+member.get('memberof')+}.</span></if><b>{+member.get('name')+}</b>{+makeSignature(member.get('params'))+}
-					<if test="member.get('type')"><span class="light"> : {+new Link().toSymbol(member.get('type'))+}</span></if>
+					
 					</div>
 					<div class="description">
 						{+resolveLinks(member.get('desc'))+}
@@ -390,6 +403,13 @@
 							<dt>
 								{+member.get('deprecated')+}
 							</dt>
+							</dl>
+						</if>
+						<if test="member.get('since').length">
+							<dl class="detailList">
+							<dt class="heading">Since:</dt>
+								<dd>{+ member.get('since') +}</dd>
+							</dl>
 							</dl>
 						</if>
 						<if test="member.get('exceptions').length">

@@ -63,6 +63,22 @@ JSDOC.JsDoc = function(/**object*/ opt) {
  		}
  	}
 
+   // Load additional file handlers
+   // the -H option: filetype handlers
+   var H = {};
+   if (JSDOC.opt.H) {
+      for (var h in JSDOC.opt.H) {
+         // Include additional files for the handlers
+         LOG.inform("Adding '." + h + "' file handler '" + JSDOC.opt.H[h].handlerClass + "' @ " + JSDOC.opt.H[h].lib);
+         IO.include("handlers/" + JSDOC.opt.H[h].lib);
+      }
+   }
+
+	// Give plugins a chance to initialize
+	if (defined(JSDOC.PluginManager)) {
+		JSDOC.PluginManager.run("onInit", this);
+	}
+
 	JSDOC.opt.srcFiles = this.getSrcFiles();
 	this.symbolGroup = new JSDOC.SymbolGroup(this.getSymbols());
 }
@@ -76,14 +92,14 @@ JSDOC.JsDoc.prototype.getSrcFiles = function() {
 	var ext = ["js"];
 	if (JSDOC.opt.x) ext = JSDOC.opt.x.split(",").map(function($) {return $.toLowerCase()});
 	
-	function isJs($) {
+   function isHandled($) {
 		var thisExt = $.split(".").pop().toLowerCase();
 		return (ext.indexOf(thisExt) > -1); // we're only interested in files with certain extensions
 	}
 	
 	for (var i = 0; i < JSDOC.opt._.length; i++) {
 		srcFiles = srcFiles.concat(
-			IO.ls(JSDOC.opt._[i], JSDOC.opt.r).filter(isJs)
+			IO.ls(JSDOC.opt._[i], JSDOC.opt.r).filter(isHandled)
 		);
 	}
 	
@@ -105,16 +121,36 @@ JSDOC.JsDoc.prototype.getSymbols = function() {
 			print("oops: "+e.message);
 		}
 
-		var tr = new JSDOC.TokenReader();
-		var tokens = tr.tokenize(new JSDOC.TextStream(src));
+		// Check to see if there is a handler for this file type
+		var ext = JSDOC.Util.fileExtension(srcFile);
+		if (JSDOC.opt.H && JSDOC.opt.H[ext] != null) {
+			LOG.inform(" Using external handler for '" + ext + "'");
 
-		symbols = symbols.concat(
-			JSDOC.Parser.parse(
-				new JSDOC.TokenStream(tokens),
-				srcFile
-			)
-		);
+			// Get the handler class
+			if (typeof JSDOC.opt.H[ext].handlerClass == 'string') {
+				// Convert the class name to its class object
+				JSDOC.opt.H[ext].handlerClass = eval(JSDOC.opt.H[ext].handlerClass);
+				if (typeof JSDOC.opt.H[ext].handlerClass != 'object') {
+					LOG.inform("The class for the '" + ext + "' handler is invalid!");
+				}
+			}
+
+			symbols = symbols.concat( JSDOC.opt.H[ext].handlerClass.symbolize(srcFile, src) );
+		}
+		else {
+				// The default (JSDOC) handler
+			var tr = new JSDOC.TokenReader();
+			var tokens = tr.tokenize(new JSDOC.TextStream(src));
+	
+			symbols = symbols.concat(
+				JSDOC.Parser.parse(
+					new JSDOC.TokenStream(tokens),
+					srcFile
+				)
+			);
+		}
 	}
+
 	this.symbols = symbols;
 	return this.symbols;
 }

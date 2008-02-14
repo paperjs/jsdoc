@@ -6,8 +6,9 @@ JSDOC = {
 };
 
 /** The current version string of this application. */
-JSDOC.VERSION = "2.0a1";
+JSDOC.VERSION = "2.0b";
 
+/** Print out usage information and quit. */
 JSDOC.usage = function() {
 	print("USAGE: java -jar jsrun.jar app/run.js [OPTIONS] <SRC_DIR> <SRC_FILE> ...");
 	print("");

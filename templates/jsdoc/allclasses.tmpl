@@ -1,6 +1,7 @@
-<h2>{+new Link().toFile("index.html").withText("Class Index")+}</h2>
-
+<div align="center">{+new Link().toFile("index.html").withText("Class Index")+}
+| {+new Link().toFile("files.html").withText("File Index")+}</div>
 <hr />
+<h2>Classes</h2>
 <ul class="classList">
 	<for each="thisClass" in="data">
 	<li>{!
@@ -13,3 +14,4 @@
 	!}</li>
 	</for>
 </ul>
+<hr />

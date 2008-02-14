@@ -37,6 +37,10 @@ JSDOC.Symbol = function() {
 		_version: ""
 	};
 	
+	if (defined(JSDOC.PluginManager)) {
+		JSDOC.PluginManager.run("onModifyProperties", properties);
+	}
+	
 	this.init = function(
 		/** String */ name,
 		/** Object[] */ params,
