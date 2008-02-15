@@ -31,4 +31,4 @@ JSDOC.usage = function() {
 	java.lang.System.exit(0);
 }
 
-IO.includeDir("handlers/JSDOC/");
+IO.includeDir("lib/JSDOC/");
