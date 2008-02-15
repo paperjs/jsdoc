@@ -76,6 +76,15 @@ JSDOC.Symbol = function() {
 		return properties["_"+propName];
 	}
 	
+	for (var p in properties) {
+		var name = p.substr(1);
+		if (typeof JSDOC.Symbol.prototype[name] == "undefined") {
+			JSDOC.Symbol.prototype[name] = (
+				function(n) { return function(){ return this.get(n); } }
+			)(name);
+		}
+	}
+
 	this.set = function(propName, v) {
 		if (this.hasProperty(propName)) {
 			switch(propName) {
