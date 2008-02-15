@@ -13,3 +13,4 @@
   * Fixed error: Locally scoped variables (declared with var) no longer appear as global.
   * It is now possible to run JsDoc Toolkit from any directory.
   * Added support for inline {@link ...} tags.
+  * Added support for the -H commandline option to allow for custom content handlers.

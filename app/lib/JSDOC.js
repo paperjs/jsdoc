@@ -6,7 +6,7 @@ JSDOC = {
 };
 
 /** The current version string of this application. */
-JSDOC.VERSION = "2.0b";
+JSDOC.VERSION = "2.0b1";
 
 /** Print out usage information and quit. */
 JSDOC.usage = function() {
@@ -20,6 +20,7 @@ JSDOC.usage = function() {
 	print("  -D=\"myVar:My value\" or --define=\"myVar:My value\"\n          Multiple. Define a variable, available in JsDoc as JSDOC.opt.D.myVar\n");
 	print("  -e=<ENCODING> or --encoding=<ENCODING>\n          Use this encoding to read and write files.\n");
 	print("  -h or --help\n          Show this message and exit.\n");
+	print("  -H=ext:handler          Multiple. Load handlers/handler.js to handle files with .ext names.\n");
 	print("  -o=<PATH> or --out=<PATH>\n          Print log messages to a file (defaults to stdout).\n");
 	print("  -p or --private\n          Include symbols tagged as private and inner symbols.\n");
 	print("  -r=<DEPTH> or --recurse=<DEPTH>\n          Descend into src directories.\n");

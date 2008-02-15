@@ -6,7 +6,7 @@ IO.include("frame.js");
 IO.include("lib/JSDOC.js");
 IO.includeDir("plugins/");
 
-JSDOC.opt = JSDOC.Util.getOptions(arguments, {d:'directory', c:'conf', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', v:'verbose', 'D[]':'define'});
+JSDOC.opt = JSDOC.Util.getOptions(arguments, {d:'directory', c:'conf', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', v:'verbose', 'D[]':'define', 'H[]':'handler'});
 
 if (JSDOC.opt.v) LOG.verbose = true;
 if (JSDOC.opt.o) LOG.out = IO.open(JSDOC.opt.o);
