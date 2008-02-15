@@ -3,7 +3,7 @@
  */
 
 IO.include("frame.js");
-IO.include("lib/JSDOC.js");
+IO.include("handlers/JSDOC.js");
 IO.includeDir("plugins/");
 
 JSDOC.opt = JSDOC.Util.getOptions(arguments, {d:'directory', c:'conf', t:'template', r:'recurse', x:'ext', p:'private', a:'allfunctions', A:'Allfunctions', e:'encoding', o:'out', T:'test', h:'help', v:'verbose', 'D[]':'define', 'H[]':'handler'});
