@@ -8,8 +8,8 @@ FOODOC = {
 /** The current version string of this application. */
 FOODOC.VERSION = "1.0";
 
-FOODOC.symbolize = function(srcFile, src) {
-	LOG.inform("Symbolizing file '" + srcFile + "'");
+FOODOC.handle = function(srcFile, src) {
+	LOG.inform("Handling file '" + srcFile + "'");
 	
 	return [
 		new JSDOC.Symbol().init(
@@ -19,4 +19,8 @@ FOODOC.symbolize = function(srcFile, src) {
 			new JSDOC.DocComment("/** This is a foo. */")
 		)
 	];
+};
+
+FOODOC.publish = function(symbolgroup) {
+	LOG.inform("Publishing symbolgroup.");
 };

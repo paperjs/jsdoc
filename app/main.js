@@ -27,7 +27,7 @@ else {
 	
 	var myTemplate = JSDOC.opt.t;
 
-	if (!myTemplate) {
+	if (JSDOC.opt.Z) { // secret debugging option
 		IO.include("frame/Dumper.js");
 		var symbols = jsdoc.symbolGroup.getSymbols();
 		for (var i = 0, l = symbols.length; i < l; i++) {
@@ -37,9 +37,16 @@ else {
 		}
 	}
 	else {
-		load(myTemplate+"/publish.js"); // must be path relative to cwd
-		if (publish) publish(jsdoc.symbolGroup);
-		else LOG.warn("publish() is not defined in that template.");
+		var handler = jsdoc.symbolGroup.handler;
+LOG.inform("handler is "+handler);
+		if (handler && handler.publish) {
+			handler.publish(jsdoc.symbolGroup);
+		}
+		else {
+			load(myTemplate+"/publish.js"); // must be path relative to cwd
+			if (publish) publish(jsdoc.symbolGroup);
+			else LOG.warn("publish() is not defined in that template.");
+		}
 	}
 }
 

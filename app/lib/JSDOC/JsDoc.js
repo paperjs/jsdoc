@@ -87,7 +87,10 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 	}
 
 	JSDOC.opt.srcFiles = this.getSrcFiles();
-	this.symbolGroup = new JSDOC.SymbolGroup(this.getSymbols());
+	var symbols = this.getSymbols();
+	var handler = symbols.handler;
+	this.symbolGroup = new JSDOC.SymbolGroup(symbols);
+	this.symbolGroup.handler = handler;
 }
 
 /**
@@ -134,7 +137,8 @@ JSDOC.JsDoc.prototype.getSymbols = function() {
 		if (JSDOC.handlers[ext]) {
 			LOG.inform(" Using external handler for '" + ext + "'");
 
-			symbols = symbols.concat(JSDOC.handlers[ext].symbolize(srcFile, src));
+			symbols = symbols.concat(JSDOC.handlers[ext].handle(srcFile, src));
+			symbols.handler = JSDOC.handlers[ext];
 		}
 		else {
 			// The default (JSDOC) handler
