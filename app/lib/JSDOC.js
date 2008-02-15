@@ -1,5 +1,5 @@
 /**
-	This is the main container for the entire application.
+	This is the main container for the JSDOC application.
 	@namespace
 */
 JSDOC = {
@@ -28,7 +28,7 @@ JSDOC.usage = function() {
 	print("  -T or --test\n          Run all unit tests and exit.\n");
 	print("  -x=<EXT>[,EXT]... or --ext=<EXT>[,EXT]...\n          Scan source files with the given extension/s (defaults to js).\n");
 	
-	java.lang.System.exit(0);
+	quit();
 }
 
 IO.includeDir("lib/JSDOC/");

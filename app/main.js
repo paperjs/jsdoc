@@ -14,44 +14,58 @@ if (JSDOC.opt.o) LOG.out = IO.open(JSDOC.opt.o);
 var jsdoc = new JSDOC.JsDoc();
 
 if (JSDOC.opt.T) {
-	LOG.inform("JsDoc Toolkit running in test mode: "+new Date());
+	LOG.inform("JsDoc Toolkit running in test mode at "+new Date()+".");
 	IO.include("frame/Testrun.js");
 	IO.include("test.js");
 }
+else if (JSDOC.opt._.length == 0) {
+	LOG.warn("No source files to work on. Nothing to do.");
+	quit();
+}
 else {
-	LOG.inform("JsDoc Toolkit main running at: "+new Date());
-	LOG.inform("options: ");
+	LOG.inform("JsDoc Toolkit main() running at "+new Date()+".");
+	LOG.inform("With options: ");
 	for (var o in JSDOC.opt) {
 		LOG.inform("    "+o+": "+JSDOC.opt[o]);
 	}
 	
-	var myTemplate = JSDOC.opt.t;
-
 	if (JSDOC.opt.Z) { // secret debugging option
+		LOG.warn("So you want to see the data structure, eh? This might hang if you have circular refs...");
 		IO.include("frame/Dumper.js");
 		var symbols = jsdoc.symbolGroup.getSymbols();
 		for (var i = 0, l = symbols.length; i < l; i++) {
 			var symbol = symbols[i];
-			print("s> "+symbol.get("alias"));
+			print("// symbol: " + symbol.get("alias"));
 			print(symbol.serialize());
 		}
 	}
 	else {
+		var template = JSDOC.opt.t;
 		var handler = jsdoc.symbolGroup.handler;
-LOG.inform("handler is "+handler);
 		if (handler && handler.publish) {
 			handler.publish(jsdoc.symbolGroup);
 		}
 		else {
-			load(myTemplate+"/publish.js"); // must be path relative to cwd
-			if (publish) publish(jsdoc.symbolGroup);
-			else LOG.warn("publish() is not defined in that template.");
+			if (typeof template != "undefined") {
+				try {
+					load(template+"/publish.js");
+					if (!publish) LOG.warn("No publish() function is defined in that template so nothing to do.");
+					else publish(jsdoc.symbolGroup);
+				}
+				catch(e) {
+					LOG.warn("Sorry, that doesn't seem to be a valid template: "+e);
+				}
+			}
+			else {
+				LOG.warn("No template or handlers given. Might as well read the usage notes.");
+				JSDOC.usage();
+			}
 		}
 	}
 }
 
 if (LOG.warnings.length) {
-	print(LOG.warnings.length+" warnings.");
+	print(LOG.warnings.length+" warning"+(LOG.warnings.length != 1? "s":"")+".");
 }
 
 if (LOG.out) {
