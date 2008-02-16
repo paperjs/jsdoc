@@ -192,7 +192,7 @@ Link.prototype._makeSrcLink = function(srcFilePath) {
 	var srcFile = srcFilePath.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
 	var outFilePath = Link.base + publish.conf.srcDir + srcFile + publish.conf.ext;
 
-	if (!this.text) this.text = JSDOC.Util.fileName(srcFilePath);
+	if (!this.text) this.text = FilePath.fileName(srcFilePath);
 	return "<a href=\""+outFilePath+"\""+target+">"+this.text+"</a>";
 }
 

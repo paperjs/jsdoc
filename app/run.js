@@ -78,6 +78,30 @@ FilePath.prototype.toString = function() {
 		+ this.file;
 }
 
+/**
+ * Turn a path into just the name of the file.
+ */
+FilePath.fileName = function(path) {
+	var nameStart = Math.max(path.lastIndexOf("/")+1, path.lastIndexOf("\\")+1, 0);
+	return path.substring(nameStart);
+}
+
+/**
+ * Get the extension of a filename
+ */
+FilePath.fileExtension = function(filename) {
+   return filename.split(".").pop().toLowerCase();
+};
+
+/**
+ * Turn a path into just the directory part.
+ */
+FilePath.dir = function(path) {
+	var nameStart = Math.max(path.lastIndexOf("/")+1, path.lastIndexOf("\\")+1, 0);
+	return path.substring(0, nameStart-1);
+}
+
+
 importClass(java.lang.System);
 
 /**
@@ -119,7 +143,7 @@ SYS = {
 	pwd: undefined
 };
 
-// jsrun injects an argument in position 0, with the path to here.
+// jsrun appends an argument, with the path to here.
 if (arguments[arguments.length-1].match(/^-j=(.+)/)) {
 	if (SYS.userDir.charAt(0) == SYS.slash) { // absolute path to here
 		SYS.pwd = new FilePath(RegExp.$1).toDir().toString();
@@ -173,7 +197,7 @@ IO = {
 	 * @param [fileName=The original filename]
 	 */
 	copyFile: function(/**string*/ inFile, /**string*/ outDir, /**string*/ fileName) {
-		if (fileName == null) fileName = JSDOC.Util.fileName(inFile);
+		if (fileName == null) fileName = FilePath.fileName(inFile);
 	
 		var inFile = new File(inFile);
 		var outFile = new File(outDir+SYS.slash+fileName);
@@ -316,4 +340,7 @@ IO = {
 }
 
 // now run the application
+IO.include("frame.js");
 IO.include("main.js");
+
+main();

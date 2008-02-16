@@ -1,88 +1,32 @@
 /**
-	@namespace
-*/
+ * @namespace
+ * @deprecated Use {@link FilePath} instead.
+ */
 JSDOC.Util = {
 }
 
 /**
- * Turn a path into just the name of the file.
+ * @deprecated Use {@link FilePath.fileName} instead.
  */
 JSDOC.Util.fileName = function(path) {
+	LOG.warn("JSDOC.Util.fileName is deprecated. Use FilePath.fileName instead.");
 	var nameStart = Math.max(path.lastIndexOf("/")+1, path.lastIndexOf("\\")+1, 0);
 	return path.substring(nameStart);
 }
 
 /**
- * Get the extension of a filename
+ * @deprecated Use {@link FilePath.fileExtension} instead.
  */
 JSDOC.Util.fileExtension = function(filename) {
-   return filename.split(".").pop().toLowerCase();
+	LOG.warn("JSDOC.Util.fileExtension is deprecated. Use FilePath.fileExtension instead.");
+	return filename.split(".").pop().toLowerCase();
 };
 
 /**
- * Turn a path into just the directory part.
+ * @deprecated Use {@link FilePath.dir} instead.
  */
 JSDOC.Util.dir = function(path) {
+	LOG.warn("JSDOC.Util.dir is deprecated. Use FilePath.dir instead.");
 	var nameStart = Math.max(path.lastIndexOf("/")+1, path.lastIndexOf("\\")+1, 0);
 	return path.substring(0, nameStart-1);
-}
-
-/**
- * Get commandline option values.
- * @static
- * @param {Array} args Commandline arguments. Like ["-a=xml", "-b", "--class=new", "--debug"]
- * @param {object} optNames Map short names to long names. Like {a:"accept", b:"backtrace", c:"class", d:"debug"}.
- * @return {object} Short names and values. Like {a:"xml", b:true, c:"new", d:true}
- */
-JSDOC.Util.getOptions = function(args, optNames) {
-	var opt = {"_": []}; // the unnamed option allows multiple values
-	for (var i = 0; i < args.length; i++) {
-		var arg = new String(args[i]);
-		var name;
-		var value;
-		if (arg.charAt(0) == "-") {
-			if (arg.charAt(1) == "-") { // it's a longname like --foo
-				arg = arg.substring(2);
-				var m = arg.split("=");
-				name = m.shift();
-				value = m.shift();
-				if (typeof value == "undefined") value = true;
-				
-				for (var n in optNames) { // convert it to a shortname
-					if (name == optNames[n]) {
-						name = n;
-					}
-				}
-			}
-			else { // it's a shortname like -f
-				arg = arg.substring(1);
-				var m = arg.split("=");
-				name = m.shift();
-				value = m.shift();
-				if (typeof value == "undefined") value = true;
-				
-				for (var n in optNames) { // find the matching key
-					if (name == n || name+'[]' == n) {
-						name = n;
-						break;
-					}
-				}
-			}
-			if (name.match(/(.+)\[\]$/)) { // it's an array type like n[]
-				name = RegExp.$1;
-				if (!opt[name]) opt[name] = [];
-			}
-			
-			if (opt[name] && opt[name].push) {
-				opt[name].push(value);
-			}
-			else {
-				opt[name] = value;
-			}
-		}
-		else { // not associated with any optname
-			opt._.push(args[i]);
-		}
-	}
-	return opt;
 }

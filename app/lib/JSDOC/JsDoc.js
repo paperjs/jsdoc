@@ -26,14 +26,16 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 	}
 	
 	// defend against options that are not sane 
-	if (JSDOC.opt.t === true) JSDOC.usage();
+	if (JSDOC.opt.t === true || JSDOC.opt.d === true) {
+		JSDOC.usage();
+	}
 
 	if (JSDOC.opt.h) {
 		JSDOC.usage();
 		quit();
 	}
 	
-	if (JSDOC.opt.d) {
+	if (typeof JSDOC.opt.d == "string") {
 		if (!JSDOC.opt.d.charAt(JSDOC.opt.d.length-1).match(/[\\\/]/)) {
 			JSDOC.opt.d = JSDOC.opt.d+"/";
 		}
@@ -133,7 +135,7 @@ JSDOC.JsDoc.prototype.getSymbols = function() {
 		}
 
 		// Check to see if there is a handler for this file type
-		var ext = JSDOC.Util.fileExtension(srcFile);
+		var ext = FilePath.fileExtension(srcFile);
 		if (JSDOC.handlers[ext]) {
 			LOG.inform(" Using external handler for '" + ext + "'");
 

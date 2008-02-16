@@ -1,7 +1,10 @@
+IO.include("frame/Opt.js");
 IO.include("frame/Chain.js");
 IO.include("frame/Hash.js");
 IO.include("frame/Namespace.js");
 IO.include("frame/Reflection.js");
+
+/** A few helper functions to make life a little easier. */
 
 function defined(o) {
 	return (o !== undefined);

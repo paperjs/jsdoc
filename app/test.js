@@ -10,7 +10,6 @@ function symbolize(opt) {
 var testCases = [
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype.js"]});
-//print(Dumper.dump(symbols[0].get("methods")));	
 
 		is('symbols[0].get("name")', "Article", 'Function set to constructor prototype with inner constructor name is found.');
 		is('symbols[0].get("methods")[0].get("name")', "init", 'The initializer method name of prototype function is correct.');
