@@ -50,14 +50,14 @@ JSDOC.Symbol = function() {
 		this.init.args = arguments;
 		
 		this.set("name", name);
-		this.set("alias", this.get("name"));
+		this.set("alias", this.name());
 		this.set("params", params);
 		this.set("isa", (isa == "VIRTUAL")? "OBJECT":isa);
 		this.set("comment", comment);
 		this.set("srcFile", JSDOC.Symbol.srcFile);
 		
 		if (this.is("FILE")) {
-			if (!this.get("alias")) this.set("alias", this.get("srcFile"));
+			if (!this.alias()) this.set("alias", this.srcFile());
 		}
 		this.processTags();
 		
@@ -133,61 +133,61 @@ JSDOC.Symbol = function() {
 	
 	this.processTags = function() {
 		// @author
-		var authors = this.get("comment").getTag("author");
+		var authors = this.comment().getTag("author");
 		if (authors.length) {
 			this.set("author", authors.map(function($){return $.desc;}).join(", "));
 		}
 		
 		// @desc
-		var descs = this.get("comment").getTag("desc");
+		var descs = this.comment().getTag("desc");
 		if (descs.length) {
 			this.set("desc", descs.map(function($){return $.desc;}).join("\n")); // multiple descriptions are concatenated into one
 		}
 		descs = null;
 		
 		if (this.is("FILE")) {
-			if (!this.get("alias")) this.set("alias", this.get("srcFile"));
+			if (!this.alias()) this.set("alias", this.srcFile());
 			
-			var overviews = this.get("comment").getTag("overview");
+			var overviews = this.comment().getTag("overview");
 			if (overviews.length) {
-				this.set("desc", [this.get("desc")].concat(overviews.map(function($){return $.desc;})).join("\n"));
+				this.set("desc", [this.desc()].concat(overviews.map(function($){return $.desc;})).join("\n"));
 			}
 			overviews = null;
 		}
 		
 		// @since
-		var sinces = this.get("comment").getTag("since");
+		var sinces = this.comment().getTag("since");
 		if (sinces.length) {
 			this.set("since", sinces.map(function($){return $.desc;}).join(", "));
 		}
 		
 		// @version
-		var versions = this.get("comment").getTag("version");
+		var versions = this.comment().getTag("version");
 		if (versions.length) {
 			this.set("version", versions.map(function($){return $.desc;}).join(", "));
 		}
 		
 		// @deprecated
-		var deprecateds = this.get("comment").getTag("deprecated");
+		var deprecateds = this.comment().getTag("deprecated");
 		if (deprecateds.length) {
 			this.set("deprecated", deprecateds.map(function($){return $.desc;}).join("\n"));
 		}
 		
 		// @example
-		var examples = this.get("comment").getTag("example");
+		var examples = this.comment().getTag("example");
 		if (examples.length) {
 			this.set("example", examples[0]);
 		}
 		
 		// @see
-		var sees = this.get("comment").getTag("see");
+		var sees = this.comment().getTag("see");
 		if (sees.length) {
-			var thisSee = this.get("see");
+			var thisSee = this.see();
 			sees.map(function($){thisSee.push($.desc);});
 		}
 		
 		// @class
-		var classes = this.get("comment").getTag("class");
+		var classes = this.comment().getTag("class");
 		if (classes.length) {
 			this.set("isa", "CONSTRUCTOR");
 			this.set("classDesc", classes[0].desc); // desc can't apply to the constructor as there is none.
@@ -195,18 +195,18 @@ JSDOC.Symbol = function() {
 		}
 		
 		// @namespace
-		var namespaces = this.get("comment").getTag("namespace");
+		var namespaces = this.comment().getTag("namespace");
 		if (namespaces.length) {
-			this.set("classDesc", namespaces[0].desc+"\n"+this.get("desc")); // desc can't apply to the constructor as there is none.
+			this.set("classDesc", namespaces[0].desc+"\n"+this.desc()); // desc can't apply to the constructor as there is none.
 			this.set("isa", "CONSTRUCTOR");
 			this.set("isNamespace", true);
 		}
 		
 		// @param
-		var params = this.get("comment").getTag("param");
+		var params = this.comment().getTag("param");
 		if (params.length) {
 			// user-defined params overwrite those with same name defined by the parser
-			var thisParams = this.get("params");
+			var thisParams = this.params();
 			if (thisParams.length == 0) { // none exist yet, so just bung all these user-defined params straight in
 				this.set("params", params);
 			}
@@ -225,45 +225,45 @@ JSDOC.Symbol = function() {
 		}
 		
 		// @constructor
-		var constructors = this.get("comment").getTag("constructor");
+		var constructors = this.comment().getTag("constructor");
 		if (constructors.length) {
 			this.set("isa", "CONSTRUCTOR");
 		}
 		
 		// @static
-		var statics = this.get("comment").getTag("static");
+		var statics = this.comment().getTag("static");
 		if (statics.length) {
 			this.set("isStatic", true);
-			if (this.get("isa") == "CONSTRUCTOR") {
+			if (this.isa() == "CONSTRUCTOR") {
 				this.set("isNamespace", true);
 			}
 		}
 		
 		// @function
-		var functions = this.get("comment").getTag("function");
+		var functions = this.comment().getTag("function");
 		if (functions.length) {
 			this.set("isa", "FUNCTION");
 		}
 		
 		// @event
-		var events = this.get("comment").getTag("event");
+		var events = this.comment().getTag("event");
 		if (events.length) {
 			this.set("isa", "FUNCTION");
 			this.set("isEvent", true);
 		}
 		
 		// @name
-		var names = this.get("comment").getTag("name");
+		var names = this.comment().getTag("name");
 		if (names.length) {
 			this.set("name", names[0].desc);
 		}
 		
 		// @property
-		var properties = this.get("comment").getTag("property");
+		var properties = this.comment().getTag("property");
 		if (properties.length) {
-			thisProperties = this.get("properties");
+			thisProperties = this.properties();
 			for (var i = 0; i < properties.length; i++) {
-				var thisAlias = this.get("alias");
+				var thisAlias = this.alias();
 				var joiner = ".";
 				if (thisAlias.charAt(thisAlias.length-1) == "#" || properties[i].name.charAt(0) == "#") {
 					joiner = "";
@@ -274,44 +274,44 @@ JSDOC.Symbol = function() {
 		}
 		
 		// @return
-		var returns = this.get("comment").getTag("return");
+		var returns = this.comment().getTag("return");
 		if (returns.length) { // there can be many return tags in a single doclet
 			this.set("returns", returns);
 			this.set("type", returns.map(function($){return $.type}).join(", "));
 		}
 		
 		// @exception
-		var exceptions = this.get("comment").getTag("throws");
+		var exceptions = this.comment().getTag("throws");
 		if (exceptions.length) {
 			this.set("exceptions", exceptions);
 		}
 		
 		// @requires
-		var requires = this.get("comment").getTag("requires");
+		var requires = this.comment().getTag("requires");
 		if (requires.length) {
 			this.set("requires", requires.map(function($){return $.desc}));
 		}
 		
 		// @type
-		var types = this.get("comment").getTag("type");
+		var types = this.comment().getTag("type");
 		if (types.length) {
 			this.set("type", types[0].desc); // multiple type tags are ignored
 		}
 		
 		// @private
-		var privates = this.get("comment").getTag("private");
+		var privates = this.comment().getTag("private");
 		if (privates.length) {
 			this.set("isPrivate", true);
 		}
 		
 		// @ignore
-		var ignores = this.get("comment").getTag("ignore");
+		var ignores = this.comment().getTag("ignore");
 		if (ignores.length) {
 			this.set("isIgnored", true);
 		}
 		
 		// @inherits ... as ...
-		var inherits = this.get("comment").getTag("inherits");
+		var inherits = this.comment().getTag("inherits");
 		if (inherits.length) {
 			for (var i = 0; i < inherits.length; i++) {
 				if (/^\s*([a-z$0-9_.#]+)(?:\s+as\s+([a-z$0-9_.#]+))?/i.test(inherits[i].desc)) {
@@ -326,25 +326,25 @@ JSDOC.Symbol = function() {
 					}
 					if (inAs.indexOf(inAlias) != 0) { //not a full namepath
 						var joiner = ".";
-						if (this.get("alias").charAt(this.get("alias").length-1) == "#" || inAs.charAt(0) == "#") {
+						if (this.alias().charAt(this.alias().length-1) == "#" || inAs.charAt(0) == "#") {
 							joiner = "";
 						}
-						inAs = this.get("alias") + joiner + inAs;
+						inAs = this.alias() + joiner + inAs;
 					}
 				}
 
-				this.get("inherits").push({alias: inAlias, as: inAs});
+				this.inherits().push({alias: inAlias, as: inAs});
 			}
 		}
 
 		// @augments
-		var augments = this.get("comment").getTag("augments");
+		var augments = this.comment().getTag("augments");
 		if (augments.length) {
 			this.set("augments", augments);
 		}
 		
 		// @default
-		var defaults = this.get("comment").getTag("default");
+		var defaults = this.comment().getTag("default");
 		if (defaults.length) {
 			if (this.is("OBJECT")) {
 				this.set("defaultValue", defaults[0].desc);
@@ -352,7 +352,7 @@ JSDOC.Symbol = function() {
 		}
 		
 		// @memberOf
-		var memberofs = this.get("comment").getTag("memberof");
+		var memberofs = this.comment().getTag("memberof");
 		if (memberofs.length) {
 			this.set("memberof", memberofs[0].desc);
 		}
@@ -362,28 +362,23 @@ JSDOC.Symbol = function() {
 JSDOC.Symbol.validKinds = ["CONSTRUCTOR", "FILE", "VIRTUAL", "FUNCTION", "OBJECT", "VOID"];
 
 JSDOC.Symbol.prototype.is = function(what) {
-	return this.get("isa") === what;
+	return this.isa() === what;
 }
 
 JSDOC.Symbol.prototype.isBuiltin = function() {
-	return JSDOC.Lang.isBuiltin(this.get("alias"));
-}
-
-
-JSDOC.Symbol.prototype.isNamespace = function() {
-	return this.get("isNamespace");
+	return JSDOC.Lang.isBuiltin(this.alias());
 }
 
 JSDOC.Symbol.prototype.hasTag = function(tagTitle) {
-	for (var i = 0, l = this.get("comment").tags.length; i < l; i++) {
-		if (this.get("comment").tags[i].title == tagTitle)
+	for (var i = 0, l = this.comment().tags.length; i < l; i++) {
+		if (this.comment().tags[i].title == tagTitle)
 			return true;
 	}
 	return false;
 }
 
 JSDOC.Symbol.prototype.setType = function(/**String*/comment, /**Boolean*/overwrite) {
-	if (!overwrite && this.get("type")) return;
+	if (!overwrite && this.type()) return;
 	var typeComment = JSDOC.DocComment.unwrapComment(comment);
 	this.set("type",  typeComment);
 }
@@ -391,17 +386,17 @@ JSDOC.Symbol.prototype.setType = function(/**String*/comment, /**Boolean*/overwr
 
 //TODO why make distinction between properties and methods?
 JSDOC.Symbol.prototype.inherit = function(symbol) {
-	if (!this.hasMember(symbol.get("name")) && !symbol.get("isInner")) {
+	if (!this.hasMember(symbol.name()) && !symbol.isInner()) {
 		if (symbol.is("FUNCTION"))
-			this.get("methods").push(symbol);
+			this.methods().push(symbol);
 		else if (symbol.is("OBJECT"))
-			this.get("properties").push(symbol);
+			this.properties().push(symbol);
 	}
 }
 
 JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
 	alias = alias.replace(/\.prototype(\.|$)/g, "#");
-	var thisAlias = this.get("alias");
+	var thisAlias = this.alias();
 	
 	var joiner = ".";
 	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
@@ -415,19 +410,19 @@ JSDOC.Symbol.prototype.hasMember = function(name) {
 }
 
 JSDOC.Symbol.prototype.hasMethod = function(name) {
-	var thisMethods = this.get("methods");
+	var thisMethods = this.methods();
 	for (var i = 0, l = thisMethods.length; i < l; i++) {
-		if (thisMethods[i].get("name") == name) return true;
-		if (thisMethods[i].get("alias") == name) return true;
+		if (thisMethods[i].name() == name) return true;
+		if (thisMethods[i].alias() == name) return true;
 	}
 	return false;
 }
 
 JSDOC.Symbol.prototype.addMethod = function(symbol) {
-	var methodAlias = symbol.get("alias");
-	var thisMethods = this.get("methods");
+	var methodAlias = symbol.alias();
+	var thisMethods = this.methods();
 	for (var i = 0, l = thisMethods.length; i < l; i++) {
-		if (thisMethods[i].get("alias") == methodAlias) {
+		if (thisMethods[i].alias() == methodAlias) {
 			thisMethods[i] = symbol; // overwriting previous method
 			return;
 		}
@@ -436,19 +431,19 @@ JSDOC.Symbol.prototype.addMethod = function(symbol) {
 }
 
 JSDOC.Symbol.prototype.hasProperty = function(name) {
-	var thisProperties = this.get("properties");
+	var thisProperties = this.properties();
 	for (var i = 0, l = thisProperties.length; i < l; i++) {
-		if (thisProperties[i].get("name") == name) return true;
-		if (thisProperties[i].get("alias") == name) return true;
+		if (thisProperties[i].name() == name) return true;
+		if (thisProperties[i].alias() == name) return true;
 	}
 	return false;
 }
 
 JSDOC.Symbol.prototype.addProperty = function(symbol) {
-	var propertyAlias = symbol.get("alias");
-	var thisProperties = this.get("properties");
+	var propertyAlias = symbol.alias();
+	var thisProperties = this.properties();
 	for (var i = 0, l = thisProperties.length; i < l; i++) {
-		if (thisProperties[i].get("alias") == propertyAlias) {
+		if (thisProperties[i].alias() == propertyAlias) {
 			thisProperties[i] = symbol; // overwriting previous property
 			return;
 		}
@@ -457,11 +452,11 @@ JSDOC.Symbol.prototype.addProperty = function(symbol) {
 }
 
 JSDOC.Symbol.prototype.getMethods = function() {
-	return this.get("methods");
+	return this.methods();
 }
 
 JSDOC.Symbol.prototype.getProperties = function() {
-	return this.get("properties");
+	return this.properties();
 }
 
 JSDOC.Symbol.prototype.getEvents = function() {
