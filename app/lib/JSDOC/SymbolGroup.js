@@ -131,8 +131,8 @@ JSDOC.SymbolGroup.prototype.resolveMemberOf = function(symbol) {
 		if (symbol.alias() == "_global_" || symbol.is("FILE")) continue;
 
 // TODO can't this be resolved in init() of the Symbol script?		
-		if (symbol.memberof()) {
-			symbol.makeMemberOf(symbol.memberof());	
+		if (symbol.memberOf()) {
+			symbol.makeMemberOf(symbol.memberOf());	
 		}
 	}
 }
@@ -176,11 +176,11 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 
 			var parts = symbol.alias().match(/^(.*[.#-])([^.#-]+)$/);
 			if (parts) {
-				symbol.set("memberof", parts[1]);
+				symbol.set("memberOf", parts[1]);
 				symbol.set("name", parts[2]);
 
-				if (symbol.memberof()) {
-					switch (symbol.memberof().charAt(symbol.memberof().length-1)) {
+				if (symbol.memberOf()) {
+					switch (symbol.memberOf().charAt(symbol.memberOf().length-1)) {
 						case '#' :
 							symbol.set("isStatic", false);
 							symbol.set("isInner", false);
@@ -194,15 +194,15 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 							symbol.set("isInner", true);
 						break;
 					}
-					symbol.set("memberof", symbol.memberof().substr(0, symbol.memberof().length-1));
+					symbol.set("memberOf", symbol.memberOf().substr(0, symbol.memberOf().length-1));
 				}
 				else {
 					symbol.set("isStatic", true);
 					symbol.set("isInner", false);
 				}
 			}
-			if (!this.classIndex[symbol.memberof()]) this.classIndex[symbol.memberof()] = [];
-			this.classIndex[symbol.memberof()].push(symbol);
+			if (!this.classIndex[symbol.memberOf()]) this.classIndex[symbol.memberOf()] = [];
+			this.classIndex[symbol.memberOf()].push(symbol);
 		}
 		else { // no parent constructor
 			symbol.set("alias", symbol.alias().replace(/^(_global_\.)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4"));
@@ -215,7 +215,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 					continue eachSymbol;
 				}
 				
-				symbol.set("memberof", "_global_");
+				symbol.set("memberOf", "_global_");
 				symbol.set("alias", "_global_."+symbol.name());
 			}
 			

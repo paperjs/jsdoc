@@ -22,7 +22,7 @@ JSDOC.Symbol = function() {
 		_isNamespace: false,
 		_isPrivate: false,
 		_isStatic: false,
-		_memberof: "",
+		_memberOf: "",
 		_methods: [],
 		_name: "",
 		_parentConstructor: "",
@@ -352,9 +352,9 @@ JSDOC.Symbol = function() {
 		}
 		
 		// @memberOf
-		var memberofs = this.comment().getTag("memberof");
+		var memberofs = this.comment().getTag("memberOf");
 		if (memberofs.length) {
-			this.set("memberof", memberofs[0].desc);
+			this.set("memberOf", memberofs[0].desc);
 		}
 	}
 }

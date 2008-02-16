@@ -22,7 +22,7 @@ function publish(symbolGroup) {
 	}
 	
 	// filters
-	function hasNoParent($) {return ($.memberof == "")}
+	function hasNoParent($) {return ($.memberOf == "")}
 	function isaFile($) {return ($.is("FILE"))}
 	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace())}
 	

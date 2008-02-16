@@ -80,7 +80,7 @@
 
 <!-- ============================== properties summary ===================== -->
 			<if test="data.properties().length">
-				{! var ownProperties = data.getProperties().filter(function($){return $.memberof() == data.alias()}).sort(makeSortby("name")); !}
+				{! var ownProperties = data.getProperties().filter(function($){return $.memberOf() == data.alias()}).sort(makeSortby("name")); !}
 				<if test="ownProperties.length">
 				<table class="summaryTable" cellspacing="0" summary="A summary of the fields documented in the class {+data.alias()+}.">
 					<caption>Field Summary</caption>
@@ -99,7 +99,7 @@
 							!}&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
-								<if test="member.isStatic() && member.memberof() != '_global_'">{+member.memberof()+}.</if><b>{+new Link().toSymbol(member.alias()).withText(member.name())+}</b>
+								<if test="member.isStatic() && member.memberOf() != '_global_'">{+member.memberOf()+}.</if><b>{+new Link().toSymbol(member.alias()).withText(member.name())+}</b>
 								</div>
 								<div class="description">{+resolveLinks(summarize(member.desc()))+}</div>
 							</td>
@@ -112,9 +112,9 @@
 				<if test="data.inheritsFrom().length">
 				<dl class="inheritsList">
 				{!
-					var inheritedMembers = data.properties().filter(function($) {return $.memberof() != data.alias()});
+					var inheritedMembers = data.properties().filter(function($) {return $.memberOf() != data.alias()});
 					var contributers = [];
-					inheritedMembers.map(function($) {if (contributers.indexOf($.memberof()) < 0) contributers.push($.memberof())});
+					inheritedMembers.map(function($) {if (contributers.indexOf($.memberOf()) < 0) contributers.push($.memberOf())});
 					for (var i = 0, l = contributers.length; i < l; i++) {
 						output +=
 							"<dt>Fields inherited from class "+new Link().toSymbol(contributers[i])+": </dt>"
@@ -122,7 +122,7 @@
 							"<dd>" +
 							inheritedMembers
 							.filter(
-								function($) { return $.memberof() == contributers[i] }
+								function($) { return $.memberOf() == contributers[i] }
 							)
 							.sort(makeSortby("name"))
 							.map(
@@ -139,7 +139,7 @@
 
 <!-- ============================== methods summary ======================== -->
 			<if test="data.methods().length">
-				{! var ownMethods = data.methods().filter(function($){return $.memberof() == data.alias()}).sort(makeSortby("name")); !}
+				{! var ownMethods = data.methods().filter(function($){return $.memberOf() == data.alias()}).sort(makeSortby("name")); !}
 				<if test="ownMethods.length">
 				<table class="summaryTable" cellspacing="0" summary="A summary of the methods documented in the class {+data.alias()+}.">
 					<caption>Method Summary</caption>
@@ -158,7 +158,7 @@
 								if (member.isStatic()) output += "&lt;static&gt; ";
 							!}&nbsp;</td>
 							<td class="nameDescription">
-								<div class="fixedFont"><if test="member.isStatic() && member.memberof() != '_global_'">{+member.memberof()+}.</if><b>{+new Link().toSymbol(member.alias()).withText(member.name())+}</b>{+makeSignature(member.params())+}
+								<div class="fixedFont"><if test="member.isStatic() && member.memberOf() != '_global_'">{+member.memberOf()+}.</if><b>{+new Link().toSymbol(member.alias()).withText(member.name())+}</b>{+makeSignature(member.params())+}
 								</div>
 								<div class="description">{+resolveLinks(summarize(member.desc()))+}</div>
 							</td>
@@ -171,9 +171,9 @@
 				<if test="data.inheritsFrom().length">
 				<dl class="inheritsList">
 				{!
-					var inheritedMembers = data.methods().filter(function($) {return $.memberof() != data.alias()});
+					var inheritedMembers = data.methods().filter(function($) {return $.memberOf() != data.alias()});
 					var contributers = [];
-					inheritedMembers.map(function($) {if (contributers.indexOf($.memberof()) < 0) contributers.push($.memberof())});
+					inheritedMembers.map(function($) {if (contributers.indexOf($.memberOf()) < 0) contributers.push($.memberOf())});
 					for (var i = 0, l = contributers.length; i < l; i++) {
 						output +=
 							"<dt>Methods inherited from class "+new Link().toSymbol(contributers[i])+": </dt>"
@@ -181,7 +181,7 @@
 							"<dd>" +
 							inheritedMembers
 							.filter(
-								function($) { return $.memberof() == contributers[i] }
+								function($) { return $.memberOf() == contributers[i] }
 							)
 							.sort(makeSortby("name"))
 							.map(
@@ -302,7 +302,7 @@
 					!}
 					
 					<if test="member.type()"><span class="light">{{+new Link().toSymbol(member.type())+}}</span></if>
-					<if test="member.isStatic() && member.memberof() != '_global_'"><span class="light">{+member.memberof()+}.</span></if><b>{+member.name()+}</b>
+					<if test="member.isStatic() && member.memberOf() != '_global_'"><span class="light">{+member.memberOf()+}.</span></if><b>{+member.name()+}</b>
 					
 					</div>
 					<div class="description">
@@ -368,7 +368,7 @@
 					!}
 					
 					<if test="member.type()"><span class="light">{{+new Link().toSymbol(member.type())+}}</span></if>
-					<if test="member.isStatic() && member.memberof() != '_global_'"><span class="light">{+member.memberof()+}.</span></if><b>{+member.name()+}</b>{+makeSignature(member.params())+}
+					<if test="member.isStatic() && member.memberOf() != '_global_'"><span class="light">{+member.memberOf()+}.</span></if><b>{+member.name()+}</b>{+makeSignature(member.params())+}
 					
 					</div>
 					<div class="description">

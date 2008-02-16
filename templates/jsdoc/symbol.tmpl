@@ -1,6 +1,6 @@
 <symbol alias="{+data.alias+}">
 	<name>{+data.name+}</name>
-	<memberof>{+data.memberof+}</memberof>
+	<memberOf>{+data.memberOf+}</memberOf>
 	<isStatic>{+data.isStatic+}</isStatic>
 	<isa>{+data.isa+}</isa>
 	<desc>{+data.desc+}</desc>
@@ -9,7 +9,7 @@
 	<methods><for each="method" in="data.methods">
 		<method>
 			<name>{+method.name+}</name>
-			<memberof>{+method.memberof+}</memberof>
+			<memberOf>{+method.memberOf+}</memberOf>
 			<isStatic>{+method.isStatic+}</isStatic>
 			<desc>{+method.desc+}</desc>
 			<params><for each="param" in="method.params">
@@ -26,7 +26,7 @@
 	<properties><for each="property" in="data.properties">
 		<property>
 			<name>{+property.name+}</name>
-			<memberof>{+property.memberof+}</memberof>
+			<memberOf>{+property.memberOf+}</memberOf>
 			<isStatic>{+property.isStatic+}</isStatic>
 			<desc>{+property.desc+}</desc>
 			<type>{+property.type+}</type>

@@ -21,7 +21,8 @@ new Namespace(
 	"JSDOC.tagSynonyms",
 	function() {
 		JSDOC.tagSynonyms.synonyms = {
-			"=member":             "memberof",
+			"=member":             "memberOf",
+			"=memberof":           "memberOf",
 			"=description":        "desc",
 			"=exception":          "throws",
 			"=argument":           "param",

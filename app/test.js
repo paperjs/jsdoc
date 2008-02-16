@@ -15,7 +15,7 @@ var testCases = [
 		is('symbols[0].get("methods")[0].get("name")', "init", 'The initializer method name of prototype function is correct.');
 		is('symbols[0].get("properties")[0].get("name")', "title", 'A property set on the initializer "this"  is on the outer constructor.');
 		is('symbols[3].get("name")', "counter", 'A static property set in the initializer has the name set correctly.');
-		is('symbols[3].get("memberof")', "Article", 'A static property set in the initializer has the memberof set correctly.');
+		is('symbols[3].get("memberOf")', "Article", 'A static property set in the initializer has the memberOf set correctly.');
 		is('symbols[3].get("isStatic")', true, 'A static property set in the initializer has isStatic set to true.');
 
 	}
@@ -24,7 +24,7 @@ var testCases = [
 		symbolize({a:true, _: [SYS.pwd+"test/prototype_oblit.js"]});
 		
 		is('symbols[0].get("name")', "Article", 'Oblit set to constructor prototype name is found.');
-		is('symbols[0].get("memberof")', "", 'The memberof of prototype oblit is correct.');
+		is('symbols[0].get("memberOf")', "", 'The memberOf of prototype oblit is correct.');
 		is('symbols[0].get("methods")[0].get("name")', "getTitle", 'The nonstatic method name of prototype oblit is correct.');
 		is('symbols[0].get("methods")[0].get("isStatic")', false, 'The isStatic of a nonstatic method of prototype oblit is correct.');
 		is('symbols[0].get("methods")[1].get("name")', "getTitle", 'The static method name of prototype oblit is correct.');
@@ -42,7 +42,7 @@ var testCases = [
 		is('symbols[0].get("methods")[0].get("name")', "init", 'The initializer method name of prototype oblit is correct.');
 		is('symbols[0].get("properties")[0].get("name")', "pages", 'Property set by initializer method "this" is on the outer constructor.');
 		is('symbols[1].get("name")', "Title", 'Name of the inner constructor name is found.');
-		is('symbols[1].get("memberof")', "Article", 'The memberof of the inner constructor name is found.');
+		is('symbols[1].get("memberOf")', "Article", 'The memberOf of the inner constructor name is found.');
 		is('symbols[1].get("isa")', "CONSTRUCTOR", 'The isa of the inner constructor name is constructor.');
 		is('symbols[1].get("properties")[0].get("name")', "title", 'A property set on the inner constructor "this"  is on the inner constructor.');
 	}
@@ -55,10 +55,10 @@ var testCases = [
 		is('symbols[0].get("methods")[0].get("alias")', "Outer#open", 'Outer constructors methods arent affected by inner function.');
 		is('symbols[1].get("alias")', "Outer-Inner", 'Alias of inner function is found.');
 		is('symbols[1].get("isa")', "CONSTRUCTOR", 'isa of inner function constructor is found.');
-		is('symbols[1].get("memberof")', "Outer", 'The memberof of inner function is found.');
+		is('symbols[1].get("memberOf")', "Outer", 'The memberOf of inner function is found.');
 		is('symbols[1].get("name")', "Inner", 'The name of inner function is found.');
 		is('symbols[2].get("name")', "name", 'A member of the inner function constructor, attached to "this" is found on inner.');
-		is('symbols[2].get("memberof")', "Outer-Inner", 'The memberof of an inner function member is found.');		
+		is('symbols[2].get("memberOf")', "Outer-Inner", 'The memberOf of an inner function member is found.');		
 	}
 	,
 	function() {
@@ -67,24 +67,24 @@ var testCases = [
 		is('symbols[0].get("name")', "Word", 'Base constructor name is found.');
 		is('symbols[0].get("methods")[0].get("name")', "reverse", 'Base constructor method is found.');
 		is('symbols[0].get("methods").length', 1, 'Base constructor has only one method.');
-		is('symbols[0].get("memberof")', "", 'Base constructor memberof is empty.');
+		is('symbols[0].get("memberOf")', "", 'Base constructor memberOf is empty.');
 		is('symbols[1].get("name")', "reverse", 'Member of constructor prototype name is found.');
-		is('symbols[1].get("memberof")', "Word", 'Member of constructor prototype memberof is found.');
+		is('symbols[1].get("memberOf")', "Word", 'Member of constructor prototype memberOf is found.');
 		is('symbols[1].get("methods")[0].get("name")', "utf8", 'Member of constructor prototype method name is found.');
 		is('symbols[2].get("name")', "utf8", 'Static nested member name is found.');
-		is('symbols[2].get("memberof")', "Word#reverse", 'Static nested member memberof is found.');
+		is('symbols[2].get("memberOf")', "Word#reverse", 'Static nested member memberOf is found.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/namespace_nested.js"]});
 		
 		is('symbols[0].get("name")', "ns1", 'Base namespace name is found.');
-		is('symbols[0].get("memberof")', "", 'Base namespace memberof is empty (its a constructor).');
+		is('symbols[0].get("memberOf")', "", 'Base namespace memberOf is empty (its a constructor).');
 		is('symbols[1].get("name")', "ns2", 'Nested namespace name is found.');
 		is('symbols[1].get("alias")', "ns1.ns2", 'Nested namespace alias is found.');
-		is('symbols[1].get("memberof")', "ns1", 'Nested namespace memberof is found.');
+		is('symbols[1].get("memberOf")', "ns1", 'Nested namespace memberOf is found.');
 		is('symbols[2].get("name")', "Function1", 'Method of nested namespace name is found.');
-		is('symbols[2].get("memberof")', "ns1.ns2", 'Constructor of nested namespace memberof is found.');			
+		is('symbols[2].get("memberOf")', "ns1.ns2", 'Constructor of nested namespace memberOf is found.');			
 	}
 	,
 	function() {
@@ -101,7 +101,7 @@ var testCases = [
 		is('symbols[4].get("name")', "Bar", 'A function set inside another function is found.');
 		is('symbols[4].get("isa")', "FUNCTION", 'It isa function.');
 		is('symbols[6].get("name")', "inner", 'An inner functions name is found.');
-		is('symbols[6].get("memberof")', "Foo", 'It is member of the outer function.');
+		is('symbols[6].get("memberOf")', "Foo", 'It is member of the outer function.');
 		is('symbols[6].get("isInner")', true, 'It is an inner function.');
 		is('symbols[6].get("alias")', "Foo-inner", 'The inner functions alias is found.');
 	}
@@ -110,12 +110,12 @@ var testCases = [
 		symbolize({a:true, _: [SYS.pwd+"test/memberof_constructor.js"]});
 		
 		is('symbols[1].get("name")', "Tangent", 'Constructor set on prototype using @member has correct name.');
-		is('symbols[1].get("memberof")', "Circle", 'Constructor set on prototype using @member has correct memberof.');
+		is('symbols[1].get("memberOf")', "Circle", 'Constructor set on prototype using @member has correct memberOf.');
 		is('symbols[1].get("alias")', "Circle#Tangent", 'Constructor set on prototype using @member has correct alias.');
 		is('symbols[1].get("isa")', "CONSTRUCTOR", 'Constructor set on prototype using @member has correct isa.');
 		is('symbols[1].get("isStatic")', false, 'Constructor set on prototype using @member is not static.');
 		is('symbols[2].get("name")', "getDiameter", 'Method set on prototype using @member has correct name.');
-		is('symbols[2].get("memberof")', "Circle#Tangent", 'Method set on prototype using @member has correct memberof.');
+		is('symbols[2].get("memberOf")', "Circle#Tangent", 'Method set on prototype using @member has correct memberOf.');
 		is('symbols[2].get("alias")', "Circle#Tangent#getDiameter", 'Method set on prototype using @member has correct alias.');
 		is('symbols[2].get("isa")', "FUNCTION", 'Method set on prototype using @member has correct isa.');
 		is('symbols[2].get("isStatic")', false, 'Method set on prototype using @member is not static.');
@@ -129,7 +129,7 @@ var testCases = [
 		is('symbols[0].get("properties")[0].get("name")', "orientation", 'Constructor property name can be found.');
 		is('symbols[4].get("methods")[0].get("name")', "reset", 'Second constructor method name can be found.');
 		is('symbols[4].get("properties")[0].get("name")', "orientation", 'Second constructor inherited property name can be found in properties.');
-		is('symbols[4].get("properties")[0].get("memberof")', "Page", 'Second constructor inherited property memberof can be found.');
+		is('symbols[4].get("properties")[0].get("memberOf")', "Page", 'Second constructor inherited property memberOf can be found.');
 		is('symbols[6].get("methods")[0].get("alias")', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is inherited.');
 		is('symbols[6].get("methods")[1].get("alias")', "ThreeColumnPage#reset", 'Inherited method can be found.');
 		is('symbols[6].get("properties")[0].get("alias")', "ThreeColumnPage#orientation", 'Twice inherited method can be found.');
@@ -166,7 +166,7 @@ var testCases = [
 		
 		is('symbols[2].get("name")', "counter", 'Instance namespace property name set on "this" can be found.');
 		is('symbols[2].get("alias")', "box.holder#counter", 'Instance namespace property alias set on "this" can be found.');
-		is('symbols[2].get("memberof")', "box.holder", 'Static namespace property memberof set on "this" can be found.');
+		is('symbols[2].get("memberOf")', "box.holder", 'Static namespace property memberOf set on "this" can be found.');
 	}
 	,
 	function() {
