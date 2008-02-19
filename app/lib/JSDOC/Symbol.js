@@ -243,6 +243,13 @@ JSDOC.Symbol = function() {
 			}
 		}
 		
+		// @inner
+		var inners = this.comment().getTag("inner");
+		if (inners.length) {
+			this.isInner(true);
+			this.isStatic(false);
+		}
+		
 		// @function
 		var functions = this.comment().getTag("function");
 		if (functions.length) {

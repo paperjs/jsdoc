@@ -186,8 +186,10 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 							symbol.isInner(false);
 						break;
 						case '.' :
-							symbol.isStatic(true);
-							symbol.isInner(false);
+							if (!symbol.isInner()) {
+								symbol.isStatic(true);
+								symbol.isInner(false);
+							}
 						break;
 						case '-' :
 							symbol.isStatic(false);
