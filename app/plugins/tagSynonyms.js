@@ -34,7 +34,8 @@ new Namespace(
 			"=projectdescription": "overview",
 			"=classdescription":   "class",
 			"=link":               "see",
-			"=mixin":              "inherits"
+			"=borrow":             "inherits",
+			"=scope":              "lend"
 		}
 	}
 );

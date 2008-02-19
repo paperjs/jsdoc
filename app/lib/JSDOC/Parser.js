@@ -40,17 +40,17 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 			delete ts.tokens[ts.cursor];
 			return true;
 		}
-		else if (docComment.getTag("scope").length > 0) {
-			var scope = docComment.getTag("scope")[0].desc;
+		else if (docComment.getTag("lend").length > 0) {
+			var lend = docComment.getTag("lend")[0].desc;
 			var block = new JSDOC.TokenStream(ts.balance("LEFT_CURLY"));
-			if (scope) {
-				scope = scope.replace(/\.prototype(\.|$)/g, "#");
+			if (lend) {
+				lend = lend.replace(/\.prototype(\.|$)/g, "#");
 				var virtualName = docComment.getTag("name");
 
 				if (virtualName.length && (virtualName = virtualName[0].desc)) {
 					JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(virtualName, [], "VIRTUAL", docComment));
 				}
-				JSDOC.Parser.onObLiteral(block, scope);
+				JSDOC.Parser.onObLiteral(block, lend);
 			}
 			return true;
 		}

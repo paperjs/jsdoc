@@ -2,7 +2,7 @@ var Person = Class.create(
     /**
       @name Person
       @constructor
-      @scope Person.prototype
+      @lend Person.prototype
     */
     {
         initialize: function(name) {
@@ -14,19 +14,19 @@ var Person = Class.create(
     }
 );
 
-/** @scope Person.prototype */
+/** @lend Person.prototype */
 {
 	sing: function(song) {
 	}
 }
 
-/** @scope Person */
+/** @lend Person */
 {
 	getCount: function() {
 	}
 }
 
-/** @scope Unknown */
+/** @lend Unknown */
 {
 	isok: function() {
 	}

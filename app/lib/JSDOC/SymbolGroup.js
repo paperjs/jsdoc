@@ -7,8 +7,8 @@ JSDOC.SymbolGroup = function(symbols) {
 	
 	// generate a dummy class to hold any symbols with no parent class
 	global = new JSDOC.Symbol().init("_global_", [], "CONSTRUCTOR", new JSDOC.DocComment("/** BUILTIN */"));
-	global.set("isNamespace", true);
-	global.set("srcFile", "");
+	global.isNamespace(true);
+	global.srcFile("");
 	
 	this.symbols.push(global);
 	
@@ -18,7 +18,7 @@ JSDOC.SymbolGroup = function(symbols) {
 	this.typeIndex = new Hash();
 	
 	this.indexAll();
-	this.resolveInherits();
+	this.resolveMixins();
 	this.indexAll();
 	this.resolveMemberOf();
 	this.indexAll();
@@ -42,7 +42,7 @@ JSDOC.SymbolGroup.prototype.getOverview = function(path) {
 JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {			 
 	symbols = symbols.filter(
 		function(symbol) {
-			if (symbol.isInner()) symbol.set("isPrivate", "true");
+			if (symbol.isInner()) symbol.isPrivate("true");
 			
 			var keep = true;
 			
@@ -152,9 +152,9 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 				if (
 					(parent && parent.is("CONSTRUCTOR"))
 					||
-					(symbol.set("addOn", JSDOC.Lang.isBuiltin(parentName)))
+					(symbol.addOn(JSDOC.Lang.isBuiltin(parentName)))
 				) {
-					symbol.set("parentConstructor", parentName);
+					symbol.parentConstructor(parentName);
 					if (symbol.addOn()) {
 						this.addBuiltIn(parentName);
 					}
@@ -176,37 +176,37 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 
 			var parts = symbol.alias().match(/^(.*[.#-])([^.#-]+)$/);
 			if (parts) {
-				symbol.set("memberOf", parts[1]);
-				symbol.set("name", parts[2]);
+				symbol.memberOf(parts[1]);
+				symbol.name(parts[2]);
 
 				if (symbol.memberOf()) {
 					switch (symbol.memberOf().charAt(symbol.memberOf().length-1)) {
 						case '#' :
-							symbol.set("isStatic", false);
-							symbol.set("isInner", false);
+							symbol.isStatic(false);
+							symbol.isInner(false);
 						break;
 						case '.' :
-							symbol.set("isStatic", true);
-							symbol.set("isInner", false);
+							symbol.isStatic(true);
+							symbol.isInner(false);
 						break;
 						case '-' :
-							symbol.set("isStatic", false);
-							symbol.set("isInner", true);
+							symbol.isStatic(false);
+							symbol.isInner(true);
 						break;
 					}
-					symbol.set("memberOf", symbol.memberOf().substr(0, symbol.memberOf().length-1));
+					symbol.memberOf(symbol.memberOf().substr(0, symbol.memberOf().length-1));
 				}
 				else {
-					symbol.set("isStatic", true);
-					symbol.set("isInner", false);
+					symbol.isStatic(true);
+					symbol.isInner(false);
 				}
 			}
 			if (!this.classIndex[symbol.memberOf()]) this.classIndex[symbol.memberOf()] = [];
 			this.classIndex[symbol.memberOf()].push(symbol);
 		}
 		else { // no parent constructor
-			symbol.set("alias", symbol.alias().replace(/^(_global_\.)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4"));
-			if (RegExp.$2 && RegExp.$4) symbol.set("name", RegExp.$2+"."+RegExp.$4);
+			symbol.alias(symbol.alias().replace(/^(_global_\.)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4"));
+			if (RegExp.$2 && RegExp.$4) symbol.name(RegExp.$2+"."+RegExp.$4);
 
 			if (!symbol.is("CONSTRUCTOR")) {
 				if (symbol.alias().indexOf("#") > -1) {
@@ -215,12 +215,12 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 					continue eachSymbol;
 				}
 				
-				symbol.set("memberOf", "_global_");
-				symbol.set("alias", "_global_."+symbol.name());
+				symbol.memberOf("_global_");
+				symbol.alias("_global_."+symbol.name());
 			}
 			
-			symbol.set("isStatic", true);
-			symbol.set("isInner", false);
+			symbol.isStatic(true);
+			symbol.isInner(false);
 			global.inherit(symbol);
 		}
 	}
@@ -247,34 +247,29 @@ JSDOC.SymbolGroup.prototype.resolveMembers = function() {
 	}
 }
 
-JSDOC.SymbolGroup.prototype.resolveInherits = function() {
+JSDOC.SymbolGroup.prototype.resolveMixins = function() {
 	for (var i = 0, l = this.symbols.length; i < l; i++) {
 		var symbol = this.symbols[i];
 		if (symbol.alias() == "_global_" || symbol.is("FILE")) continue;
 		
-		var inherits = symbol.inherits();
-		if (inherits.length) {
-			for (var j = 0; j < inherits.length; j++) {
-				var inherited = this.symbols.filter(function($){return $.alias() == inherits[j].alias});
-				var inheritedAs = inherits[j].as;
-				
-				if (symbol.hasMember(inheritedAs)) continue;
-				
-				if (inherited && inherited[0]) {
-
-					inherited = inherited[0];
-				
-					var clone = inherited.clone();
-	
-					clone.set("name", inheritedAs);
-					clone.set("alias", inheritedAs);
-					this.symbols.push(clone);
-				}
+		var mixins = symbol.inherits();
+		for (var j = 0; j < mixins.length; j++) {
+			var mixedin = this.symbols.filter(function($){return $.alias() == mixins[j].alias});
+			var mixinAs = mixins[j].as;
+			
+			if (symbol.hasMember(mixinAs)) continue;
+			
+			if (mixedin && mixedin[0]) {
+				mixedin = mixedin[0];
+			
+				var clone = mixedin.clone();
+				clone.name(mixinAs);
+				clone.alias(mixinAs);
+				this.symbols.push(clone);
 			}
 		}
 	}
 }
-
 
 JSDOC.SymbolGroup.prototype.resolveAugments = function() {
 	for (var i = 0, l = this.symbols.length; i < l; i++) {

@@ -75,15 +75,6 @@ JSDOC.Symbol = function() {
 	this.get = function(propName) {
 		return properties["_"+propName];
 	}
-	
-	for (var p in properties) {
-		var name = p.substr(1);
-		if (typeof JSDOC.Symbol.prototype[name] == "undefined") {
-			JSDOC.Symbol.prototype[name] = (
-				function(n) { return function(){ return this.get(n); } }
-			)(name);
-		}
-	}
 
 	this.set = function(propName, v) {
 		if (this.hasProperty(propName)) {
@@ -108,10 +99,24 @@ JSDOC.Symbol = function() {
 		else throw "Property \""+propName+"\" not defined in properties of class ";//+new Reflection(this).getConstructorName()+".";
 	}
 	
+	for (var p in properties) {
+		var name = p.substr(1);
+		if (typeof JSDOC.Symbol.prototype[name] == "undefined") {
+			JSDOC.Symbol.prototype[name] = (
+				function(n) { return function() {
+					if (arguments.length > 0) {
+						this.set.apply(this, [n, arguments[0]]);
+					}
+					return this.get(n);
+				} }
+			)(name);
+		}
+	}
+	
 	this.clone = function() {
 		var clone = new this.constructor();
 		clone = clone.init.apply(clone, this.init.args);
-		// do further cloning here
+		// todo: further cloning here
 		clone.srcFile = this.srcFile;
 		
 		return clone;
@@ -135,48 +140,47 @@ JSDOC.Symbol = function() {
 		// @author
 		var authors = this.comment().getTag("author");
 		if (authors.length) {
-			this.set("author", authors.map(function($){return $.desc;}).join(", "));
+			this.author(authors.map(function($){return $.desc;}).join(", "));
 		}
 		
 		// @desc
 		var descs = this.comment().getTag("desc");
 		if (descs.length) {
-			this.set("desc", descs.map(function($){return $.desc;}).join("\n")); // multiple descriptions are concatenated into one
+			this.desc(descs.map(function($){return $.desc;}).join("\n")); // multiple descriptions are concatenated into one
 		}
-		descs = null;
 		
 		if (this.is("FILE")) {
-			if (!this.alias()) this.set("alias", this.srcFile());
+			if (!this.alias()) this.alias(this.srcFile());
 			
 			var overviews = this.comment().getTag("overview");
 			if (overviews.length) {
-				this.set("desc", [this.desc()].concat(overviews.map(function($){return $.desc;})).join("\n"));
+				this.desc([this.desc()].concat(overviews.map(function($){return $.desc;})).join("\n"));
 			}
-			overviews = null;
 		}
 		
 		// @since
 		var sinces = this.comment().getTag("since");
 		if (sinces.length) {
-			this.set("since", sinces.map(function($){return $.desc;}).join(", "));
+			this.since(sinces.map(function($){return $.desc;}).join(", "));
 		}
 		
 		// @version
 		var versions = this.comment().getTag("version");
 		if (versions.length) {
-			this.set("version", versions.map(function($){return $.desc;}).join(", "));
+			this.version(versions.map(function($){return $.desc;}).join(", "));
 		}
 		
 		// @deprecated
 		var deprecateds = this.comment().getTag("deprecated");
 		if (deprecateds.length) {
-			this.set("deprecated", deprecateds.map(function($){return $.desc;}).join("\n"));
+			this.deprecated(deprecateds.map(function($){return $.desc;}).join("\n"));
 		}
+		delete deprecateds;
 		
 		// @example
 		var examples = this.comment().getTag("example");
 		if (examples.length) {
-			this.set("example", examples[0]);
+			this.example(examples[0]);
 		}
 		
 		// @see
@@ -189,17 +193,17 @@ JSDOC.Symbol = function() {
 		// @class
 		var classes = this.comment().getTag("class");
 		if (classes.length) {
-			this.set("isa", "CONSTRUCTOR");
-			this.set("classDesc", classes[0].desc); // desc can't apply to the constructor as there is none.
+			this.isa("CONSTRUCTOR");
+			this.classDesc(classes[0].desc); // desc can't apply to the constructor as there is none.
 			
 		}
 		
 		// @namespace
 		var namespaces = this.comment().getTag("namespace");
 		if (namespaces.length) {
-			this.set("classDesc", namespaces[0].desc+"\n"+this.desc()); // desc can't apply to the constructor as there is none.
-			this.set("isa", "CONSTRUCTOR");
-			this.set("isNamespace", true);
+			this.classDesc(namespaces[0].desc+"\n"+this.desc()); // desc can't apply to the constructor as there is none.
+			this.isa("CONSTRUCTOR");
+			this.isNamespace(true);
 		}
 		
 		// @param
@@ -208,7 +212,7 @@ JSDOC.Symbol = function() {
 			// user-defined params overwrite those with same name defined by the parser
 			var thisParams = this.params();
 			if (thisParams.length == 0) { // none exist yet, so just bung all these user-defined params straight in
-				this.set("params", params);
+				this.params(params);
 			}
 			else { // need to overlay these user-defined params on to existing parser-defined params
 				for (var i = 0, l = params.length; i < l; i++) {
@@ -227,35 +231,35 @@ JSDOC.Symbol = function() {
 		// @constructor
 		var constructors = this.comment().getTag("constructor");
 		if (constructors.length) {
-			this.set("isa", "CONSTRUCTOR");
+			this.isa("CONSTRUCTOR");
 		}
 		
 		// @static
 		var statics = this.comment().getTag("static");
 		if (statics.length) {
-			this.set("isStatic", true);
+			this.isStatic(true);
 			if (this.isa() == "CONSTRUCTOR") {
-				this.set("isNamespace", true);
+				this.isNamespace(true);
 			}
 		}
 		
 		// @function
 		var functions = this.comment().getTag("function");
 		if (functions.length) {
-			this.set("isa", "FUNCTION");
+			this.isa("FUNCTION");
 		}
 		
 		// @event
 		var events = this.comment().getTag("event");
 		if (events.length) {
-			this.set("isa", "FUNCTION");
-			this.set("isEvent", true);
+			this.isa("FUNCTION");
+			this.isEvent(true);
 		}
 		
 		// @name
 		var names = this.comment().getTag("name");
 		if (names.length) {
-			this.set("name", names[0].desc);
+			this.name(names[0].desc);
 		}
 		
 		// @property
@@ -276,38 +280,38 @@ JSDOC.Symbol = function() {
 		// @return
 		var returns = this.comment().getTag("return");
 		if (returns.length) { // there can be many return tags in a single doclet
-			this.set("returns", returns);
-			this.set("type", returns.map(function($){return $.type}).join(", "));
+			this.returns(returns);
+			this.type(returns.map(function($){return $.type}).join(", "));
 		}
 		
 		// @exception
 		var exceptions = this.comment().getTag("throws");
 		if (exceptions.length) {
-			this.set("exceptions", exceptions);
+			this.exceptions(exceptions);
 		}
 		
 		// @requires
 		var requires = this.comment().getTag("requires");
 		if (requires.length) {
-			this.set("requires", requires.map(function($){return $.desc}));
+			this.requires(requires.map(function($){return $.desc}));
 		}
 		
 		// @type
 		var types = this.comment().getTag("type");
 		if (types.length) {
-			this.set("type", types[0].desc); // multiple type tags are ignored
+			this.type(types[0].desc); // multiple type tags are ignored
 		}
 		
 		// @private
 		var privates = this.comment().getTag("private");
 		if (privates.length) {
-			this.set("isPrivate", true);
+			this.isPrivate(true);
 		}
 		
 		// @ignore
 		var ignores = this.comment().getTag("ignore");
 		if (ignores.length) {
-			this.set("isIgnored", true);
+			this.isIgnored(true);
 		}
 		
 		// @inherits ... as ...
@@ -340,21 +344,21 @@ JSDOC.Symbol = function() {
 		// @augments
 		var augments = this.comment().getTag("augments");
 		if (augments.length) {
-			this.set("augments", augments);
+			this.augments(augments);
 		}
 		
 		// @default
 		var defaults = this.comment().getTag("default");
 		if (defaults.length) {
 			if (this.is("OBJECT")) {
-				this.set("defaultValue", defaults[0].desc);
+				this.defaultValue(defaults[0].desc);
 			}
 		}
 		
 		// @memberOf
-		var memberofs = this.comment().getTag("memberOf");
-		if (memberofs.length) {
-			this.set("memberOf", memberofs[0].desc);
+		var memberOfs = this.comment().getTag("memberOf");
+		if (memberOfs.length) {
+			this.memberOf(memberOfs[0].desc);
 		}
 	}
 }
@@ -380,7 +384,7 @@ JSDOC.Symbol.prototype.hasTag = function(tagTitle) {
 JSDOC.Symbol.prototype.setType = function(/**String*/comment, /**Boolean*/overwrite) {
 	if (!overwrite && this.type()) return;
 	var typeComment = JSDOC.DocComment.unwrapComment(comment);
-	this.set("type",  typeComment);
+	this.type( typeComment);
 }
 
 
@@ -402,7 +406,7 @@ JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
 	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
 		joiner = "";
 	}
-	this.set("alias", alias + joiner + thisAlias);
+	this.alias(alias + joiner + thisAlias);
 }
 
 JSDOC.Symbol.prototype.hasMember = function(name) {

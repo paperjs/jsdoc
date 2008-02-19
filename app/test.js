@@ -122,17 +122,17 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd+"test/inherits.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/borrows.js"]});
 //print(Dumper.dump(symbols));		
 		is('symbols[0].get("name")', "Layout", 'Constructor can be found.');
 		is('symbols[0].get("methods")[0].get("name")', "init", 'Constructor method name can be found.');
 		is('symbols[0].get("properties")[0].get("name")', "orientation", 'Constructor property name can be found.');
 		is('symbols[4].get("methods")[0].get("name")', "reset", 'Second constructor method name can be found.');
-		is('symbols[4].get("properties")[0].get("name")', "orientation", 'Second constructor inherited property name can be found in properties.');
-		is('symbols[4].get("properties")[0].get("memberOf")', "Page", 'Second constructor inherited property memberOf can be found.');
-		is('symbols[6].get("methods")[0].get("alias")', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is inherited.');
-		is('symbols[6].get("methods")[1].get("alias")', "ThreeColumnPage#reset", 'Inherited method can be found.');
-		is('symbols[6].get("properties")[0].get("alias")', "ThreeColumnPage#orientation", 'Twice inherited method can be found.');
+		is('symbols[4].get("properties")[0].get("name")', "orientation", 'Second constructor borrowed property name can be found in properties.');
+		is('symbols[4].get("properties")[0].get("memberOf")', "Page", 'Second constructor borrowed property memberOf can be found.');
+		is('symbols[6].get("methods")[0].get("alias")', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is borrowed.');
+		is('symbols[6].get("methods")[1].get("alias")', "ThreeColumnPage#reset", 'Borrowed method can be found.');
+		is('symbols[6].get("properties")[0].get("alias")', "ThreeColumnPage#orientation", 'Twice borrowed method can be found.');
 	
 	}
 	,
