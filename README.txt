@@ -2,7 +2,7 @@
 
 DESCRIPTION:
 
-* NOTICE * THIS VERSION OF THE SOFTWARE IS "ALPHA," MEANING IT IS IS
+** NOTICE ** THIS VERSION OF THE SOFTWARE IS "BETA," MEANING IT IS IS
 NOT YET READY FOR USE IN A PRODUCTION ENVIRONEMNT. IT IS MADE
 AVAILABLE FOR PREVIEW AND TESTING PURPOSES ONLY.
 
@@ -21,6 +21,16 @@ project homepage at http://code.google.com/p/jsdoc-toolkit/
 For the most up-to-date documentation on Version 2 of JsDoc Toolkit
 see the Verion 2 wiki at http://jsdoctoolkit.org/wiki
 
+
+======================================================================
+
+REQUIREMENTS:
+
+JsDoc Toolkit is known to work with java version "1.6.0_03"
+Java(TM) SE Runtime Environment (build 1.6.0_03-b05)
+on Windows XP.
+
+Other versions of java may or may not work with JsDoc Toolkit.
 
 ======================================================================
 
@@ -55,21 +65,24 @@ For help (usage notes) enter this on the command line:
 
 $ java -jar jsrun.jar app/main.js --help
 
-To run the suite of unit tests included with JsDoc Toolkit enter this
-on the command line:
-
-$ java -jar jsrun.jar app/main.js --test
-
 More information about the various command line options used by JsDoc
 Toolkit are available on the project wiki.
 
+======================================================================
+
+Testing:
+
+To run the suite of unit tests included with JsDoc Toolkit enter this
+on the command line:
+
+$ java -jar jsrun.jar app/main.js -T
 
 ======================================================================
 
 LICENSE:
 
 This project is based on the JSDoc.pm tool, created by Michael
-Mathews, maintained by Gabriel Reid. More information on JsDoc.pm can
+Mathews and Gabriel Reid. More information on JsDoc.pm can
 be found on the JSDoc.pm homepage: http://jsdoc.sourceforge.net/
 
 Complete documentation on JsDoc Toolkit can be found on the project
@@ -79,18 +92,13 @@ Rhino (JavaScript in Java) is open source and licensed by Mozilla
 under the MPL 1.1 or later/GPL 2.0 or later licenses, the text of
 which is available at http://www.mozilla.org/MPL/
 
-You can obtain the source code for Rhino via the Mozilla web site at
+You can obtain the source code for Rhino from the Mozilla web site at
 http://www.mozilla.org/rhino/download.html
 
-The Tango base icon theme is licensed under the Creative Commons
-Attribution Share-Alike license. The palette is in the public domain.
-For more details visit the Tango! Desktop Project page at
-http://tango.freedesktop.org/Tango_Desktop_Project
+(JsDoc Toolkit is a larger work that uses the Rhino JavaScript engine
+without modification and without any claims whatsoever.)
 
-JsDoc Toolkit is a larger work that uses the Rhino JavaScript engine
-without modification and without any claims whatsoever.
-
-All code specific to JsDoc Toolkit are free, open-source and licensed
+All code specific to JsDoc Toolkit are free, open source and licensed
 for use under the X11/MIT License.
 
 JsDoc Toolkit is Copyright (c) 2007 Michael Mathews
