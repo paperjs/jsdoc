@@ -170,19 +170,19 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd+"test/scope.js"]});
+		symbolize({a:true, _: [SYS.pwd+"test/lend.js"]});
 
-		is('symbols[0].get("name")', "Person", 'Class defined in scope comment is found.');
-		is('symbols[0].get("methods")[0].get("name")', "initialize", 'Scoped instance method name can be found.');
+		is('symbols[0].get("name")', "Person", 'Class defined in lend comment is found.');
+		is('symbols[0].get("methods")[0].get("name")', "initialize", 'Lent instance method name can be found.');
 		is('symbols[0].get("methods")[1].get("name")', "say", 'Second instance method can be found.');
 		is('symbols[0].get("methods")[1].get("isStatic")', false, 'Instance method is known to be not static.');
 		
-		is('symbols[0].get("methods")[2].get("name")', "sing", 'Instance method name from second scope comment can be found.');
-		is('symbols[4].get("name")', "getCount", 'Static method name from second scope comment can be found.');
-		is('symbols[4].get("isStatic")', true, 'Static method from second scope comment is known to be static.');
+		is('symbols[0].get("methods")[2].get("name")', "sing", 'Instance method name from second lend comment can be found.');
+		is('symbols[4].get("name")', "getCount", 'Static method name from second lend comment can be found.');
+		is('symbols[4].get("isStatic")', true, 'Static method from second lend comment is known to be static.');
 		
-		is('symbols[5].get("name")', "Unknown.isok", 'Static instance method from scope comment is kept.');
-		is('symbols[6].get("name")', "_global_", 'Orphaned instance method from scope comment is discarded.');
+		is('symbols[5].get("name")', "Unknown.isok", 'Static instance method from lend comment is kept.');
+		is('symbols[6].get("name")', "_global_", 'Orphaned instance method from lend comment is discarded.');
 	}
 	,
 	function() {
