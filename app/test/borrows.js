@@ -16,7 +16,7 @@ function Layout(p) {
 
 /**
 @constructor
-@borrow Layout#orientation as #orientation
+@borrows Layout#orientation as #orientation
 */
 function Page() {
 	/** reset the page */
@@ -26,10 +26,8 @@ function Page() {
 
 /**
 @constructor
-@borrow Layout.prototype.orientation
-as
-this.orientation
-@borrow Layout.prototype.init as #init
+@borrows Layout.prototype.orientation as this.orientation
+@borrows Layout.prototype.init as #init
 @inherits Page.prototype.reset as #reset
 */
 function ThreeColumnPage() {
