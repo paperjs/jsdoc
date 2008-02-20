@@ -41,16 +41,19 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 			return true;
 		}
 		else if (docComment.getTag("lends").length > 0) {
-			var lends = docComment.getTag("lends")[0].desc;
+			var virtualName = docComment.getTag("name");
+			if (virtualName.length && (virtualName = virtualName[0].desc)) {
+				JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(virtualName, [], "VIRTUAL", docComment));
+			}
+			
 			var block = new JSDOC.TokenStream(ts.balance("LEFT_CURLY"));
-			if (lends) {
-				lends = lends.replace(/\.prototype(\.|$)/g, "#");
-				var virtualName = docComment.getTag("name");
+			var lends = docComment.getTag("lends");
 
-				if (virtualName.length && (virtualName = virtualName[0].desc)) {
-					JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(virtualName, [], "VIRTUAL", docComment));
-				}
-				JSDOC.Parser.onObLiteral(block, lends);
+			for (var i = 0, l = lends.length; i < l; i++) {
+				var recipient = lends[i].desc
+				recipient = recipient.replace(/\.prototype(\.|$)/g, "#");			
+				JSDOC.Parser.onObLiteral(block, recipient);
+				block.rewind();
 			}
 			return true;
 		}

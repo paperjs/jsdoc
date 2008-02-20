@@ -231,7 +231,10 @@ function include(path) {
 }
 
 function makeSrcFile(path, srcDir, name) {
-	if (!name) name = path.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
+	if (!name) {
+		name = path.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
+		name = name.replace(/\:/g, "_");
+	}
 	
 	var src = {path: path, name:name, hilited: ""};
 	

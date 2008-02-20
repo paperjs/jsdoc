@@ -3,7 +3,7 @@
 */
 JSDOC.TokenStream = function(tokens) {
 	this.tokens = (tokens || []);
-	this.cursor = -1;
+	this.rewind();
 }
 
 /**
@@ -13,6 +13,10 @@ JSDOC.TokenStream = function(tokens) {
 function VoidToken(/**String*/type) {
 	this.toString = function() {return "<VOID type=\""+type+"\">"};
 	this.is = function(){return false;}
+}
+
+JSDOC.TokenStream.prototype.rewind = function() {
+	this.cursor = -1;
 }
 
 /**
