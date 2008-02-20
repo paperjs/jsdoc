@@ -26,9 +26,13 @@ see the Verion 2 wiki at http://jsdoctoolkit.org/wiki
 
 REQUIREMENTS:
 
-JsDoc Toolkit is known to work with java version "1.6.0_03"
+JsDoc Toolkit is known to work with:
+java version "1.6.0_03"
 Java(TM) SE Runtime Environment (build 1.6.0_03-b05)
-on Windows XP.
+on Windows XP,
+and java version "1.5.0_13"
+Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_13-b05-241)
+on Mac OS X 10.4.
 
 Other versions of java may or may not work with JsDoc Toolkit.
 
