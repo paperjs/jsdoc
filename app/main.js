@@ -38,7 +38,8 @@ function main() {
 			}
 		}
 		else {
-			var template = JSDOC.opt.t;
+			var template = JSDOC.opt.t||System.getProperty("jsdoc.template.dir");
+
 			var handler = jsdoc.symbolGroup.handler;
 			if (handler && handler.publish) {
 				handler.publish(jsdoc.symbolGroup);
