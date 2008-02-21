@@ -1,0 +1,121 @@
+/** Handle the creation of HTML links to documented symbols. */
+function Link() {
+	this.alias = "";
+	this.src = "";
+	this.file = "";
+	this.text = "";
+	this.innerName = "";
+	this.classLink = false;
+	this.targetName = "";
+	
+	this.target = function(targetName) {
+		if (defined(targetName)) this.targetName = targetName;
+		return this;
+	}
+	this.inner = function(inner) {
+		if (defined(inner)) this.innerName = inner;
+		return this;
+	}
+	this.withText = function(text) {
+		if (defined(text)) this.text = text;
+		return this;
+	}
+	this.toSrc = function(filename) {
+		if (defined(filename)) this.src = filename;
+		return this;
+	}
+	this.toSymbol = function(alias) {
+		if (defined(alias)) this.alias = new String(alias);
+		return this;
+	}
+	this.toClass = function(alias) {
+		this.classLink = true;
+		return this.toSymbol(alias);
+	}
+	this.toFile = function(file) {
+		if (defined(file)) this.file = file;
+		return this;
+	}
+	
+	this.toString = function() {
+		var linkString;
+		var thisLink = this;
+
+		if (this.alias) {
+			linkString = this.alias.replace(/(^|[^a-z$0-9_#-.])([a-z$0-9_#-.]+)($|[^a-z$0-9_#-.])/gi,
+				function(match, prematch, symbolName, postmatch) {
+					return prematch+thisLink._makeSymbolLink(symbolName)+postmatch;
+				}
+			);
+		}
+		else if (this.src) {
+			linkString = thisLink._makeSrcLink(this.src);
+		}
+		else if (this.file) {
+			linkString = thisLink._makeFileLink(this.file);
+		}
+		return linkString;
+	}
+}
+
+/** Appended to the front of relative link paths. */
+Link.base = "";
+
+Link.symbolNameToLinkName = function(symbol) {
+	var linker = "";
+	if (symbol.get('isStatic')) linker = ".";
+	else if (symbol.get('isInner')) linker = "-";
+	
+	return linker+symbol.get("name");
+}
+
+/** Create a link to a snother symbol. */
+Link.prototype._makeSymbolLink = function(alias) {
+	var linkBase = Link.base+publish.conf.symbolsDir;
+	var linkTo;
+	var linkPath;
+	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
+	
+	// is it an internal link?
+	if (alias.charAt(0) == "#") var linkPath = alias;
+	// if there is no symbol by that name just return the name unaltered
+	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
+	// it's a symbol in another file
+	else {
+		
+		if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
+			linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
+			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
+		}
+		else {
+			linkPath = escape(linkTo.get('alias'));
+			linkPath += publish.conf.ext + (this.classLink? "":"#constructor");
+		}
+		linkPath = linkBase + linkPath
+	}
+	
+	if (!this.text) this.text = alias;
+	return "<a href=\""+linkPath+"\""+target+">"+this.text+"</a>";
+}
+
+/** Create a link to a source file. */
+Link.prototype._makeSrcLink = function(srcFilePath) {
+	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
+		
+	// transform filepath into a filename
+	var srcFile = srcFilePath.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
+	var outFilePath = Link.base + publish.conf.srcDir + srcFile + publish.conf.ext;
+
+	if (!this.text) this.text = FilePath.fileName(srcFilePath);
+	return "<a href=\""+outFilePath+"\""+target+">"+this.text+"</a>";
+}
+
+/** Create a link to a source file. */
+Link.prototype._makeFileLink = function(filePath) {
+	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
+		
+	var outFilePath =  Link.base + filePath;
+
+	if (!this.text) this.text = filePath;
+	return "<a href=\""+outFilePath+"\""+target+">"+this.text+"</a>";
+}
