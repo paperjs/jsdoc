@@ -280,7 +280,7 @@
 						<dl class="detailList">
 						<dt class="heading">See:</dt>
 						<for each="item" in="data.see()">
-							<dd>{+ resolveLinks(item) +}</dd>
+							<dd>{+ new Link().toSymbol(item) +}</dd>
 						</for>
 						</dl>
 					</if>
@@ -337,7 +337,7 @@
 							<dl class="detailList">
 							<dt class="heading">See:</dt>
 							<for each="item" in="member.see()">
-							<dd>{+ resolveLinks(item) +}</dd>
+							<dd>{+ new Link().toSymbol(item) +}</dd>
 							</for>
 							</dl>
 						</if>
@@ -443,7 +443,7 @@
 							<dl class="detailList">
 							<dt class="heading">See:</dt>
 							<for each="item" in="member.see()">
-								<dd>{+ resolveLinks(item) +}</dd>
+								<dd>{+ new Link().toSymbol(item) +}</dd>
 							</for>
 							</dl>
 						</if>

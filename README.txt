@@ -105,8 +105,7 @@ without modification and without any claims whatsoever.)
 All code specific to JsDoc Toolkit are free, open source and licensed
 for use under the X11/MIT License.
 
-JsDoc Toolkit is Copyright (c) 2007 Michael Mathews
-<micmath@gmail.com>
+JsDoc Toolkit is Copyright (c)2008 Michael Mathews <micmath@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

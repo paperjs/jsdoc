@@ -99,8 +99,8 @@ Shape.prototype.getCoords = function(){
 /**
  * Get the color of this shape.
  * @see #setColor
- * @see The <a href="example.com">Color</a> library.
- * @link {@link Shape}s
+ * @see The <a href="http://example.com">Color</a> library.
+ * @link Shape
  * @type Color
  */
 Shape.prototype.getColor = function(){
@@ -145,7 +145,7 @@ Shape.prototype.clone = function(){
  * @param {int} width The optional width for this Rectangle
  * @param {int} height Thie optional height for this Rectangle
  * @author Gabriel Reid
- * @see Shape Shape is the base class for this
+ * @see Shape is the base class for this
  * @augments Shape
  */
 function Rectangle(width, // This is the width 
@@ -190,7 +190,7 @@ Rectangle.prototype.getClassName= function(){
 /**
  * Get the value of the width for the Rectangle
  * @type int
- * @see #setWidth
+ * @see Rectangle#setWidth
  */
 Rectangle.prototype.getWidth = function(){
    return this.width;
@@ -202,7 +202,7 @@ Rectangle.prototype.getWidth = function(){
  * {@link Shape} base class.  
  * @return The height of this Rectangle
  * @type int
- * @see #setHeight
+ * @see Rectangle#setHeight
  */
 Rectangle.prototype.getHeight = function(){
     return this.height;
