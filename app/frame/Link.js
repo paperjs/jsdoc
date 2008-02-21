@@ -42,9 +42,15 @@ function Link() {
 		var thisLink = this;
 
 		if (this.alias) {
-			linkString = this.alias.replace(/(^|[^a-z$0-9_#-.])([a-z$0-9_#-.]+)($|[^a-z$0-9_#-.])/gi,
+			linkString = this.alias.replace(/(^|[^a-z$0-9_#.-])([|a-z$0-9_#.-]+)($|[^a-z$0-9_#.-])/i,
 				function(match, prematch, symbolName, postmatch) {
-					return prematch+thisLink._makeSymbolLink(symbolName)+postmatch;
+					var symbolNames = symbolName.split("|");
+					var links = [];
+					for (var i = 0, l = symbolNames.length; i < l; i++) {
+						thisLink.alias = symbolNames[i];
+						links.push(thisLink._makeSymbolLink(symbolNames[i]));
+					}
+					return prematch+links.join("|")+postmatch;
 				}
 			);
 		}
@@ -82,7 +88,6 @@ Link.prototype._makeSymbolLink = function(alias) {
 	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
 	// it's a symbol in another file
 	else {
-		
 		if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
 			linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
 			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
@@ -94,8 +99,8 @@ Link.prototype._makeSymbolLink = function(alias) {
 		linkPath = linkBase + linkPath
 	}
 	
-	if (!this.text) this.text = alias;
-	return "<a href=\""+linkPath+"\""+target+">"+this.text+"</a>";
+	var linkText = this.text || alias;
+	return "<a href=\""+linkPath+"\""+target+">"+linkText+"</a>";
 }
 
 /** Create a link to a source file. */
