@@ -37,6 +37,20 @@ JSDOC.Symbol = function() {
 		_version: ""
 	};
 	
+	for (var p in properties) {
+		var name = p.substr(1);
+		if (typeof JSDOC.Symbol.prototype[name] == "undefined") {
+			JSDOC.Symbol.prototype[name] = (
+				function(n) { return function() {
+					if (arguments.length > 0) {
+						this.set.apply(this, [n, arguments[0]]);
+					}
+					return this.get(n);
+				} }
+			)(name);
+		}
+	}
+	
 	if (defined(JSDOC.PluginManager)) {
 		JSDOC.PluginManager.run("onModifyProperties", properties);
 	}
@@ -97,20 +111,6 @@ JSDOC.Symbol = function() {
 			properties["_"+propName] = v;
 		}
 		else throw "Property \""+propName+"\" not defined in properties of class ";//+new Reflection(this).getConstructorName()+".";
-	}
-	
-	for (var p in properties) {
-		var name = p.substr(1);
-		if (typeof JSDOC.Symbol.prototype[name] == "undefined") {
-			JSDOC.Symbol.prototype[name] = (
-				function(n) { return function() {
-					if (arguments.length > 0) {
-						this.set.apply(this, [n, arguments[0]]);
-					}
-					return this.get(n);
-				} }
-			)(name);
-		}
 	}
 	
 	this.clone = function() {

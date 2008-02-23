@@ -70,7 +70,7 @@ Link.base = "";
 Link.symbolNameToLinkName = function(symbol) {
 	var linker = "";
 	if (symbol.get('isStatic')) linker = ".";
-	else if (symbol.get('isInner')) linker = "-";
+	else if (symbol.isInner()) linker = "-";
 	
 	return linker+symbol.get("name");
 }

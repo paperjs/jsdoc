@@ -39,7 +39,7 @@ JSDOC.SymbolGroup.prototype.getOverview = function(path) {
 }
 
 /** Apply any effects of -a -A -p (etcetera) commandline options */
-JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {			 
+JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {
 	symbols = symbols.filter(
 		function(symbol) {
 			if (symbol.isInner()) symbol.isPrivate("true");

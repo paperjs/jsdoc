@@ -72,8 +72,7 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
 /*debug*///print("~~ JSDOC.Parser.findFunction() "+ts.look());
 	if (ts.look().is("NAME")) {
-		var name = ts.look().data.replace(/\.prototype(\.|$)/g, "#");
-					
+		var name = ts.look().data.replace(/\.prototype(\.|$)/g, "#");					
 		var doc = "";
 		var isa = null;
 		var body = "";
@@ -154,7 +153,7 @@ if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 			var docComment = new JSDOC.DocComment(doc);
 			var newSymbol = new JSDOC.Symbol().init(name, params, isa, docComment);
 			JSDOC.Parser.symbols.push(newSymbol);
-			if (isInner) newSymbol.set("isInner", true);
+			if (isInner) newSymbol.isInner(true);
 			if (typeDoc) newSymbol.setType(typeDoc.data);
 			
 			if (body) {
@@ -199,7 +198,7 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			
 			if (!/#$/.test(name)) { // assigning to prototype of already existing symbol
 				JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], isa, docComment));
-				if (isInner) JSDOC.Parser.symbols[JSDOC.Parser.symbols.length-1].isInner = true;
+				if (isInner) JSDOC.Parser.symbols[JSDOC.Parser.symbols.length-1].isInner(true);
 			}
 		}
 		
@@ -238,6 +237,12 @@ if (ts.look(1).is("JSDOC")) var typeDoc = ts.next();
 						ts.balance("LEFT_PAREN");
 					}
 					var docComment = new JSDOC.DocComment(doc);
+
+					var constructs = docComment.getTag("constructs");
+					if (constructs.length) {
+						name = name.match(/(^[^#]+)/)[0];
+						isa = "CONSTRUCTOR";
+					}
 					
 					var newSymbol = new JSDOC.Symbol().init(name, params, isa, docComment);
 					JSDOC.Parser.symbols.push(newSymbol);
