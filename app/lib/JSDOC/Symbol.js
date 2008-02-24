@@ -17,6 +17,7 @@ JSDOC.Symbol = function() {
 		_inheritsFrom: [],
 		_isa: "OBJECT",
 		_isEvent: false,
+		_isConstant: false,
 		_isIgnored: false,
 		_isInner: false,
 		_isNamespace: false,
@@ -162,6 +163,12 @@ JSDOC.Symbol = function() {
 		var sinces = this.comment().getTag("since");
 		if (sinces.length) {
 			this.since(sinces.map(function($){return $.desc;}).join(", "));
+		}
+		
+		// @since
+		var constants = this.comment().getTag("constant");
+		if (constants.length) {
+			this.isConstant(true);
 		}
 		
 		// @version

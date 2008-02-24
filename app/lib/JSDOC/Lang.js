@@ -40,6 +40,7 @@ JSDOC.Lang.keyword.names = {
 	"=break":      "BREAK",
 	"=case":       "CASE",
 	"=catch":      "CATCH",
+	"=const":      "VAR",
 	"=continue":   "CONTINUE",
 	"=default":    "DEFAULT",
 	"=delete":     "DELETE",

@@ -96,6 +96,7 @@
 							<td class="attributes">{!
 								if (member.isPrivate()) output += "&lt;private&gt; ";
 								if (member.isStatic()) output += "&lt;static&gt; ";
+								if (member.isConstant()) output += "&lt;constant&gt; ";
 							!}&nbsp;</td>
 							<td class="nameDescription">
 								<div class="fixedFont">
@@ -176,7 +177,7 @@
 					inheritedMembers.map(function($) {if (contributers.indexOf($.memberOf()) < 0) contributers.push($.memberOf())});
 					for (var i = 0, l = contributers.length; i < l; i++) {
 						output +=
-							"<dt>Methods inherited from class "+new Link().toSymbol(contributers[i])+": </dt>"
+							"<dt>Methods borrowed from class "+new Link().toSymbol(contributers[i])+": </dt>"
 							+
 							"<dd>" +
 							inheritedMembers
@@ -299,6 +300,7 @@
 						if (member.isPrivate()) output += "&lt;private&gt; ";
 						if (member.isInner()) output += "&lt;inner&gt; ";
 						if (member.isStatic()) output += "&lt;static&gt; ";
+						if (member.isConstant()) output += "&lt;constant&gt; ";
 					!}
 					
 					<if test="member.type()"><span class="light">{{+new Link().toSymbol(member.type())+}}</span></if>

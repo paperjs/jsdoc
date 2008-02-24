@@ -93,7 +93,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 				doc = ts.look(-2).data;
 			}
 			paramTokens = ts.balance("LEFT_PAREN");
-if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
+			if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 					
 			body = ts.balance("LEFT_CURLY");
 		}
@@ -118,8 +118,7 @@ if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 				doc = ts.look(-2).data;
 			}
 			paramTokens = ts.balance("LEFT_PAREN");
-			
-if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
+			if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 
 			body = ts.balance("LEFT_CURLY");
 			
@@ -182,6 +181,7 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		
 		name = name.replace(/\.prototype(\.|$)/, "#");
 		
+		/*
 		// like Foo = Class.create(BaseClass,{})
 		var nextName = ts.look(2);
 		if (nextName.is("NAME") && nextName.data == "Class.create" && ts.look(3).data == "(" && ts.look(4).data != ")") { // skip pre 1.6 type of Class.create() syntax
@@ -192,7 +192,9 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			}
 		
 		}
-		else if (doc) { // we only keep these if they're documented
+		else 
+		*/
+		if (doc) { // we only keep these if they're documented
 			var docComment = new JSDOC.DocComment(doc);
 			var isInner = (nspace && ts.look(-1).is("VAR"));
 			
@@ -228,7 +230,7 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 					if (ts.look(-1).is("JSDOC")) doc = ts.look(-1).data;
 					
 					var params = JSDOC.Parser.onParamList(ts.balance("LEFT_PAREN"));
-if (ts.look(1).is("JSDOC")) var typeDoc = ts.next();
+					if (ts.look(1).is("JSDOC")) var typeDoc = ts.next();
 					var body = ts.balance("LEFT_CURLY");
 					
 					// like foo: function(n) {return n}(42)
@@ -238,7 +240,7 @@ if (ts.look(1).is("JSDOC")) var typeDoc = ts.next();
 					}
 					var docComment = new JSDOC.DocComment(doc);
 
-					var constructs = docComment.getTag("constructs");
+					var constructs = docComment.getTag("constructor");
 					if (constructs.length) {
 						name = name.match(/(^[^#]+)/)[0];
 						isa = "CONSTRUCTOR";

@@ -2,7 +2,7 @@
   * Improved inheritance handling, now properties and events can be inherited same as methods.
   * Improved handling of cross-file relationships, now having two related objects in separate files is not a problem.
   * Improved ability to recognize membership of previously defined objects.
-  * Added abilty to redefine parsing behavior with plugins.
+  * Added ability to redefine parsing behavior with plugins.
   * @methodOf is a synonym for @function and @memberOf.
   * Added @default to document default values of members that are objects.
   * Added ability to parse and refer to inner functions.
@@ -13,7 +13,9 @@
   * Fixed error: Locally scoped variables (declared with var) no longer appear as global.
   * It is now possible to run JsDoc Toolkit from any directory.
   * Added support for inline {@link ...} tags.
-  * Added support for the -H commandline option to allow for custom content handlers.
-  * Tag names @inherits and @scope changed to @borrows and @lends
-  * Combining @constructor in a doclet with @lends now supported
-  * Multiple @lend tags now supported
+  * Added support for the -H command-line option to allow for custom content handlers.
+  * Tag names @inherits and @scope changed to @borrows and @lends.
+  * Combining @constructor in a doclet with @lends now supported.
+  * Multiple @lend tags now supported.
+  * Added support for the @constructs tag, used inside a @lends block.
+  * Added support for the @constant tag.
