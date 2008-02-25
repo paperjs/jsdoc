@@ -240,7 +240,7 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 					}
 					var docComment = new JSDOC.DocComment(doc);
 
-					var constructs = docComment.getTag("constructor");
+					var constructs = docComment.getTag("constructs");
 					if (constructs.length) {
 						name = name.match(/(^[^#]+)/)[0];
 						isa = "CONSTRUCTOR";

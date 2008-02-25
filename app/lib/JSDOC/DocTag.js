@@ -25,7 +25,7 @@ JSDOC.DocTag = function(src) {
 			if (this.title == "type") {
 				if (this.type) this.desc = this.type;
 				
-				// should be @type foo, bar, baz but we'll accept @type foo|bar||baz too
+				// should be @type foo|bar|baz but we'll accept @type foo,bar||baz too
 				if (this.desc) {
 					this.desc = this.desc.replace(/\s*(,|\|\|)\s*/g, '|');
 				}
@@ -51,15 +51,8 @@ JSDOC.DocTag = function(src) {
 						}
 					}
 				}
-/*				else if (this.title == "requires" || this.title == "see") {
-					var m = this.desc.match(/^\s*(\S+)(?:\s+([\S\s]*\S))?/);
-					if (m) {
-						this.name = (m[1] || "");
-						this.desc = (m[2] || "");
-					}
-				}
-*/
 				else if (this.title == "config") {
+					LOG.warn("The @config tag is deprecated.");
 					var m = this.desc.match(/^\s*\[([a-zA-Z0-9.$_]+)(?:\s*=([^\]]+))?\](?:\s+\{\s*([\S\s]+?)\s*\})?(?:\s+([\S\s]*\S))?/);
 					if (m) { // optional config parameter
 						this.isOptional = true; // bracketed name means optional

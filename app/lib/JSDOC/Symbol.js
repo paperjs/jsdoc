@@ -281,16 +281,22 @@ JSDOC.Symbol = function() {
 		if (properties.length) {
 			thisProperties = this.properties();
 			for (var i = 0; i < properties.length; i++) {
+				/*
 				var thisAlias = this.alias();
 				var joiner = ".";
 				if (thisAlias.charAt(thisAlias.length-1) == "#" || properties[i].name.charAt(0) == "#") {
 					joiner = "";
 				}
-				properties[i].alias = this.alias + joiner + properties[i].name;
-				thisProperties.push(properties[i]);
+				*/
+				
+				var property = new JSDOC.Symbol().init(properties[i].name, [], "OBJECT", new JSDOC.DocComment("/**"+properties[i].desc+"\n@name "+properties[i].name+"\n@memberOf "+this.alias()+"#*/"));
+				if (properties[i].type) property.type(properties[i].type);
+				if (properties[i].defaultValue) property.defaultValue(properties[i].defaultValue);
+				this.addProperty(property);
+				if (JSDOC.Parser.symbols) JSDOC.Parser.symbols.push(property);
 			}
 		}
-		
+	
 		// @return
 		var returns = this.comment().getTag("return");
 		if (returns.length) { // there can be many return tags in a single doclet

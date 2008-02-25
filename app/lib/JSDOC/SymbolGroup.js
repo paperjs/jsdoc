@@ -60,6 +60,11 @@ JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {
 	return symbols;
 }
 
+JSDOC.SymbolGroup.prototype.addSymbol = function(symbol) {
+	this.symbols.push(symbol);
+	//TODO
+}
+
 JSDOC.SymbolGroup.prototype.getSymbol = function(alias) {
 	return this.nameIndex.get(alias);
 }
