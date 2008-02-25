@@ -252,7 +252,7 @@
 					</if>
 					<if test="data.exceptions().length">
 						<dl class="detailList">
-						<dt class="heading">Exceptions:</dt>
+						<dt class="heading">Throws:</dt>
 						<for each="item" in="data.exceptions()">
 							<dt>
 								{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+} <b>{+item.name+}</b>
@@ -416,7 +416,7 @@
 						</if>
 						<if test="member.exceptions().length">
 							<dl class="detailList">
-							<dt class="heading">Exceptions:</dt>
+							<dt class="heading">Throws:</dt>
 							<for each="item" in="member.exceptions()">
 								<dt>
 									{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+} <b>{+item.name+}</b>

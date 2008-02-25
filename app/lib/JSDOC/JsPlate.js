@@ -1,4 +1,3 @@
-
 /**
 	@constructor
 */
@@ -52,7 +51,6 @@ JSDOC.JsPlate.prototype.toCode = function() {
 
 JSDOC.JsPlate.keys = function(obj) {
 	var keys = [];
-	// TODO: Confirm that arrays are not treated as objects
 	if (obj.constructor.toString().indexOf("Array") > -1) {
 		for (var i = 0; i < obj.length; i++) {
 			keys.push(i);
@@ -68,7 +66,6 @@ JSDOC.JsPlate.keys = function(obj) {
 
 JSDOC.JsPlate.values = function(obj) {
 	var values = [];
-	// TODO: Confirm that arrays are not treated as objects
 	if (obj.constructor.toString().indexOf("Array") > -1) {
 		for (var i = 0; i < obj.length; i++) {
 			values.push(obj[i]);

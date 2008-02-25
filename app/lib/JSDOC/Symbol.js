@@ -487,9 +487,4 @@ JSDOC.Symbol.prototype.getEvents = function() {
 //TODO
 }
 
-JSDOC.Symbol.setShortcuts = function(shortcuts) {
-	JSDOC.Symbol.shortcuts = eval("JSDOC.Symbol.shortcuts = "+shortcuts);
-}
-
-JSDOC.Symbol.shortcuts = {}; // holds map of shortcut names to full names
 JSDOC.Symbol.srcFile = ""; // running reference to the current file being parsed

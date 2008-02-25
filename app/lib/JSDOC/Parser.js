@@ -2,15 +2,13 @@
 /**
 	@namespace
 */
-JSDOC.Parser =  {
+JSDOC.Parser = {
 }
 
 JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	JSDOC.Parser.symbols = [];
-	
-	JSDOC.DocComment.shared = "";
-	JSDOC.Symbol.setShortcuts();
 	JSDOC.Symbol.srcFile = (srcFile || "");
+	JSDOC.DocComment.shared = "";
 	
 	while(ts.next()) {
 		if (JSDOC.Parser.findDocComment(ts)) continue;
@@ -22,7 +20,6 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 }
 
 JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
-/*debug*///print("~~ JSDOC.Parser.findDocComment() "+ts.look());
 	if (ts.look().is("JSDOC")) {
 		var rawComment = ts.look().data;
 		var docComment = new JSDOC.DocComment(rawComment);
@@ -30,8 +27,6 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 		if (docComment.meta) {
 			if (docComment.meta == "@+") JSDOC.DocComment.shared = docComment.src;
 			if (docComment.meta == "@-") JSDOC.DocComment.shared = "";
-			if (docComment.meta == "=+") JSDOC.Symbol.setShortcuts(docComment.src);
-			if (docComment.meta == "=-") JSDOC.Symbol.setShortcuts();
 			delete ts.tokens[ts.cursor];
 			return true;
 		}
@@ -70,7 +65,6 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 }
 
 JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
-/*debug*///print("~~ JSDOC.Parser.findFunction() "+ts.look());
 	if (ts.look().is("NAME")) {
 		var name = ts.look().data.replace(/\.prototype(\.|$)/g, "#");					
 		var doc = "";
@@ -168,7 +162,6 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 }
 
 JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
-/*debug*///print("~~ JSDOC.Parser.findVariable() "+ts.look());
 	if (ts.look().is("NAME") && ts.look(1).is("ASSIGN")) {
 		
 		// like foo = 
@@ -181,19 +174,6 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		
 		name = name.replace(/\.prototype(\.|$)/, "#");
 		
-		/*
-		// like Foo = Class.create(BaseClass,{})
-		var nextName = ts.look(2);
-		if (nextName.is("NAME") && nextName.data == "Class.create" && ts.look(3).data == "(" && ts.look(4).data != ")") { // skip pre 1.6 type of Class.create() syntax
-			if (defined(JSDOC.PluginManager)) {
-				var addComment = new JSDOC.Token("", "COMM", "JSDOC");
-				JSDOC.PluginManager.run("onPrototypeClassCreate", {"name":name, "comment": doc, "addComment":addComment});
-				ts.insertAhead(addComment)
-			}
-		
-		}
-		else 
-		*/
 		if (doc) { // we only keep these if they're documented
 			var docComment = new JSDOC.DocComment(doc);
 			var isInner = (nspace && ts.look(-1).is("VAR"));
@@ -217,7 +197,6 @@ JSDOC.Parser.findVariable = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 }
 
 JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
-/*debug*///print("~~ JSDOC.Parser.onObLiteral with nspace: "+nspace);
 	while (ts.look()) {
 		if (!ts.look().is("VOID")) {
 			if (ts.look().is("NAME") && ts.look(1).is("COLON")) {
@@ -293,7 +272,6 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 }
 
 JSDOC.Parser.onFnBody = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
-/*debug*///print(">   ~~ JSDOC.Parser.onFnBody with nspace: "+nspace+" and look = "+ts.look());
 	while (ts.look()) {
 		if (!ts.look().is("VOID")) {
 			if (JSDOC.Parser.findDocComment(ts)) {
