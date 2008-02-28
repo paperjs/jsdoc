@@ -124,7 +124,7 @@ JSDOC.SymbolGroup.prototype.addBuiltIn = function(isa) {
 	var docComment = new JSDOC.DocComment("/** BUILTIN */");
 	var builtIn = new JSDOC.Symbol().init(isa, [], "CONSTRUCTOR", docComment, "");
 	builtIn.isStatic = true;
-	builtIn.srcFile = "";
+	builtIn.srcFile("");
 	this.symbols.push(builtIn);
 	this.indexSymbol(builtIn);
 	return builtIn;

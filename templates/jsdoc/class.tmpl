@@ -118,7 +118,7 @@
 					inheritedMembers.map(function($) {if (contributers.indexOf($.memberOf()) < 0) contributers.push($.memberOf())});
 					for (var i = 0, l = contributers.length; i < l; i++) {
 						output +=
-							"<dt>Fields inherited from class "+new Link().toSymbol(contributers[i])+": </dt>"
+							"<dt>Fields borrowed from class "+new Link().toSymbol(contributers[i])+": </dt>"
 							+
 							"<dd>" +
 							inheritedMembers

@@ -118,7 +118,7 @@ JSDOC.Symbol = function() {
 		var clone = new this.constructor();
 		clone = clone.init.apply(clone, this.init.args);
 		// todo: further cloning here
-		clone.srcFile = this.srcFile;
+		clone.srcFile(this.srcFile());
 		
 		return clone;
 	}
