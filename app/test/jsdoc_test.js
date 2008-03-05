@@ -52,6 +52,9 @@ function Shape(){
  * {@link Shape} (thanks to the <code>&#64;extends</code> tag), but in 
  * reality it is completely unrelated to Shape.
  * @param {int} sideLength The length of one side for the new Hexagon
+ * @example
+ *    hex   = new Hexagon(5);
+ *    color = hex.getColor();
  */
 function Hexagon(sideLength) {
 }

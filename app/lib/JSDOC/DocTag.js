@@ -8,7 +8,7 @@ JSDOC.DocTag = function(src) {
 	this.desc = "";
 	
 	if (defined(src)) {
-		var parts = src.match(/^(\S+)(?:\s+\{\s*([^@][\S\s]*?)\s*\})?\s*([\S\s]*\S)?/);
+		var parts = src.match(/^(\S+)(?:\s+\{\s*([^@][\S\s]*?)\s*\})?\s?([\S\s]*\S)?/);
 		
 		if (defined(parts) && parts != null) {
 			this.title = (parts[1].toLowerCase() || "");
