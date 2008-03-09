@@ -112,11 +112,9 @@ JSDOC.SymbolGroup.prototype.indexSymbol = function(symbol) {
 	}
 
 	// isa=>symbol[] map
-	//if (symbol.isa) {
-		var kind = symbol.isa();
-		if (!this.typeIndex.has(kind)) this.typeIndex.put(kind, []);
-		this.typeIndex.get(kind).push(symbol);
-	//}
+	var kind = symbol.isa();
+	if (!this.typeIndex.has(kind)) this.typeIndex.put(kind, []);
+	this.typeIndex.get(kind).push(symbol);
 }
 
 JSDOC.SymbolGroup.prototype.addBuiltIn = function(isa) {
@@ -181,8 +179,11 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 
 			var parts = symbol.alias().match(/^(.*[.#-])([^.#-]+)$/);
 			if (parts) {
-				symbol.memberOf(parts[1]);
-				symbol.name(parts[2]);
+
+				if (!symbol.memberOf()) {
+					symbol.memberOf(parts[1]);
+					symbol.name(parts[2]);
+				}
 
 				if (symbol.memberOf()) {
 					switch (symbol.memberOf().charAt(symbol.memberOf().length-1)) {
@@ -201,7 +202,10 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 							symbol.isInner(true);
 						break;
 					}
-					symbol.memberOf(symbol.memberOf().substr(0, symbol.memberOf().length-1));
+					
+// TODO trim trailing punctuation if present from memberOf might be more efficient as a regex
+					if (symbol.memberOf().match(/[.#-]$/))
+						symbol.memberOf(symbol.memberOf().substr(0, symbol.memberOf().length-1));
 				}
 				else {
 					symbol.isStatic(true);

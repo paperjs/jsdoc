@@ -116,7 +116,7 @@ function makeSrcFile(path, srcDir, name) {
 		name = name.replace(/\:/g, "_");
 	}
 	
-	var src = {path: path, name:name, hilited: ""};
+	var src = {path: path, name:name, charset: IO.encoding, hilited: ""};
 	
 	if (defined(JSDOC.PluginManager)) {
 		JSDOC.PluginManager.run("onPublishSrc", src);

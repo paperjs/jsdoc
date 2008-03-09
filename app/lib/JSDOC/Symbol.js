@@ -407,7 +407,6 @@ JSDOC.Symbol.prototype.setType = function(/**String*/comment, /**Boolean*/overwr
 	this.type( typeComment);
 }
 
-
 //TODO why make distinction between properties and methods?
 JSDOC.Symbol.prototype.inherit = function(symbol) {
 	if (!this.hasMember(symbol.name()) && !symbol.isInner()) {
@@ -426,7 +425,14 @@ JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
 	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
 		joiner = "";
 	}
-	this.alias(alias + joiner + thisAlias);
+	if (thisAlias.match(new RegExp('^'+alias+'[-.#]'))) {
+		thisAlias = thisAlias.substr(alias.length+1);
+		this.name(thisAlias);
+	}
+	else {
+		this.alias(alias + joiner + thisAlias);
+	}
+	this.memberOf(alias);
 }
 
 JSDOC.Symbol.prototype.hasMember = function(name) {

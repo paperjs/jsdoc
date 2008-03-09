@@ -25,7 +25,6 @@ function JsHilite(src, charset) {
 
 	var tr = new JSDOC.TokenReader();
 	
-	//this.tokenizer = new JSDOC.TokenReader(sourceCode);
 	tr.keepComments = true;
 	tr.keepDocs = true;
 	tr.keepWhite = true;

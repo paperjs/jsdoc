@@ -122,6 +122,14 @@ var testCases = [
 	}
 	,
 	function() {
+		symbolize({a:true, _: [SYS.pwd+"test/memberof.js"]});
+		
+		is('symbols[2].get("alias")', "pack.build.install", 'Using @memberOf sets alias.');
+		is('symbols[2].get("name")', "build.install", 'Using @memberOf sets name, even if the name is dotted.');
+		is('symbols[2].get("memberOf")', "pack", 'Using @memberOf sets memberOf.');
+	}
+	,
+	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/borrows.js"]});
 //print(Dumper.dump(symbols));		
 		is('symbols[0].get("name")', "Layout", 'Constructor can be found.');
@@ -205,12 +213,11 @@ var testCases = [
 
 		is('symbols[1].get("name")', 'some', 'The name of a symbol in a shared section is found.');
 		is('symbols[1].get("alias")', 'Array#some', 'The alias of a symbol in a shared section is found.');
-		is('symbols[1].get("desc")', "Extension to builtin array.", 'A description can be shared.');
-		is('symbols[2].get("desc")', "Extension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
+		is('symbols[1].get("desc")', "\nExtension to builtin array.", 'A description can be shared.');
+		is('symbols[2].get("desc")', "\nExtension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
 		is('symbols[3].get("desc")', "A first in, first out data structure.", 'A description is not shared when outside a shared section.');
 		is('symbols[4].get("alias")', "Queue.rewind", 'Second shared tag can be started.');
 		is('symbols[5].get("alias")', "_global_.startOver", 'Shared tag doesnt cross over files.');
-	
 	}
 	,
 	function() {
