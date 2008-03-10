@@ -425,8 +425,8 @@ JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
 	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
 		joiner = "";
 	}
-	if (thisAlias.match(new RegExp('^'+alias+'[-.#]'))) {
-		thisAlias = thisAlias.substr(alias.length+1);
+	if (thisAlias.match(new RegExp('^('+alias+'[.#-]?)'))) {
+		thisAlias = thisAlias.substr(RegExp.$1.length);
 		this.name(thisAlias);
 	}
 	else {

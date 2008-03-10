@@ -179,12 +179,12 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 
 			var parts = symbol.alias().match(/^(.*[.#-])([^.#-]+)$/);
 			if (parts) {
-
+				// memberOf like: foo. or foo#
 				if (!symbol.memberOf()) {
 					symbol.memberOf(parts[1]);
 					symbol.name(parts[2]);
 				}
-
+				
 				if (symbol.memberOf()) {
 					switch (symbol.memberOf().charAt(symbol.memberOf().length-1)) {
 						case '#' :
@@ -202,16 +202,18 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 							symbol.isInner(true);
 						break;
 					}
-					
-// TODO trim trailing punctuation if present from memberOf might be more efficient as a regex
-					if (symbol.memberOf().match(/[.#-]$/))
-						symbol.memberOf(symbol.memberOf().substr(0, symbol.memberOf().length-1));
 				}
 				else {
 					symbol.isStatic(true);
 					symbol.isInner(false);
 				}
 			}
+			
+			// TODO trim trailing punctuation if present from memberOf might be more efficient as a regex
+			if (symbol.memberOf().match(/[.#-]$/)) {
+				symbol.memberOf(symbol.memberOf().substr(0, symbol.memberOf().length-1));
+			}
+			
 			if (!this.classIndex[symbol.memberOf()]) this.classIndex[symbol.memberOf()] = [];
 			this.classIndex[symbol.memberOf()].push(symbol);
 		}

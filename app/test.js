@@ -127,11 +127,15 @@ var testCases = [
 		is('symbols[2].get("alias")', "pack.build.install", 'Using @memberOf sets alias.');
 		is('symbols[2].get("name")', "build.install", 'Using @memberOf sets name, even if the name is dotted.');
 		is('symbols[2].get("memberOf")', "pack", 'Using @memberOf sets memberOf.');
+		is('symbols[3].get("alias")', "pack.build.test", 'Using @memberOf with value ending in dot sets alias.');
+		is('symbols[3].get("name")', "build.test", 'Using @memberOf with value ending in dot sets name, even if the name is dotted.');
+		is('symbols[3].get("memberOf")', "pack", 'Using @memberOf with value ending in dot sets memberOf.');
+		is('symbols[3].get("isStatic")', true, 'Using @memberOf with value ending in dot sets isStatic to true.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/borrows.js"]});
-//print(Dumper.dump(symbols));		
+	
 		is('symbols[0].get("name")', "Layout", 'Constructor can be found.');
 		is('symbols[0].get("methods")[0].get("name")', "init", 'Constructor method name can be found.');
 		is('symbols[0].get("properties")[0].get("name")', "orientation", 'Constructor property name can be found.');
@@ -236,12 +240,10 @@ var testCases = [
 
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/ignore.js"]});
-//print(Dumper.dump(symbols));	
 		is('symbols.length', 1, 'Only the global object is documented when a parent is ignored.');
-
 	}
 ];
-
+//print(Dumper.dump(symbols));	
 
 //// run and print results
 print(testrun(testCases));
