@@ -50,11 +50,11 @@ examples below, or as shown on the project wiki.
 On a computer running Windows a valid command line to run JsDoc
 Toolkit might look like this:
 
-> java -jar jsrun.jar app\main.js -a -t=templates\jsdoc mycode.js
+> java -jar jsrun.jar app\run.js -a -t=templates\jsdoc mycode.js
 
 On Mac OS X or Linux the same command would look like this:
 
-$ java -jar jsrun.jar app/main.js -a -t=templates/jsdoc mycode.js
+$ java -jar jsrun.jar app/run.js -a -t=templates/jsdoc mycode.js
 
 The above assumes your current working directory contains jsrun.jar,
 the "app" and "templates" subdirectories from the standard JsDoc
@@ -67,7 +67,7 @@ The output documentation files will be saved to a new directory named
 
 For help (usage notes) enter this on the command line:
 
-$ java -jar jsrun.jar app/main.js --help
+$ java -jar jsrun.jar app/run.js --help
 
 More information about the various command line options used by JsDoc
 Toolkit are available on the project wiki.
@@ -79,7 +79,13 @@ Testing:
 To run the suite of unit tests included with JsDoc Toolkit enter this
 on the command line:
 
-$ java -jar jsrun.jar app/main.js -T
+$ java -jar jsrun.jar app/run.js -T
+
+To see a dump of the internal data structure that JsDoc Toolkit has
+built from your source files use this command:
+
+$ java -jar jsrun.jar app/run.js mycode.js -Z
+
 
 ======================================================================
 
