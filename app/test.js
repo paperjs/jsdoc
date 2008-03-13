@@ -9,6 +9,15 @@ function symbolize(opt) {
 
 var testCases = [
 	function() {
+		symbolize({_: [SYS.pwd+"test/name.js"]});
+
+		is('symbols[0].get("alias")', "Response", 'Virtual class name is found.');
+		is('symbols[1].get("alias")', "Response#text", 'Virtual method name is found.');
+		is('symbols[1].get("memberOf")', "Response", 'Virtual method parent name is found.');
+		is('symbols[1].get("isVirtual")', true, 'Virtual method is marked as virtual.');
+	}
+	,
+	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype.js"]});
 
 		is('symbols[0].get("name")', "Article", 'Function set to constructor prototype with inner constructor name is found.');

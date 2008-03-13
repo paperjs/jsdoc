@@ -23,6 +23,7 @@ JSDOC.Symbol = function() {
 		_isNamespace: false,
 		_isPrivate: false,
 		_isStatic: false,
+		_isVirtual: false,
 		_memberOf: "",
 		_methods: [],
 		_name: "",
@@ -383,7 +384,7 @@ JSDOC.Symbol = function() {
 	}
 }
 
-JSDOC.Symbol.validKinds = ["CONSTRUCTOR", "FILE", "VIRTUAL", "FUNCTION", "OBJECT", "VOID"];
+JSDOC.Symbol.validKinds = ["CONSTRUCTOR", "FILE", "FUNCTION", "OBJECT", "VOID"];
 
 JSDOC.Symbol.prototype.is = function(what) {
 	return this.isa() === what;

@@ -53,12 +53,7 @@ JSDOC.Parser.findDocComment = function(/**JSDOC.TokenStream*/ts) {
 			return true;
 		}
 		else if (docComment.getTag("name").length > 0) {
-			var name = docComment.getTag("name")[0].desc;
-			if (name) {					
-				JSDOC.Parser.symbols.push(new JSDOC.Symbol().init(name, [], "VIRTUAL", docComment));
-				delete ts.tokens[ts.cursor];
-				return true;
-			}
+			return JSDOC.Parser.onVirtual(ts, docComment);
 		}
 	}
 	return false;
@@ -225,9 +220,11 @@ JSDOC.Parser.onObLiteral = function(/**JSDOC.TokenStream*/ts, /**String*/nspace)
 						isa = "CONSTRUCTOR";
 					}
 					
-					var newSymbol = new JSDOC.Symbol().init(name, params, isa, docComment);
-					JSDOC.Parser.symbols.push(newSymbol);
-					if (typeDoc) newSymbol.setType(typeDoc.data);
+					if (!JSDOC.Parser.onVirtual(ts, docComment)) {
+						var newSymbol = new JSDOC.Symbol().init(name, params, isa, docComment);
+						JSDOC.Parser.symbols.push(newSymbol);
+						if (typeDoc) newSymbol.setType(typeDoc.data);
+					}
 					
 					JSDOC.Parser.onFnBody(
 						new JSDOC.TokenStream(body),
@@ -283,6 +280,18 @@ JSDOC.Parser.onFnBody = function(/**JSDOC.TokenStream*/ts, /**String*/nspace) {
 		}
 		if (!ts.next()) break;
 	}
+}
+
+JSDOC.Parser.onVirtual = function(/**JSDOC.TokenStream*/ts, /**JSDOC.DocComment*/docComment) {
+	var name = (docComment.getTag("name").length)? docComment.getTag("name")[0].desc : undefined;
+	if (name) {
+		var virtual = new JSDOC.Symbol().init(name, [], "VIRTUAL", docComment);
+		virtual.isVirtual(true);
+		JSDOC.Parser.symbols.push(virtual);
+		delete ts.tokens[ts.cursor];
+		return true;
+	}
+	return false;
 }
 
 JSDOC.Parser.onParamList = function(/**Array*/paramTokens) {
