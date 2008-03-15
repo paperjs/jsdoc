@@ -1,3 +1,5 @@
+if (typeof JSDOC == "undefined") JSDOC = {};
+
 /**
 	@constructor
 */

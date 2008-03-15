@@ -18,7 +18,7 @@
  * @constructor
  * @throws MemoryException if there is no more memory 
  * @throws GeneralShapeException rarely (if ever)
- * @return {Shape, Coordinate} A new shape.
+ * @return {Shape|Coordinate} A new shape.
  */
 function Shape(){
   

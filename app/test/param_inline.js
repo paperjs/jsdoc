@@ -27,7 +27,7 @@ function Layout(/**int*/columns){
 	/** 
 	@param x
 	@param y
-	@param z {zoppler}*/
+	@param {zoppler} z*/
 	this.init = function(x, y, /**abbler*/z) {
 		/** The xyz. */
 		this.xyz = x+y+z;

@@ -240,16 +240,24 @@ JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, t
 	requires("../lib/JSDOC/Token.js");
 	requires("../lib/JSDOC/Lang.js");
 	
-	var src = "function foo(num){while (num >= 0x20){}}";
+	assert("testing JSDOC.TokenReader.prototype.read_numb");
+	
+	//// setup
+	var src = "function foo(num){while (num+8.0 >= 0x20 && num < 0777){}}";
 	var tr = new JSDOC.TokenReader();
 	var tokens = tr.tokenize(new JSDOC.TextStream(src));
 	
-	var hexToken;
+	var hexToken, octToken, decToken;
 	for (var i = 0; i < tokens.length; i++) {
 		if (tokens[i].name == "HEX_DEC") hexToken = tokens[i];
+		if (tokens[i].name == "OCTAL") octToken = tokens[i];
+		if (tokens[i].name == "DECIMAL") decToken = tokens[i];
 	}
+	////
 	
+	assertEqual(decToken.data, "8.0", "decimal number is found in source.");
 	assertEqual(hexToken.data, "0x20", "hexdec number is found in source (issue #99).");
+	assertEqual(octToken.data, "0777", "octal number is found in source.");
 ?*/
 
 /**

@@ -218,7 +218,7 @@ var testCases = [
 		is('symbols[2].get("params")[0].type', "", 'Type can be not defined for some params.');
 		is('symbols[2].get("params")[2].type', "int", 'Type can be defined inline for only some params.');
 		is('symbols[4].get("params").length', 0, 'Docomments inside function sig is ignored without a param.');
-		is('symbols[5].get("params")[2].type', "zoppler", 'Doccomments type overrides inline type for param with same name.');
+		is('symbols[5].get("params")[2].type', "zoppler", 'Doc comment type overrides inline type for param with same name.');
 	}
 	,
 	function() {
@@ -226,8 +226,8 @@ var testCases = [
 
 		is('symbols[1].get("name")', 'some', 'The name of a symbol in a shared section is found.');
 		is('symbols[1].get("alias")', 'Array#some', 'The alias of a symbol in a shared section is found.');
-		is('symbols[1].get("desc")', "\nExtension to builtin array.", 'A description can be shared.');
-		is('symbols[2].get("desc")', "\nExtension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
+		is('symbols[1].get("desc")', "Extension to builtin array.", 'A description can be shared.');
+		is('symbols[2].get("desc")', "Extension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
 		is('symbols[3].get("desc")', "A first in, first out data structure.", 'A description is not shared when outside a shared section.');
 		is('symbols[4].get("alias")', "Queue.rewind", 'Second shared tag can be started.');
 		is('symbols[5].get("alias")', "_global_.startOver", 'Shared tag doesnt cross over files.');
