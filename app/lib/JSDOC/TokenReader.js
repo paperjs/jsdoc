@@ -1,5 +1,7 @@
+if (typeof JSDOC == "undefined") JSDOC = {};
+
 /**
-	@class Search a {@link JSDOC.TokenStream} for language tokens.
+	@class Search a {@link JSDOC.TextStream} for language tokens.
 */
 JSDOC.TokenReader = function() {
 	this.keepDocs = true;
@@ -10,7 +12,7 @@ JSDOC.TokenReader = function() {
 /**
 	@type {JSDOC.Token[]}
  */
-JSDOC.TokenReader.prototype.tokenize = function(/**JSDOC.TokenStream*/stream) {
+JSDOC.TokenReader.prototype.tokenize = function(/**JSDOC.TextStream*/stream) {
 	var tokens = [];
 	/**@ignore*/ tokens.last = function() { return tokens[tokens.length-1]; }
 
@@ -215,7 +217,7 @@ JSDOC.TokenReader.prototype.read_snquote = function(/**JSDOC.TokenStream*/stream
  */
 JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, tokens) {
 	if (stream.look() === "0" && stream.look(1) == "x") {
-		return JSDOC.Lang.read_hex(stream, tokens);
+		return this.read_hex(stream, tokens);
 	}
 	
 	var found = "";
@@ -233,6 +235,22 @@ JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, t
 		return true;
 	}
 }
+/*?
+	requires("../lib/JSDOC/TextStream.js");
+	requires("../lib/JSDOC/Token.js");
+	requires("../lib/JSDOC/Lang.js");
+	
+	var src = "function foo(num){while (num >= 0x20){}}";
+	var tr = new JSDOC.TokenReader();
+	var tokens = tr.tokenize(new JSDOC.TextStream(src));
+	
+	var hexToken;
+	for (var i = 0; i < tokens.length; i++) {
+		if (tokens[i].name == "HEX_DEC") hexToken = tokens[i];
+	}
+	
+	assertEqual(hexToken.data, "0x20", "hexdec number is found in source (issue #99).");
+?*/
 
 /**
 	@returns {Boolean} Was the token found?
