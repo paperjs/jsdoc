@@ -235,7 +235,7 @@ JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, t
 		return true;
 	}
 }
-/*?
+/*~t
 	requires("../lib/JSDOC/TextStream.js");
 	requires("../lib/JSDOC/Token.js");
 	requires("../lib/JSDOC/Lang.js");
@@ -258,7 +258,7 @@ JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, t
 	assertEqual(decToken.data, "8.0", "decimal number is found in source.");
 	assertEqual(hexToken.data, "0x20", "hexdec number is found in source (issue #99).");
 	assertEqual(octToken.data, "0777", "octal number is found in source.");
-?*/
+*/
 
 /**
 	@returns {Boolean} Was the token found?

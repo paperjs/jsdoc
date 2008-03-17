@@ -14,11 +14,17 @@ TestDoc.record = function(result) {
 
 TestDoc.add = function(path) {
 	load(path);
-	var src = readFile(path)
-	var chunks = src.split(/\/\*\?/);
-	for (var i = 0; i < chunks.length; i++) {
-		var chunk = (chunks[i].substring(0,chunks[i].indexOf("?*/")));
-		eval(chunk);
+	var src = readFile(path);
+	var chunks = src.split(/\/\*~t/);
+	
+	var run = function(chunk) { eval(chunk); }
+	for (var start = -1, end = 0; (start = src.indexOf("/*~t", end)) > end; start = end) {
+		run(
+			src.substring(
+				start+4,
+				(end = src.indexOf("*/", start))
+			)
+		);
 	}
 }
 

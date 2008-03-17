@@ -9,7 +9,7 @@ String.prototype.trim = function() {
 	}
 	return str;
 }
-/*?
+/*~t
 	assert("Testing String.prototype.trim.");
 	
 	var s = "   a bc   ".trim();
@@ -30,7 +30,7 @@ String.prototype.trim = function() {
 	s = "".trim();
 	assertEqual(s, "", "an empty string is trimmed to empty.");
 
-?*/
+*/
 
 String.prototype.balance = function(open, close) {
 	var i = 0;
@@ -51,7 +51,7 @@ String.prototype.balance = function(open, close) {
 	
 	return [i, j];
 }
-/*?
+/*~t
 	assert("Testing String.prototype.balance.");
 	
 	var s = "{abc}".balance("{","}");
@@ -85,4 +85,4 @@ String.prototype.balance = function(open, close) {
 	s = "a<bc}de".balance("<","}");
 	assertEqual(s[0], 1, "unmatching opener is found.");
 	assertEqual(s[1], 4, "unmatching closer is found.");
-?*/
+*/
