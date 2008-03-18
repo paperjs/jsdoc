@@ -1,17 +1,35 @@
+if (typeof JSDOC == "undefined") JSDOC = {};
+
 /**
 	Create a new DocComment. This takes a raw documentation comment,
 	and wraps it in useful accessors.
 	@class Represents a documentation comment object.
-*/ 
+ */ 
 JSDOC.DocComment = function(/**String*/comment) {
-	this.userComment = true; // is this a generated comment or one written by the user?
-	if (!comment) {
+	this.init();
+	if (typeof comment != "undefined") {
+		this.parse(comment);
+	}
+}
+
+JSDOC.DocComment.prototype.init = function() {
+	this.isUserComment = true;
+	this.src           = "";
+	this.meta          = "";
+	this.tagTexts      = [];
+	this.tags          = [];
+}
+
+/**
+	@requires JSDOC.DocTag
+ */
+JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
+	if (comment == "") {
 		comment = "/** @desc */";
-		this.userComment = false;
+		this.isUserComment = false;
 	}
 	
-	this.rawSrc = comment;
-	this.src = JSDOC.DocComment.unwrapComment(this.rawSrc);
+	this.src = JSDOC.DocComment.unwrapComment(comment);
 	
 	this.meta = "";
 	if (this.src.indexOf("#") == 0) {
@@ -27,15 +45,16 @@ JSDOC.DocComment = function(/**String*/comment) {
 	
 	this.src = JSDOC.DocComment.shared+"\n"+this.src;
 	
-	this.tagTexts = this.src.split(/(^|[\r\n])\s*@/)
-		.filter(function(el){return el.match(/\S/)});
+	this.tagTexts = 
+		this.src
+		.split(/(^|[\r\n])\s*@/)
+		.filter(function($){return $.match(/\S/)});
 	
 	/**
 		The tags found in the comment.
 		@type JSDOC.DocTag[]
-	*/
-	this.tags =
-		this.tagTexts.map(function(el){return new JSDOC.DocTag(el)});
+	 */
+	this.tags = this.tagTexts.map(function($){return new JSDOC.DocTag($)});
 	
 	if (defined(JSDOC.PluginManager)) {
 		JSDOC.PluginManager.run("onDocCommentTags", this);
@@ -44,7 +63,7 @@ JSDOC.DocComment = function(/**String*/comment) {
 
 /**
 	If no @desc tag is provided, this function will add it.
-*/
+ */
 JSDOC.DocComment.prototype.fixDesc = function() {
 	if (this.meta && this.meta != "@+") return;
 	if (/^\s*[^@\s]/.test(this.src)) {				
@@ -52,10 +71,37 @@ JSDOC.DocComment.prototype.fixDesc = function() {
 	}
 }
 
+/*~t
+	assert("testing JSDOC.DocComment#fixDesc");
+	
+	var com = new JSDOC.DocComment();
+	
+	com.src = "this is a desc\n@author foo";
+	com.fixDesc();
+	assertEqual(com.src, "@desc this is a desc\n@author foo", "if no @desc tag is provided one is added.");
+
+	com.src = "x";
+	com.fixDesc();
+	assertEqual(com.src, "@desc x", "if no @desc tag is provided one is added to a single character.");
+
+	com.src = "\nx";
+	com.fixDesc();
+	assertEqual(com.src, "@desc \nx", "if no @desc tag is provided one is added to return and character.");
+	
+	com.src = " ";
+	com.fixDesc();
+	assertEqual(com.src, " ", "if no @desc tag is provided one is not added to just whitespace.");
+
+	com.src = "";
+	com.fixDesc();
+	assertEqual(com.src, "", "if no @desc tag is provided one is not added to empty.");
+
+*/
+
 /**
 	Remove slash-star comment wrapper from a raw comment string.
 	@type String
-*/
+ */
 JSDOC.DocComment.unwrapComment = function(/**String*/comment) {
 	if (!comment) return "";
 	var unwrapped = comment.replace(/(^\/\*\*|\*\/$)/g, "").replace(/^\s*\* ?/gm, "");
@@ -65,7 +111,7 @@ JSDOC.DocComment.unwrapComment = function(/**String*/comment) {
 /**
 	Provides a printable version of the comment.
 	@type String
-*/
+ */
 JSDOC.DocComment.prototype.toString = function() {
 	return this.src;
 }
@@ -73,9 +119,16 @@ JSDOC.DocComment.prototype.toString = function() {
 /**
 	Given the title of a tag, returns all tags that have that title.
 	@type JSDOC.DocTag[]
-*/
+ */
 JSDOC.DocComment.prototype.getTag = function(/**String*/tagTitle) {
-	return this.tags.filter(function(el){return el.title == tagTitle});
+	return this.tags.filter(function($){return $.title == tagTitle});
 }
 
+/**/
 JSDOC.DocComment.shared = "";
+
+/** @namespace */
+JSDOC.DocComment.foo = {
+	lala: function(x) {
+	}
+}
