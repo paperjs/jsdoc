@@ -39,7 +39,7 @@ JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
 	
 	this.fixDesc();
 	
-	if (defined(JSDOC.PluginManager)) {
+	if (typeof JSDOC.PluginManager != "undefined") {
 		JSDOC.PluginManager.run("onDocCommentSrc", this);
 	}
 	
@@ -56,10 +56,28 @@ JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
 	 */
 	this.tags = this.tagTexts.map(function($){return new JSDOC.DocTag($)});
 	
-	if (defined(JSDOC.PluginManager)) {
+	if (typeof JSDOC.PluginManager != "undefined") {
 		JSDOC.PluginManager.run("onDocCommentTags", this);
 	}
 }
+
+/*~t
+	assert("testing JSDOC.DocComment");
+	requires("../frame/String.js");
+	requires("../lib/JSDOC/DocTag.js");
+	
+	var com = new JSDOC.DocComment("/**@foo some\n* comment here*"+"/");
+	assertEqual(com.tagTexts[0], "foo some\ncomment here", "first tag text is found.");
+	assertEqual(com.tags[0].title, "foo", "the title is found in a comment with one tag.");
+	
+	var com = new JSDOC.DocComment("/** @foo first\n* @bar second*"+"/");
+	assertEqual(com.getTag("bar").length, 1, "getTag() returns one tag by that title.");
+	
+	JSDOC.DocComment.shared = "@author John Smith";
+	var com = new JSDOC.DocComment("/**@foo some\n* comment here*"+"/");
+	assertEqual(com.tags[0].title, "author", "shared comment is added.");
+	assertEqual(com.tags[1].title, "foo", "shared comment is added to existing tag.");
+*/
 
 /**
 	If no @desc tag is provided, this function will add it.
@@ -95,7 +113,6 @@ JSDOC.DocComment.prototype.fixDesc = function() {
 	com.src = "";
 	com.fixDesc();
 	assertEqual(com.src, "", "if no @desc tag is provided one is not added to empty.");
-
 */
 
 /**
@@ -108,6 +125,30 @@ JSDOC.DocComment.unwrapComment = function(/**String*/comment) {
 	return unwrapped;
 }
 
+/*~t
+	assert("testing JSDOC.DocComment.unwrapComment");
+	
+	var com = "/**x*"+"/";
+	var unwrapped = JSDOC.DocComment.unwrapComment(com);
+	assertEqual(unwrapped, "x", "a single character jsdoc is found.");
+	
+	com = "/***x*"+"/";
+	unwrapped = JSDOC.DocComment.unwrapComment(com);
+	assertEqual(unwrapped, "x", "three stars are allowed in the opener.");
+	
+	com = "/****x*"+"/";
+	unwrapped = JSDOC.DocComment.unwrapComment(com);
+	assertEqual(unwrapped, "*x", "fourth star in the opener is kept.");
+	
+	com = "/**x\n * y\n*"+"/";
+	unwrapped = JSDOC.DocComment.unwrapComment(com);
+	assertEqual(unwrapped, "x\ny\n", "leading stars and spaces are trimmed.");
+	
+	com = "/**x\n *   y\n*"+"/";
+	unwrapped = JSDOC.DocComment.unwrapComment(com);
+	assertEqual(unwrapped, "x\n  y\n", "only first space after leading stars are trimmed.");
+*/
+
 /**
 	Provides a printable version of the comment.
 	@type String
@@ -115,6 +156,13 @@ JSDOC.DocComment.unwrapComment = function(/**String*/comment) {
 JSDOC.DocComment.prototype.toString = function() {
 	return this.src;
 }
+
+/*~t
+	assert("testing JSDOC.DocComment#fixDesc");
+	var com = new JSDOC.DocComment();
+	com.src = "foo";
+	assertEqual(""+com, "foo", "stringifying a comment returns the unwrapped src.");
+*/
 
 /**
 	Given the title of a tag, returns all tags that have that title.
@@ -126,9 +174,3 @@ JSDOC.DocComment.prototype.getTag = function(/**String*/tagTitle) {
 
 /**/
 JSDOC.DocComment.shared = "";
-
-/** @namespace */
-JSDOC.DocComment.foo = {
-	lala: function(x) {
-	}
-}
