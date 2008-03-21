@@ -6,13 +6,11 @@ if (typeof JSDOC == "undefined") JSDOC = {};
  */
 JSDOC.Symbol = function() {
 	this.init();
-	if (arguments.length) {
-		this.populate(arguments[0], arguments[1], arguments[2], arguments[3]);
-	}
+	if (arguments.length) this.populate.apply(this, arguments);
 }
 
 JSDOC.Symbol.prototype.init = function() {
-	this._args = {};
+	this.$args = {};
 	this.addOn = "";
 	this.alias = "";
 	this.augments = [];
@@ -51,13 +49,14 @@ JSDOC.Symbol.prototype.init = function() {
 	this.version = "";
 }
 
-JSDOC.Symbol.prototype.serialize = function() { // todo
-	var out = "\n{\n";
+JSDOC.Symbol.prototype.serialize = function() {
 	var keys = [];
 	for (var p in this) {
 		keys.push (p);
 	}
 	keys = keys.sort();
+	
+	var out = "\n{\n";
 	for (var i in keys) {
 		if (typeof this[keys[i]] == "function") continue;
 		out += keys[i]+" => "+Dumper.dump(this[keys[i]])+",\n";
@@ -70,9 +69,10 @@ JSDOC.Symbol.prototype.serialize = function() { // todo
 
 JSDOC.Symbol.prototype.clone = function() {
 	var clone = new JSDOC.Symbol();
-	clone = clone.populate.apply(clone, this._args);
+	clone.populate.apply(clone, this.$args);
+	
 	// todo: further cloning here
-	clone.srcFile = this.srcFile;
+	clone.srcFile = this.srcFile; // not the current srcFile, the one when the original was made
 	
 	return clone;
 }
@@ -97,7 +97,7 @@ JSDOC.Symbol.prototype.populate = function(
 		/** String */ isa,
 		/** JSDOC.DocComment */ comment
 ) {
-	this._args = arguments;
+	this.$args = arguments;
 	
 	this.name = name;
 	this.alias = this.name;
@@ -106,16 +106,13 @@ JSDOC.Symbol.prototype.populate = function(
 	this.comment = comment;
 	this.srcFile = JSDOC.Symbol.srcFile;
 	
-	if (this.is("FILE")) {
-		if (!this.alias) this.alias = this.srcFile;
-	}
+	if (this.is("FILE") && !this.alias) this.alias = this.srcFile;
+
 	this.processTags();
 	
 	if (typeof JSDOC.PluginManager != "undefined") {
 		JSDOC.PluginManager.run("onSymbol", this);
 	}
-	
-	return this;
 }
 
 JSDOC.Symbol.prototype.processTags = function() {
@@ -278,10 +275,7 @@ JSDOC.Symbol.prototype.processTags = function() {
 	}
 	
 	// @exception
-	var exceptions = this.comment.getTag("throws");
-	if (exceptions.length) {
-		this.exceptions = exceptions;
-	}
+	this.exceptions = this.comment.getTag("throws");
 	
 	// @requires
 	var requires = this.comment.getTag("requires");
@@ -296,14 +290,12 @@ JSDOC.Symbol.prototype.processTags = function() {
 	}
 	
 	// @private
-	var privates = this.comment.getTag("private");
-	if (privates.length) {
+	if (this.comment.getTag("private").length) {
 		this.isPrivate = true;
 	}
 	
 	// @ignore
-	var ignores = this.comment.getTag("ignore");
-	if (ignores.length) {
+	if (this.comment.getTag("ignore").length) {
 		this.isIgnored = true;
 	}
 	
@@ -311,10 +303,10 @@ JSDOC.Symbol.prototype.processTags = function() {
 	var inherits = this.comment.getTag("inherits");
 	if (inherits.length) {
 		for (var i = 0; i < inherits.length; i++) {
-			if (/^\s*([a-z$0-9_.#]+)(?:\s+as\s+([a-z$0-9_.#]+))?/i.test(inherits[i].desc)) {
+			if (/^\s*([a-z$0-9_.#-]+)(?:\s+as\s+([a-z$0-9_.#]+))?/i.test(inherits[i].desc)) {
 				var inAlias = RegExp.$1;
 				var inAs = RegExp.$2 || inAlias;
-			
+
 				if (inAlias) inAlias = inAlias.replace(/\.prototype\.?/g, "#");
 				
 				if (inAs) {
@@ -335,10 +327,7 @@ JSDOC.Symbol.prototype.processTags = function() {
 	}
 
 	// @augments
-	var augments = this.comment.getTag("augments");
-	if (augments.length) {
-		this.augments = augments;
-	}
+	this.augments = this.comment.getTag("augments");
 	
 	// @default
 	var defaults = this.comment.getTag("default");

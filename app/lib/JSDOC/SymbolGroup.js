@@ -233,7 +233,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 			
 			symbol.isStatic = true;
 			symbol.isInner = false;
-			global.inherit = symbol;
+			global.inherit(symbol);
 		}
 	}
 }
@@ -267,8 +267,8 @@ JSDOC.SymbolGroup.prototype.resolveMixins = function() {
 		for (var j = 0; j < mixins.length; j++) {
 			var mixedin = this.symbols.filter(function($){return $.alias == mixins[j].alias});
 			var mixinAs = mixins[j].as;
+
 			if (symbol.hasMember(mixinAs)) continue;
-			
 			if (mixedin && mixedin[0]) {
 				mixedin = mixedin[0];
 			
