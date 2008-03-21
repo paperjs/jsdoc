@@ -56,40 +56,39 @@ JSDOC.Symbol.prototype.serialize = function() {
 	}
 	keys = keys.sort();
 	
-	var out = "\n{\n";
+	var out = "";
 	for (var i in keys) {
 		if (typeof this[keys[i]] == "function") continue;
 		out += keys[i]+" => "+Dumper.dump(this[keys[i]])+",\n";
 	}
-	
-	out += "}\n";
-	
-	return out;
+	return "\n{\n" + out + "}\n";
 }
 
 JSDOC.Symbol.prototype.clone = function() {
 	var clone = new JSDOC.Symbol();
-	clone.populate.apply(clone, this.$args);
-	
-	// todo: further cloning here
+	clone.populate.apply(clone, this.$args); // repopulate using the original arguments
 	clone.srcFile = this.srcFile; // not the current srcFile, the one when the original was made
-	
 	return clone;
 }
 
-JSDOC.Symbol.prototype.__defineSetter__("name", function(n) { this._name = n.replace(/\.prototype\.?/g, '#'); });
-JSDOC.Symbol.prototype.__defineGetter__("name", function() { return this._name; });
+JSDOC.Symbol.prototype.__defineSetter__("name",
+	function(n) { this._name = n.replace(/\.prototype\.?/g, '#'); }
+);
+JSDOC.Symbol.prototype.__defineGetter__("name",
+	function() { return this._name; }
+);
 JSDOC.Symbol.prototype.__defineSetter__("params", 
 	function(v) {
-		for (var i = 0; i < v.length; i++) {
+		for (var i = 0, l = v.length; i < l; i++) {
 			if (v[i].constructor != JSDOC.DocTag) { // may be a generic object parsed from signature, like {type:..., name:...}
-				v[i] = new JSDOC.DocTag("param"+((v[i].type)?" {"+v[i].type+"}":"")+" "+v[i].name);
+				this._params[i] = new JSDOC.DocTag("param"+((v[i].type)?" {"+v[i].type+"}":"")+" "+v[i].name);
 			}
 		}
-		this._params = v;
 	}
 );
-JSDOC.Symbol.prototype.__defineGetter__("params", function() { return this._params; });
+JSDOC.Symbol.prototype.__defineGetter__("params",
+	function() { return this._params; }
+);
 
 JSDOC.Symbol.prototype.populate = function(
 		/** String */ name,
@@ -108,25 +107,41 @@ JSDOC.Symbol.prototype.populate = function(
 	
 	if (this.is("FILE") && !this.alias) this.alias = this.srcFile;
 
-	this.processTags();
+	this.setTags();
 	
 	if (typeof JSDOC.PluginManager != "undefined") {
 		JSDOC.PluginManager.run("onSymbol", this);
 	}
 }
 
-JSDOC.Symbol.prototype.processTags = function() {
+JSDOC.Symbol.prototype.setTags = function() {
 	// @author
 	var authors = this.comment.getTag("author");
 	if (authors.length) {
 		this.author = authors.map(function($){return $.desc;}).join(", ");
 	}
 	
+	/*~t
+		assert("testing JSDOC.Symbol");
+		
+		requires("../lib/JSDOC/DocComment.js");
+		requires("../frame/String.js");
+		requires("../lib/JSDOC/DocTag.js");
+
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@author Joe Smith*"+"/"));
+		assertEqual(sym.author, "Joe Smith", "@author tag, author is found.");
+	*/
+	
 	// @desc
 	var descs = this.comment.getTag("desc");
 	if (descs.length) {
 		this.desc = descs.map(function($){return $.desc;}).join("\n"); // multiple descriptions are concatenated into one
 	}
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@desc This is a description.*"+"/"));
+		assertEqual(sym.desc, "This is a description.", "@desc tag, description is found.");
+	*/
 	
 	// @overview
 	if (this.is("FILE")) {
@@ -138,16 +153,31 @@ JSDOC.Symbol.prototype.processTags = function() {
 		}
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@overview This is an overview.*"+"/"));
+		assertEqual(sym.desc, "\nThis is an overview.", "@overview tag, description is found.");
+	*/
+	
 	// @since
 	var sinces = this.comment.getTag("since");
 	if (sinces.length) {
 		this.since = sinces.map(function($){return $.desc;}).join(", ");
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@since 1.01*"+"/"));
+		assertEqual(sym.since, "1.01", "@since tag, description is found.");
+	*/
+	
 	// @constant
 	if (this.comment.getTag("constant").length) {
 		this.isConstant = true;
 	}
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@constant*"+"/"));
+		assertEqual(sym.isConstant, true, "@constant tag, isConstant set.");
+	*/
 	
 	// @version
 	var versions = this.comment.getTag("version");
@@ -155,18 +185,32 @@ JSDOC.Symbol.prototype.processTags = function() {
 		this.version = versions.map(function($){return $.desc;}).join(", ");
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@version 2.0x*"+"/"));
+		assertEqual(sym.version, "2.0x", "@version tag, version is found.");
+	*/
+	
 	// @deprecated
 	var deprecateds = this.comment.getTag("deprecated");
 	if (deprecateds.length) {
 		this.deprecated = deprecateds.map(function($){return $.desc;}).join("\n");
 	}
-	delete deprecateds;
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@deprecated Use other method.*"+"/"));
+		assertEqual(sym.deprecated, "Use other method.", "@deprecated tag, desc is found.");
+	*/
 	
 	// @example
 	var examples = this.comment.getTag("example");
 	if (examples.length) {
 		this.example = examples[0];
 	}
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@example This\n  is an example.*"+"/"));
+		assertEqual(sym.example, "This\n  is an example.", "@deprecated tag, desc is found.");
+	*/
 	
 	// @see
 	var sees = this.comment.getTag("see");
@@ -175,12 +219,23 @@ JSDOC.Symbol.prototype.processTags = function() {
 		sees.map(function($){thisSee.push($.desc);});
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@see The other thing.*"+"/"));
+		assertEqual(sym.see, "The other thing.", "@see tag, desc is found.");
+	*/
+	
 	// @class
 	var classes = this.comment.getTag("class");
 	if (classes.length) {
 		this.isa = "CONSTRUCTOR";
 		this.classDesc = classes[0].desc; // desc can't apply to the constructor as there is none.
 	}
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@class This describes the class.*"+"/"));
+		assertEqual(sym.isa, "CONSTRUCTOR", "@class tag, makes symbol a constructor.");
+		assertEqual(sym.classDesc, "This describes the class.", "@class tag, class description is found.");
+	*/
 	
 	// @namespace
 	var namespaces = this.comment.getTag("namespace");
@@ -189,6 +244,12 @@ JSDOC.Symbol.prototype.processTags = function() {
 		this.isa = "CONSTRUCTOR";
 		this.isNamespace = true;
 	}
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@namespace This describes the namespace.*"+"/"));
+		assertEqual(sym.isa, "CONSTRUCTOR", "@namespace tag, makes symbol a constructor.");
+		assertEqual(sym.classDesc, "This describes the namespace.\n", "@namespace tag, class description is found.");
+	*/
 	
 	// @param
 	var params = this.comment.getTag("param");
@@ -212,10 +273,19 @@ JSDOC.Symbol.prototype.processTags = function() {
 		}
 	}
 	
+	/*~t
+		// todo
+	*/
+	
 	// @constructor
 	if (this.comment.getTag("constructor").length) {
 		this.isa = "CONSTRUCTOR";
 	}
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@constructor*"+"/"));
+		assertEqual(sym.isa, "CONSTRUCTOR", "@constructor tag, makes symbol a constructor.");
+	*/
 	
 	// @static
 	if (this.comment.getTag("static").length) {
@@ -225,21 +295,43 @@ JSDOC.Symbol.prototype.processTags = function() {
 		}
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@static\n@constructor*"+"/"));
+		assertEqual(sym.isStatic, true, "@static tag, makes isStatic true.");
+		assertEqual(sym.isNamespace, true, "@static and @constructor tag, makes isNamespace true.");
+	*/
+	
 	// @inner
 	if (this.comment.getTag("inner").length) {
 		this.isInner = true;
 		this.isStatic = false;
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@inner*"+"/"));
+		assertEqual(sym.isStatic, false, "@inner tag, makes isStatic false.");
+		assertEqual(sym.isInner, true, "@inner makes isInner true.");
+	*/
+	
 	// @field
 	if (this.comment.getTag("field").length) {
 		this.isa = "OBJECT";
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "FUNCTION", new JSDOC.DocComment("/**@field*"+"/"));
+		assertEqual(sym.isa, "OBJECT", "@field tag, makes symbol an object.");
+	*/
+	
 	// @function
 	if (this.comment.getTag("function").length) {
 		this.isa = "FUNCTION";
 	}
+	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@function*"+"/"));
+		assertEqual(sym.isa, "FUNCTION", "@function tag, makes symbol a function.");
+	*/
 	
 	// @event
 	var events = this.comment.getTag("event");
@@ -248,11 +340,21 @@ JSDOC.Symbol.prototype.processTags = function() {
 		this.isEvent = true;
 	}
 	
+	/*~t
+		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@event*"+"/"));
+		assertEqual(sym.isa, "FUNCTION", "@event tag, makes symbol a function.");
+		assertEqual(sym.isEvent, true, "@event makes isEvent true.");
+	*/
+	
 	// @name
 	var names = this.comment.getTag("name");
 	if (names.length) {
 		this.name = names[0].desc;
 	}
+	
+	/*~t
+		// todo
+	*/
 	
 	// @property
 	var properties = this.comment.getTag("property");
@@ -266,6 +368,10 @@ JSDOC.Symbol.prototype.processTags = function() {
 			if (JSDOC.Parser.symbols) JSDOC.Parser.symbols.push(property);
 		}
 	}
+	
+	/*~t
+		// todo
+	*/
 
 	// @return
 	var returns = this.comment.getTag("return");
@@ -274,8 +380,16 @@ JSDOC.Symbol.prototype.processTags = function() {
 		this.type = returns.map(function($){return $.type}).join(", ");
 	}
 	
+	/*~t
+		// todo
+	*/
+	
 	// @exception
 	this.exceptions = this.comment.getTag("throws");
+	
+	/*~t
+		// todo
+	*/
 	
 	// @requires
 	var requires = this.comment.getTag("requires");
@@ -283,11 +397,19 @@ JSDOC.Symbol.prototype.processTags = function() {
 		this.requires = requires.map(function($){return $.desc});
 	}
 	
+	/*~t
+		// todo
+	*/
+	
 	// @type
 	var types = this.comment.getTag("type");
 	if (types.length) {
 		this.type = types[0].desc; //multiple type tags are ignored
 	}
+	
+	/*~t
+		// todo
+	*/
 	
 	// @private
 	if (this.comment.getTag("private").length) {
@@ -298,6 +420,10 @@ JSDOC.Symbol.prototype.processTags = function() {
 	if (this.comment.getTag("ignore").length) {
 		this.isIgnored = true;
 	}
+	
+	/*~t
+		// todo
+	*/
 	
 	// @inherits ... as ...
 	var inherits = this.comment.getTag("inherits");
@@ -325,6 +451,10 @@ JSDOC.Symbol.prototype.processTags = function() {
 			this.inherits.push({alias: inAlias, as: inAs});
 		}
 	}
+	
+	/*~t
+		// todo
+	*/
 
 	// @augments
 	this.augments = this.comment.getTag("augments");
@@ -337,11 +467,19 @@ JSDOC.Symbol.prototype.processTags = function() {
 		}
 	}
 	
+	/*~t
+		// todo
+	*/
+	
 	// @memberOf
 	var memberOfs = this.comment.getTag("memberOf");
 	if (memberOfs.length) {
 		this.memberOf = memberOfs[0].desc;
 	}
+	
+	/*~t
+		// todo
+	*/
 }
 
 JSDOC.Symbol.prototype.is = function(what) {
@@ -430,10 +568,6 @@ JSDOC.Symbol.prototype.addProperty = function(symbol) {
 	}
 
 	thisProperties.push(symbol); // new property with this alias
-}
-
-JSDOC.Symbol.prototype.getEvents = function() {
-//TODO
 }
 
 JSDOC.Symbol.srcFile = ""; //running reference to the current file being parsed
