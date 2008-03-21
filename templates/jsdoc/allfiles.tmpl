@@ -24,16 +24,16 @@
 			
 			<for each="item" in="data">
 			<div>
-				<h2>{+new Link().toSrc(item.alias())+} {+item.srcFile()+}</h2>
-				<if test="item.desc()">{+resolveLinks(item.desc())+}</if>
+				<h2>{+new Link().toSrc(item.alias)+} {+item.srcFile+}</h2>
+				<if test="item.desc">{+resolveLinks(item.desc)+}</if>
 				<dl>
-					<if test="item.author()">
+					<if test="item.author">
 						<dt class="heading">Author:</dt>
-						<dd>{+item.author()+}</dd>
+						<dd>{+item.author+}</dd>
 					</if>
-					<if test="item.version()">
+					<if test="item.version">
 						<dt class="heading">Version:</dt>
-							<dd>{+item.version()+}</dd>
+							<dd>{+item.version+}</dd>
 					</if>
 				</dl>
 			</div>

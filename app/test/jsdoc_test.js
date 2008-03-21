@@ -80,9 +80,10 @@ Shape.prototype.color = null;
 
 /**
  * The border of this shape. 
+ * @field
  * @type int
  */
-Shape.prototype.border = null;
+Shape.prototype.border = function(){return border;};
 
 /*
  * These are all the instance method implementations for Shape

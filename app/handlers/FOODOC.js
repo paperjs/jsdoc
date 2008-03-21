@@ -12,7 +12,7 @@ FOODOC.handle = function(srcFile, src) {
 	LOG.inform("Handling file '" + srcFile + "'");
 	
 	return [
-		new JSDOC.Symbol().init(
+		new JSDOC.Symbol(
 			"foo",
 			[],
 			"VIRTUAL",

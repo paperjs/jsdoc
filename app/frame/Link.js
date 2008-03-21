@@ -69,10 +69,10 @@ Link.base = "";
 
 Link.symbolNameToLinkName = function(symbol) {
 	var linker = "";
-	if (symbol.get('isStatic')) linker = ".";
-	else if (symbol.isInner()) linker = "-";
+	if (symbol.isStatic) linker = ".";
+	else if (symbol.isInner) linker = "-";
 	
-	return linker+symbol.get("name");
+	return linker+symbol.name;
 }
 
 /** Create a link to a snother symbol. */
@@ -89,11 +89,11 @@ Link.prototype._makeSymbolLink = function(alias) {
 	// it's a symbol in another file
 	else {
 		if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
-			linkPath = escape(linkTo.get('parentConstructor')) || "_global_";
+			linkPath = escape(linkTo.parentConstructor) || "_global_";
 			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
 		}
 		else {
-			linkPath = escape(linkTo.get('alias'));
+			linkPath = escape(linkTo.alias);
 			linkPath += publish.conf.ext + (this.classLink? "":"#constructor");
 		}
 		linkPath = linkBase + linkPath

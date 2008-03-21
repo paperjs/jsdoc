@@ -24,8 +24,8 @@
 			
 			<for each="thisClass" in="data">
 			<div>
-				<h2>{+(new Link().toSymbol(thisClass.alias()))+}</h2>
-				{+resolveLinks(thisClass.classDesc())+}
+				<h2>{+(new Link().toSymbol(thisClass.alias))+}</h2>
+				{+resolveLinks(thisClass.classDesc)+}
 			</div>
 			<hr />
 			</for>

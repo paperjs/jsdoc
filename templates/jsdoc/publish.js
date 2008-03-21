@@ -24,7 +24,7 @@ function publish(symbolGroup) {
 	// filters
 	function hasNoParent($) {return ($.memberOf == "")}
 	function isaFile($) {return ($.is("FILE"))}
-	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace())}
+	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace)}
 	
 	var symbols = symbolGroup.getSymbols();
 	
@@ -45,7 +45,7 @@ function publish(symbolGroup) {
 		var output = "";
 		output = classTemplate.process(symbol);
 		
-		IO.saveFile(publish.conf.outDir+"symbols/", symbol.get("alias")+publish.conf.ext, output);
+		IO.saveFile(publish.conf.outDir+"symbols/", symbol.alias+publish.conf.ext, output);
 	}
 	
 	// regenrate the index with different relative links
@@ -70,11 +70,11 @@ function publish(symbolGroup) {
 	var allFiles = [];
 	
 	for (var i = 0; i < files.length; i++) {
-		allFiles.push(new JSDOC.Symbol().init(files[i], [], "FILE", new JSDOC.DocComment("/** */")));
+		allFiles.push(new JSDOC.Symbol(files[i], [], "FILE", new JSDOC.DocComment("/** */")));
 	}
 	
 	for (var i = 0; i < documentedFiles.length; i++) {
-		var offset = files.indexOf(documentedFiles[i].get("alias"));
+		var offset = files.indexOf(documentedFiles[i].alias);
 		allFiles[offset] = documentedFiles[i];
 	}
 		
@@ -95,9 +95,9 @@ function summarize(desc) {
 /** make a symbol sorter by some attribute */
 function makeSortby(attribute) {
 	return function(a, b) {
-		if (a.get(attribute) != undefined && b.get(attribute) != undefined) {
-			a = a.get(attribute).toLowerCase();
-			b = b.get(attribute).toLowerCase();
+		if (a[attribute] != undefined && b[attribute] != undefined) {
+			a = a[attribute].toLowerCase();
+			b = b[attribute].toLowerCase();
 			if (a < b) return -1;
 			if (a > b) return 1;
 			return 0;

@@ -33,7 +33,7 @@ function main() {
 			var symbols = jsdoc.symbolGroup.getSymbols();
 			for (var i = 0, l = symbols.length; i < l; i++) {
 				var symbol = symbols[i];
-				print("// symbol: " + symbol.get("alias"));
+				print("// symbol: " + symbol.alias);
 				print(symbol.serialize());
 			}
 		}
@@ -52,7 +52,7 @@ function main() {
 						else publish(jsdoc.symbolGroup);
 					}
 					catch(e) {
-						LOG.warn("Sorry, that doesn't seem to be a valid template: "+e);
+						LOG.warn("Sorry, that doesn't seem to be a valid template: "+template+"/publish.js : "+e);
 					}
 				}
 				else {

@@ -21,7 +21,7 @@
         </jar>
     </target>
     
-    <target name="debugjar">
+    <!--target name="debugjar">
         <mkdir dir="build/jar"/>
         <jar destfile="build/jar/jsdebug.jar" basedir="build/classes">
             <manifest>
@@ -29,8 +29,8 @@
                <attribute name="Class-Path" value="./java/classes/js.jar"/>
             </manifest>
         </jar>
-    </target>
+    </target-->
 
     <target name="clean-build" depends="clean,compile,jar"/>
-    <target name="clean-debug" depends="clean,compile,debugjar"/>
+    <!--target name="clean-debug" depends="clean,compile,debugjar"/-->
 </project>
