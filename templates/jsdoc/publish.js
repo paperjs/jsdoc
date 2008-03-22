@@ -7,6 +7,13 @@ function publish(symbolGroup) {
 		srcDir: "symbols/src/"
 	};
 	
+	
+	if (JSDOC.opt.s && defined(Link) && Link.prototype._makeSrcLink) {
+		Link.prototype._makeSrcLink = function(srcFilePath) {
+			return "&lt;"+srcFilePath+"&gt;";
+		}
+	}
+	
 	IO.mkPath((publish.conf.outDir+"symbols/src").split("/"));
 		
 	// used to check the details of things being linked to
@@ -111,6 +118,8 @@ function include(path) {
 }
 
 function makeSrcFile(path, srcDir, name) {
+	if (JSDOC.opt.s) return;
+	
 	if (!name) {
 		name = path.replace(/\.\.?[\\\/]/g, "").replace(/[\\\/]/g, "_");
 		name = name.replace(/\:/g, "_");

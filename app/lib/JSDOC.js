@@ -18,6 +18,7 @@ JSDOC.opt = Opt.get(
 		A: "Allfunctions", 
 		e: "encoding",
 		o: "out",
+		s: "suppress",
 		T: "testmode",
 		h: "help",
 		v: "verbose",
@@ -45,6 +46,7 @@ JSDOC.usage = function() {
 	print("  -o=<PATH> or --out=<PATH>\n          Print log messages to a file (defaults to stdout).\n");
 	print("  -p or --private\n          Include symbols tagged as private and inner symbols.\n");
 	print("  -r=<DEPTH> or --recurse=<DEPTH>\n          Descend into src directories.\n");
+	print("  -s or --suppress\n          Suppress source code output.\n");
 	print("  -t=<PATH> or --template=<PATH>\n          Required. Use this template to format the output.\n");
 	print("  -T or --test\n          Run all unit tests and exit.\n");
 	print("  -x=<EXT>[,EXT]... or --ext=<EXT>[,EXT]...\n          Scan source files with the given extension/s (defaults to js).\n");
