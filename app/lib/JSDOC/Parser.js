@@ -93,7 +93,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			isa = "FUNCTION";
 			
 			
-			paramTokens = ts.balance("LEFT_PAREN");
+			paramTokens = ts.balance("LEFT_PAREN") || [];
 			if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 					
 			body = ts.balance("LEFT_CURLY");
@@ -132,7 +132,7 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			
 			isa = (ts.look(2).is("NEW"))? "OBJECT" : "FUNCTION";
 			
-			paramTokens = ts.balance("LEFT_PAREN");
+			paramTokens = ts.balance("LEFT_PAREN") || [];
 			if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 
 			body = ts.balance("LEFT_CURLY");
