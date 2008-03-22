@@ -70,17 +70,29 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 		var typeDoc = "";
 		var isInner;
 		
+		if (ts.look(-2).is("JSDOC")) {
+			doc = ts.look(-2).data;
+		}
+			
 		// like function foo()
 		if (ts.look(-1).is("FUNCTION")) {
 			if (nspace) {
-				name = nspace+"-"+name;
-				isInner = true;
+				if (/@public\b/.test(doc)) {  // ~~ TODO test this
+					if (/@static\b/.test(doc)) {
+						name = nspace+"."+name;
+					}
+					else {
+						name = nspace+"#"+name;
+					}
+				}
+				else {
+					name = nspace+"-"+name;
+					isInner = true;
+				}
 			}
 			isa = "FUNCTION";
 			
-			if (ts.look(-2).is("JSDOC")) {
-				doc = ts.look(-2).data;
-			}
+			
 			paramTokens = ts.balance("LEFT_PAREN");
 			if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 					
@@ -93,19 +105,33 @@ JSDOC.Parser.findFunction = function(/**JSDOC.TokenStream*/ts, /**String*/nspace
 			||
 			(ts.look(1).is("ASSIGN") && ts.look(2).is("NEW") && ts.look(3).is("FUNCTION"))
 		) {
-			if (nspace) {
-				if (ts.look(-1).is("VAR")) isInner = true;
-				name = name.replace(/^this[.#]/, (nspace+"#").replace("##", "#"));
-			}
-			
-			isa = (ts.look(2).is("NEW"))? "OBJECT" : "FUNCTION";
-			
 			if (ts.look(-1).is("JSDOC")) {
 				doc = ts.look(-1).data;
 			}
 			else if (ts.look(-1).is("VAR") && ts.look(-2).is("JSDOC")) {
 				doc = ts.look(-2).data;
 			}
+			
+			if (nspace) {
+				if (ts.look(-1).is("VAR")) {
+					if (/@public\b/.test(doc)) {  // ~~ TODO test this
+						if (/@static\b/.test(doc)) {
+							name = nspace+"."+name;
+						}
+						else {
+							name = nspace+"#"+name;
+						}
+					}
+					else {
+						name = nspace+"-"+name;
+						isInner = true;
+					}
+				}
+				name = name.replace(/^this[.#]/, (nspace+"#").replace("##", "#"));
+			}
+			
+			isa = (ts.look(2).is("NEW"))? "OBJECT" : "FUNCTION";
+			
 			paramTokens = ts.balance("LEFT_PAREN");
 			if (ts.look(1).is("JSDOC")) typeDoc = ts.next();
 
