@@ -412,7 +412,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	*/
 	
 	// @private
-	if (this.comment.getTag("private").length) {
+	if (/(^|[.#-])_[^.#-]+$/.test(this.alias) || this.comment.getTag("private").length) {
 		this.isPrivate = true;
 	}
 	
@@ -475,6 +475,15 @@ JSDOC.Symbol.prototype.setTags = function() {
 	var memberOfs = this.comment.getTag("memberOf");
 	if (memberOfs.length) {
 		this.memberOf = memberOfs[0].desc;
+	}
+	
+	/*~t
+		// todo
+	*/
+	
+	// @public
+	if (this.comment.getTag("public").length) {
+		this.isPrivate = false;
 	}
 	
 	/*~t
