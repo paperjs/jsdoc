@@ -241,13 +241,11 @@ JSDOC.Symbol.prototype.setTags = function() {
 	var namespaces = this.comment.getTag("namespace");
 	if (namespaces.length) {
 		this.classDesc = namespaces[0].desc+"\n"+this.desc; // desc can't apply to the constructor as there is none.
-		this.isa = "CONSTRUCTOR";
 		this.isNamespace = true;
 	}
 	
 	/*~t
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@namespace This describes the namespace.*"+"/"));
-		assertEqual(sym.isa, "CONSTRUCTOR", "@namespace tag, makes symbol a constructor.");
 		assertEqual(sym.classDesc, "This describes the namespace.\n", "@namespace tag, class description is found.");
 	*/
 	

@@ -153,7 +153,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 			if (parentName) {
 				var parent = this.getSymbol(parentName);
 				if (
-					(parent && parent.is("CONSTRUCTOR"))
+					(parent && (parent.is("CONSTRUCTOR") || parent.isNamespace))
 					||
 					(symbol.addOn = JSDOC.Lang.isBuiltin(parentName))
 				) {
@@ -220,7 +220,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 			symbol.alias =symbol.alias.replace(/^(_global_\.)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4");
 			if (RegExp.$2 && RegExp.$4) symbol.name = RegExp.$2+"."+RegExp.$4;
 
-			if (!symbol.is("CONSTRUCTOR")) {
+			if (!symbol.is("CONSTRUCTOR") && !symbol.isNamespace) {
 				if (symbol.alias.indexOf("#") > -1) {
 					LOG.warn("Documentation found for instance member: "+symbol.name+", but no documentation exists for parent class.");
 					this.symbols[i] = null;

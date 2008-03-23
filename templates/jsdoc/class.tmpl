@@ -28,7 +28,24 @@
 		<div id="content">
 <!-- ============================== class title ============================ -->
 			<h1 class="classTitle">
-				<if test="data.isBuiltin()">Built-In </if>{!output+=(data.isNamespace)?"Namespace ":"Class ";!}{+data.alias+}
+				{!
+					var classType = "";
+					
+					if (data.isBuiltin()) {
+						classType += "Built-In ";
+					}
+					
+					if (data.isNamespace) {
+						if (data.is('FUNCTION')) {
+							classType += "Function ";
+						}
+						classType += "Namespace ";
+					}
+					else {
+						classType += "Class ";
+					}
+				!}
+				{+classType+}{+data.alias+}
 			</h1>
 
 <!-- ============================== class summary ========================== -->			
@@ -52,9 +69,9 @@
 			</p>
 
 <!-- ============================== constructor summary ==================== -->			
-			<if test="!data.isNamespace && !data.isBuiltin()">{# have no documented constructor #}
+			<if test="!data.isBuiltin() && ((data.is('FUNCTION') && data.isNamespace) || data.is('CONSTRUCTOR'))">
 			<table class="summaryTable" cellspacing="0" summary="A summary of the constructor documented in the class {+data.alias+}.">
-				<caption>Constructor Summary</caption>
+				<caption>{+classType+}Summary</caption>
 				<thead>
 					<tr>
 						<th scope="col">Constructor Attributes</th>
@@ -69,7 +86,7 @@
 						!}&nbsp;</td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-							new <b>{+ new Link().toSymbol(data.alias).inner('constructor')+}</b>{+ makeSignature(data.params) +}
+								<b>{+ new Link().toSymbol(data.alias).inner('constructor')+}</b>{+ makeSignature(data.params) +}
 							</div>
 							<div class="description">{+resolveLinks(summarize(data.desc))+}</div>
 						</td>
@@ -199,17 +216,17 @@
 			</if>
 
 <!-- ============================== constructor details ==================== -->		
-			<if test="!data.isNamespace  && !data.isBuiltin()">
+			<if test="!data.isBuiltin() && ((data.is('FUNCTION') && data.isNamespace) || data.is('CONSTRUCTOR'))">
 			<div class="details"><a name="constructor"> </a>
 				<div class="sectionTitle">
-					Constructor Detail
+					{+classType+}Detail
 				</div>
 				
 				<div class="fixedFont">{!
 					if (data.isPrivate) output += "&lt;private&gt; ";
 					if (data.isInner) output += "&lt;inner&gt; ";
 				!}
-					new <b>{+ data.alias +}</b>{+ makeSignature(data.params) +}
+						<b>{+ data.alias +}</b>{+ makeSignature(data.params) +}
 				</div>
 				
 				<div class="description">

@@ -74,7 +74,7 @@ Toolkit are available on the project wiki.
 
 ======================================================================
 
-Testing:
+TESTING:
 
 To run the suite of unit tests included with JsDoc Toolkit enter this
 on the command line:
@@ -91,12 +91,16 @@ $ java -jar jsrun.jar app/run.js mycode.js -Z
 
 LICENSE:
 
+JSDoc.pm
+
 This project is based on the JSDoc.pm tool, created by Michael
 Mathews and Gabriel Reid. More information on JsDoc.pm can
 be found on the JSDoc.pm homepage: http://jsdoc.sourceforge.net/
 
 Complete documentation on JsDoc Toolkit can be found on the project
 wiki at http://code.google.com/p/jsdoc-toolkit/w/list
+
+Rhino
 
 Rhino (JavaScript in Java) is open source and licensed by Mozilla
 under the MPL 1.1 or later/GPL 2.0 or later licenses, the text of
@@ -105,13 +109,32 @@ which is available at http://www.mozilla.org/MPL/
 You can obtain the source code for Rhino from the Mozilla web site at
 http://www.mozilla.org/rhino/download.html
 
-(JsDoc Toolkit is a larger work that uses the Rhino JavaScript engine
-without modification and without any claims whatsoever.)
+JsDoc Toolkit is a larger work that uses the Rhino JavaScript engine
+but is not derived from it in any way. The Rhino library is used 
+without modification and without any claims whatsoever.
+
+Venkman
+
+The Venkman Debugger is open source and licensed by Mozilla under the
+GNU Lesser General Public License, the text of which is available at
+http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
+
+You can obtain the source code for Venkman from the Mozilla web site
+at http://www.mozilla.org/projects/venkman/
+
+JsDoc Toolkit is a larger work that uses the Venkman JavaScript 
+Debugger but is not derived from it in any way. The Venkman library
+is used without modification and without any claims whatsoever.
+
+JsDoc Toolkit
 
 All code specific to JsDoc Toolkit are free, open source and licensed
 for use under the X11/MIT License.
 
 JsDoc Toolkit is Copyright (c)2008 Michael Mathews <micmath@gmail.com>
+
+This program is free software; you can redistribute it and/or
+modify it under the terms below.
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

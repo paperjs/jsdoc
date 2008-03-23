@@ -88,7 +88,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
 	// it's a symbol in another file
 	else {
-		if (!linkTo.is("CONSTRUCTOR")) { // it's a method or property
+		if (!linkTo.is("CONSTRUCTOR") && !linkTo.isNamespace) { // it's a method or property
 			linkPath = escape(linkTo.parentConstructor) || "_global_";
 			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
 		}
