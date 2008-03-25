@@ -172,5 +172,28 @@ JSDOC.DocComment.prototype.getTag = function(/**String*/tagTitle) {
 	return this.tags.filter(function($){return $.title == tagTitle});
 }
 
-/**/
+/*~t
+	assert("testing JSDOC.DocComment#getTag");
+	requires("../frame/String.js");
+	requires("../lib/JSDOC/DocTag.js");
+	
+	var com = new JSDOC.DocComment("/**@foo some\n* @bar\n* @bar*"+"/");
+	assertEqual(com.getTag("bar").length, 2, "getTag returns expected number of tags.");
+*/
+
+/**
+	Used to store the currently shared tag text.
+*/
 JSDOC.DocComment.shared = "";
+
+/*~t
+	assert("testing JSDOC.DocComment.shared");
+	requires("../frame/String.js");
+	requires("../lib/JSDOC/DocTag.js");
+	
+	JSDOC.DocComment.shared = "@author Michael";
+	
+	var com = new JSDOC.DocComment("/**@foo\n* @foo*"+"/");
+	assertEqual(com.getTag("author").length, 1, "getTag returns shared tag.");
+	assertEqual(com.getTag("foo").length, 2, "getTag returns unshared tags too.");
+*/

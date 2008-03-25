@@ -1,3 +1,4 @@
+/**@constructor*/
 function Hash() {
 	this.reset();
 }

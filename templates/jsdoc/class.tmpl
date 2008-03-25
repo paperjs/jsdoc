@@ -86,7 +86,7 @@
 						!}&nbsp;</td>
 						<td class="nameDescription">
 							<div class="fixedFont">
-								<b>{+ new Link().toSymbol(data.alias).inner('constructor')+}</b>{+ makeSignature(data.params) +}
+								<b>{+ new Link().toSymbol(data.alias).inner('constructor')+}</b><if test="classType != 'Namespace '">{+ makeSignature(data.params) +}</if>
 							</div>
 							<div class="description">{+resolveLinks(summarize(data.desc))+}</div>
 						</td>
@@ -226,7 +226,7 @@
 					if (data.isPrivate) output += "&lt;private&gt; ";
 					if (data.isInner) output += "&lt;inner&gt; ";
 				!}
-						<b>{+ data.alias +}</b>{+ makeSignature(data.params) +}
+						<b>{+ data.alias +}</b><if test="classType != 'Namespace '">{+ makeSignature(data.params) +}</if>
 				</div>
 				
 				<div class="description">
@@ -245,7 +245,7 @@
 						<for each="item" in="data.params">
 							<dt>
 								{+((item.type)?""+("<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type)+"}</span> ")) : "")+} <b>{+item.name+}</b>
-								<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
+								<if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
 							</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 						</for>
@@ -410,7 +410,7 @@
 							<for each="item" in="member.params">
 								<dt>
 									{+((item.type)?"<span class=\"light fixedFont\">{"+(new Link().toSymbol(item.type))+"}</span> " : "")+}<b>{+item.name+}</b>
-									<if test="item.isOptional"><i>Optional<if test="defined(item.defaultValue)">, Default: {+item.defaultValue+}</if></i></if>
+									<if test="item.isOptional"><i>Optional<if test="item.defaultValue">, Default: {+item.defaultValue+}</if></i></if>
 								</dt>
 								<dd>{+resolveLinks(item.desc)+}</dd>
 							</for>

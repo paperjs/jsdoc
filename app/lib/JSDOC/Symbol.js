@@ -10,7 +10,7 @@ JSDOC.Symbol = function() {
 }
 
 JSDOC.Symbol.prototype.init = function() {
-	this.$args = {};
+	this.$args = [];
 	this.addOn = "";
 	this.alias = "";
 	this.augments = [];
@@ -82,6 +82,9 @@ JSDOC.Symbol.prototype.__defineSetter__("params",
 		for (var i = 0, l = v.length; i < l; i++) {
 			if (v[i].constructor != JSDOC.DocTag) { // may be a generic object parsed from signature, like {type:..., name:...}
 				this._params[i] = new JSDOC.DocTag("param"+((v[i].type)?" {"+v[i].type+"}":"")+" "+v[i].name);
+			}
+			else {
+				this._params[i] = v[i];
 			}
 		}
 	}
@@ -254,6 +257,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	if (params.length) {
 		// user-defined params overwrite those with same name defined by the parser
 		var thisParams = this.params;
+
 		if (thisParams.length == 0) { // none exist yet, so just bung all these user-defined params straight in
 			this.params = params;
 		}
@@ -272,7 +276,27 @@ JSDOC.Symbol.prototype.setTags = function() {
 	}
 	
 	/*~t
-		// todo
+		var sym = new JSDOC.Symbol("foo", [{type: "array", name: "pages"}], "FUNCTION", new JSDOC.DocComment("/**Description.*"+"/"));
+		assertEqual(sym.params.length, 1, "parser defined param is found.");
+		
+		sym = new JSDOC.Symbol("foo", [], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {array} pages*"+"/"));
+		assertEqual(sym.params.length, 1, "user defined param is found.");
+		assertEqual(sym.params[0].type, "array", "user defined param type is found.");
+		assertEqual(sym.params[0].name, "pages", "user defined param name is found.");
+		
+		sym = new JSDOC.Symbol("foo", [{type: "array", name: "pages"}], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {string} uid*"+"/"));
+		assertEqual(sym.params.length, 1, "user defined param overwrites parser defined param.");
+		assertEqual(sym.params[0].type, "string", "user defined param type overwrites parser defined param type.");
+		assertEqual(sym.params[0].name, "uid", "user defined param name overwrites parser defined param name.");
+	
+		sym = new JSDOC.Symbol("foo", [{type: "array", name: "pages"}, {type: "number", name: "count"}], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {string} uid*"+"/"));
+		assertEqual(sym.params.length, 2, "user defined params  overlay parser defined params.");
+		assertEqual(sym.params[1].type, "number", "user defined param type overlays parser defined param type.");
+		assertEqual(sym.params[1].name, "count", "user defined param name overlays parser defined param name.");
+
+		sym = new JSDOC.Symbol("foo", [], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {array} pages The pages description.*"+"/"));
+		assertEqual(sym.params.length, 1, "user defined param with description is found.");
+		assertEqual(sym.params[0].desc, "The pages description.", "user defined param description is found.");
 	*/
 	
 	// @constructor

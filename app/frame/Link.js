@@ -1,4 +1,6 @@
-/** Handle the creation of HTML links to documented symbols. */
+/** Handle the creation of HTML links to documented symbols.
+	@constructor
+*/
 function Link() {
 	this.alias = "";
 	this.src = "";
