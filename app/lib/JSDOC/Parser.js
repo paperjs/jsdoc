@@ -7,8 +7,16 @@ JSDOC.Parser = {
 
 JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	JSDOC.Parser.symbols = [];
+	
 	JSDOC.Symbol.srcFile = (srcFile || "");
 	JSDOC.DocComment.shared = "";
+	
+	/*
+	load("app/lib/JSDOC/Walker.js");
+	var walker = new JSDOC.Walker(ts, {});
+	walker.walk();
+	walker.symbols.map(function($){print($.name+"\n")});
+	*/
 	
 	while(ts.next()) {
 		if (JSDOC.Parser.findDocComment(ts)) continue;
