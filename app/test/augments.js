@@ -1,5 +1,4 @@
 /**
-@ class
 @constructor
 */
 function Layout(p) {

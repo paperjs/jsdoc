@@ -105,6 +105,25 @@ JSDOC.TokenStream.prototype.balance = function(/**String*/start, /**String*/stop
 	}
 }
 
+JSDOC.TokenStream.prototype.getMatchingToken = function(/**String*/start, /**String*/stop) {
+	if (!stop) stop = JSDOC.Lang.matching(start);
+	
+	var depth = 0;
+	var cursor = this.cursor;
+	
+	while ((token = this.tokens[cursor])) {
+		if (token.is(start)) {
+			depth++;
+		}
+		
+		if (token.is(stop) && cursor) {
+			depth--;
+			if (depth == 0) return this.tokens[cursor];
+		}
+		cursor++;
+	}
+}
+
 JSDOC.TokenStream.prototype.insertAhead = function(/**JSDOC.Token*/token) {
 	this.tokens.splice(this.cursor+1, 0, token);
 }

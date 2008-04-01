@@ -72,7 +72,7 @@ JSDOC.Symbol.prototype.clone = function() {
 }
 
 JSDOC.Symbol.prototype.__defineSetter__("name",
-	function(n) { this._name = n.replace(/\.prototype\.?/g, '#'); }
+	function(n) { n = n.replace(/^_global_[.#-]/, ""); n = n.replace(/\.prototype\.?/g, '#'); this._name = n; }
 );
 JSDOC.Symbol.prototype.__defineGetter__("name",
 	function() { return this._name; }
@@ -101,11 +101,11 @@ JSDOC.Symbol.prototype.populate = function(
 ) {
 	this.$args = arguments;
 	
-	this.name = name;
+	this.name = name; //.replace(/(^|\.)this\./g, "#");
 	this.alias = this.name;
 	this.params = params;
 	this.isa = (isa == "VIRTUAL")? "OBJECT":isa;
-	this.comment = comment;
+	this.comment = comment || new JSDOC.DocComment("");
 	this.srcFile = JSDOC.Symbol.srcFile;
 	
 	if (this.is("FILE") && !this.alias) this.alias = this.srcFile;
@@ -387,7 +387,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 			if (properties[i].type) property.type = properties[i].type;
 			if (properties[i].defaultValue) property.defaultValue = properties[i].defaultValue;
 			this.addProperty(property);
-			if (JSDOC.Parser.symbols) JSDOC.Parser.symbols.push(property);
+			JSDOC.Parser.addSymbol(property);
 		}
 	}
 	
@@ -434,7 +434,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	*/
 	
 	// @private
-	if (/(^|[.#-])_[^.#-]+$/.test(this.alias) || this.comment.getTag("private").length) {
+	if (this.comment.getTag("private").length) {
 		this.isPrivate = true;
 	}
 	
@@ -498,7 +498,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	if (memberOfs.length) {
 		this.memberOf = memberOfs[0].desc;
 	}
-	
+
 	/*~t
 		// todo
 	*/

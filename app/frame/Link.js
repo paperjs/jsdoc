@@ -87,7 +87,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 	// is it an internal link?
 	if (alias.charAt(0) == "#") var linkPath = alias;
 	// if there is no symbol by that name just return the name unaltered
-	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return alias;
+	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return this.text || alias;
 	// it's a symbol in another file
 	else {
 		if (!linkTo.is("CONSTRUCTOR") && !linkTo.isNamespace) { // it's a method or property

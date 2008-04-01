@@ -12,11 +12,15 @@ function Layout(p) {
 	
 	/** @type string */
 	this.orientation = "landscape";
+	
+	function getInnerElements(elementSecretId){
+	}
 }
 
 /**
 @constructor
 @borrows Layout#orientation as #orientation
+@borrows Layout-getInnerElements as myGetInnerElements
 */
 function Page() {
 	/** reset the page */

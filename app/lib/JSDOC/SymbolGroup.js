@@ -38,21 +38,18 @@ JSDOC.SymbolGroup.prototype.getOverview = function(path) {
 	if (overviews.constructor === Array) return overviews[0];
 }
 
-/** Apply any effects of -a -A -p (etcetera) commandline options */
+/** Apply any effects of commandline options */
 JSDOC.SymbolGroup.prototype.filterByOption = function(symbols, options) {
 	symbols = symbols.filter(
 		function(symbol) {
-			if (symbol.isInner) symbol.isPrivate = "true";
-			
 			var keep = true;
 			
 			if (symbol.is("FILE")) keep = true;
-			else if (!symbol.comment.isUserComment && !(options.a /*||options.A*/)) keep = false;
-			//else if (/(^|[.#-])_/.test(symbol.alias) && !options.A) keep = false;
-			else if (symbol.isPrivate && !options.p) keep = false;
+			else if (!options.a && !symbol.comment.isUserComment) keep = false;
+			else if ((symbol.isInner || symbol.isPrivate) && !options.p) keep = false;
 			else if (symbol.isIgnored) keep = false;
 			
-			if (/#$/.test(symbol.alias)) keep = false; // we don't document prototype
+			if (/#$/.test(symbol.alias)) keep = false; // we don't document prototypes
 			
 			if (keep) return symbol
 		}
@@ -167,7 +164,8 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 		}
 
 		if (symbol.parentConstructor) {
-			// constructor#blah#foo => constructor#foo
+
+/*			// constructor#blah#foo => constructor#foo
 			var oldAlias = symbol.alias;
 			symbol.alias =
 				symbol.alias.replace(
@@ -175,15 +173,17 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 					symbol.parentConstructor+"#"
 				);
 			this.nameIndex.rename(oldAlias, symbol.alias);
-
+*/
 			var parts = symbol.alias.match(/^(.*[.#-])([^.#-]+)$/);
 			if (parts) {
-				// memberOf like: foo. or foo#
+				
+				// if no memberOf provided, calculate it, like: foo. or foo#
 				if (!symbol.memberOf) {
 					symbol.memberOf = parts[1];
 					symbol.name = parts[2];
 				}
 				
+				// set isStatic, isInner
 				if (symbol.memberOf) {
 					switch (symbol.memberOf.charAt(symbol.memberOf.length-1)) {
 						case '#' :
@@ -191,10 +191,10 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 							symbol.isInner = false;
 						break;
 						case '.' :
-							if (!symbol.isInner) {
+							//if (!symbol.isInner) {
 								symbol.isStatic = true;
 								symbol.isInner = false;
-							}
+							//}
 						break;
 						case '-' :
 							symbol.isStatic = false;
@@ -202,13 +202,14 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 						break;
 					}
 				}
+				/* // these are already the defaults
 				else {
 					symbol.isStatic = true;
 					symbol.isInner = false;
 				}
+				*/
 			}
 			
-			// TODO trim trailing punctuation if present from memberOf might be more efficient as a regex
 			if (symbol.memberOf.match(/[.#-]$/)) {
 				symbol.memberOf = symbol.memberOf.substr(0, symbol.memberOf.length-1);
 			}
@@ -217,6 +218,7 @@ JSDOC.SymbolGroup.prototype.resolveNames = function() {
 			this.classIndex[symbol.memberOf].push(symbol);
 		}
 		else { // no parent constructor
+//print("~~ no parent constructor "+symbol.alias);
 			symbol.alias =symbol.alias.replace(/^(_global_\.)?([^#]+)(\.[^#.]+)#(.+)$/, "$1$2.$4");
 			if (RegExp.$2 && RegExp.$4) symbol.name = RegExp.$2+"."+RegExp.$4;
 

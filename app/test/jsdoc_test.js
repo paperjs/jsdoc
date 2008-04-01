@@ -429,7 +429,7 @@ ShapeFactory.prototype = {
  * @param ... Arguments represent {@link coordinate}s in the shape.
  * @constructor
  */
-MySingletonShapeFactory = new function(){
+MySingletonShapeFactory = function(){
 
    /**
     * Get the next {@link Shape}

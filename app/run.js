@@ -145,7 +145,7 @@ SYS = {
 
 // jsrun appends an argument, with the path to here.
 if (arguments[arguments.length-1].match(/^-j=(.+)/)) {
-	if (SYS.userDir.charAt(0) == SYS.slash) { // absolute path to here
+	if (RegExp.$1.charAt(0) == SYS.slash || RegExp.$1.charAt(1) == ":") { // absolute path to here
 		SYS.pwd = new FilePath(RegExp.$1).toDir().toString();
 	}
 	else { // relative path to here

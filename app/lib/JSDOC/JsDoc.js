@@ -88,8 +88,8 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 		JSDOC.PluginManager.run("onInit", this);
 	}
 
-	JSDOC.opt.srcFiles = this.getSrcFiles();
-	var symbols = this.getSymbols();
+	JSDOC.opt.srcFiles = this._getSrcFiles();
+	var symbols = this._getSymbols();
 	var handler = symbols.handler;
 	this.symbolGroup = new JSDOC.SymbolGroup(symbols);
 	this.symbolGroup.handler = handler;
@@ -98,7 +98,7 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 /**
 	Lazy retrieval of source file list, only happens when requested, only once.
  */
-JSDOC.JsDoc.prototype.getSrcFiles = function() {
+JSDOC.JsDoc.prototype._getSrcFiles = function() {
 	if (this.srcFiles) return this.srcFiles;
 	var srcFiles = [];
 	var ext = ["js"];
@@ -120,7 +120,7 @@ JSDOC.JsDoc.prototype.getSrcFiles = function() {
 	return this.srcFiles;
 }
 
-JSDOC.JsDoc.prototype.getSymbols = function() {
+JSDOC.JsDoc.prototype._getSymbols = function() {
 	if (this.symbols) return this.symbols;
 	var symbols = [];
 

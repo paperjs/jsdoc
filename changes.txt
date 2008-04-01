@@ -27,3 +27,4 @@
   * Added support for the -s command line option to suppress source code output.
   * Added new unit test framework.
   * Underscored symbols are now treated as if they have a @private tag by default.
+  * Improved support for anonymous constructors.

@@ -143,19 +143,20 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd+"test/borrows.js"]});
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/borrows.js"]});
 //print(Dumper.dump(symbols));
 		is('symbols[0].name', "Layout", 'Constructor can be found.');
 		is('symbols[0].methods[0].name', "init", 'Constructor method name can be found.');
 		is('symbols[0].properties[0].name', "orientation", 'Constructor property name can be found.');
-		is('symbols[4].methods[0].name', "reset", 'Second constructor method name can be found.');
 		
-		is('symbols[4].properties[0].name', "orientation", 'Second constructor borrowed property name can be found in properties.');
-		
-		is('symbols[4].properties[0].memberOf', "Page", 'Second constructor borrowed property memberOf can be found.');
-		is('symbols[6].methods[0].alias', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is borrowed.');
-		is('symbols[6].methods[1].alias', "ThreeColumnPage#reset", 'Borrowed method can be found.');
-		is('symbols[6].properties[0].alias', "ThreeColumnPage#orientation", 'Twice borrowed method can be found.');
+		is('symbols[5].methods[0].name', "reset", 'Second constructor method name can be found.');
+		is('symbols[5].properties[0].name', "orientation", 'Second constructor borrowed property name can be found in properties.');
+		is('symbols[5].properties[0].memberOf', "Page", 'Second constructor borrowed property memberOf can be found.');
+		is('symbols[5].methods[1].name', "myGetInnerElements", 'Can borrow an inner function, add it as a static function.');
+
+		is('symbols[7].methods[0].alias', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is borrowed.');
+		is('symbols[7].methods[1].alias', "ThreeColumnPage#reset", 'Borrowed method can be found.');
+		is('symbols[7].properties[0].alias', "ThreeColumnPage#orientation", 'Twice borrowed method can be found.');
 	
 	}
 	,
@@ -179,33 +180,33 @@ var testCases = [
 		is('symbols[12].properties.length', 1, 'Properties of augmented class are included in properties array across files.');
 	}
 	,
-
+	
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/static_this.js"]});
 		
-		is('symbols[0].name', "box.holder", 'Static namespace name can be found.');
-		is('symbols[1].name', "foo", 'Static namespace method name can be found.');
-		is('symbols[1].isStatic', true, 'Static namespace method is static.');
+		is('symbols[1].name', "box.holder", 'Static namespace name can be found.');
+		is('symbols[2].name', "foo", 'Static namespace method name can be found.');
+		is('symbols[2].isStatic', true, 'Static namespace method is static.');
 		
-		is('symbols[2].name', "counter", 'Instance namespace property name set on "this" can be found.');
-		is('symbols[2].alias', "box.holder#counter", 'Instance namespace property alias set on "this" can be found.');
-		is('symbols[2].memberOf', "box.holder", 'Static namespace property memberOf set on "this" can be found.');
+		is('symbols[3].name', "counter", 'Instance namespace property name set on "this" can be found.');
+		is('symbols[3].alias', "box.holder.counter", 'Instance namespace property alias set on "this" can be found.');
+		is('symbols[3].memberOf', "box.holder", 'Static namespace property memberOf set on "this" can be found.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/lend.js"]});
-
+//print(Dumper.dump(symbols));
 		is('symbols[0].name', "Person", 'Class defined in lend comment is found.');
 		is('symbols[0].methods[0].name', "initialize", 'Lent instance method name can be found.');
 		is('symbols[0].methods[1].name', "say", 'Second instance method can be found.');
 		is('symbols[0].methods[1].isStatic', false, 'Instance method is known to be not static.');
 		
 		is('symbols[0].methods[2].name', "sing", 'Instance method name from second lend comment can be found.');
-		is('symbols[4].name', "getCount", 'Static method name from second lend comment can be found.');
-		is('symbols[4].isStatic', true, 'Static method from second lend comment is known to be static.');
+		is('symbols[5].name', "getCount", 'Static method name from second lend comment can be found.');
+		is('symbols[5].isStatic', true, 'Static method from second lend comment is known to be static.');
 		
-		is('symbols[5].name', "Unknown.isok", 'Static instance method from lend comment is kept.');
-		is('symbols[6].name', "_global_", 'Orphaned instance method from lend comment is discarded.');
+		is('symbols[6].name', "Unknown.isok", 'Static instance method from lend comment is kept.');
+		is('symbols[7].name', "_global_", 'Orphaned instance method from lend comment is discarded.');
 	}
 	,
 	function() {
@@ -247,12 +248,24 @@ var testCases = [
 		is('symbols[1].params[2].name', 'persons.Mother', 'The name of a second param+config is found.');
 		is('symbols[1].params[3].name', 'persons.Children', 'The name of a third param+config is found.');
 			
-	},
-
+	}
+	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/ignore.js"]});
 		is('symbols.length', 1, 'Only the global object is documented when a parent is ignored.');
 	}
+	,
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/functions_anon.js"]});
+		is('symbols[1].name', 'a.b', 'In anonymous constructor this is found to be the container object.');
+		is('symbols[2].name', 'a.f', 'In anonymous constructor this can have a method.');
+		is('symbols[3].name', 'a.c', 'In anonymous constructor method this is found to be the container object.');
+		is('symbols[5].name', 'g', 'In anonymous function executed inline this is the global.');
+		is('symbols[7].name', 'bar2.p', 'In named constructor executed inline this is the container object.');
+		is('symbols[9].name', 'module.pub', 'In parenthesized anonymous function executed inline function scoped variables arent documented.');
+
+	}
+
 ];
 //print(Dumper.dump(symbols));	
 

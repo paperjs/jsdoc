@@ -1,11 +1,10 @@
+/** @class */
 var Person = Class.create(
     /**
-      @name Person
-      @constructor
       @lends Person.prototype
     */
     {
-        initialize: function(name) {
+      initialize: function(name) {
             this.name = name;
         },
         say: function(message) {
@@ -16,6 +15,7 @@ var Person = Class.create(
 
 /** @lends Person.prototype */
 {
+	/** like say but more musical */
 	sing: function(song) {
 	}
 }
