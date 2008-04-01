@@ -17,6 +17,7 @@ JSDOC.opt = Opt.get(
 		a: "allfunctions",
 		A: "Allfunctions", 
 		e: "encoding",
+		n: "nocode",
 		o: "out",
 		s: "suppress",
 		T: "testmode",
@@ -43,8 +44,9 @@ JSDOC.usage = function() {
 	print("  -e=<ENCODING> or --encoding=<ENCODING>\n          Use this encoding to read and write files.\n");
 	print("  -h or --help\n          Show this message and exit.\n");
 	print("  -H=ext:handler or --handler=ext:handler\n          Multiple. Load handlers/handler.js to handle files with .ext names.\n");
+	print("  -n or --nocode\n          Make code invisible to the parser.\n");
 	print("  -o=<PATH> or --out=<PATH>\n          Print log messages to a file (defaults to stdout).\n");
-	print("  -p or --private\n          Include symbols tagged as private and inner symbols.\n");
+	print("  -p or --private\n          Include symbols tagged as private, underscored and inner symbols.\n");
 	print("  -r=<DEPTH> or --recurse=<DEPTH>\n          Descend into src directories.\n");
 	print("  -s or --suppress\n          Suppress source code output.\n");
 	print("  -t=<PATH> or --template=<PATH>\n          Required. Use this template to format the output.\n");
