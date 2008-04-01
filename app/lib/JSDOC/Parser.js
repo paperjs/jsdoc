@@ -6,7 +6,7 @@
 */
 JSDOC.Parser = {
 	conf: {
-		ignoreCode:               false, // factory: false
+		ignoreCode:               JSDOC.opt.i,
 		ignoreAnonymous:           true, // factory: true
 		treatUnderscoredAsPrivate: true, // factory: true
 		explain:                   true  // factory: false
