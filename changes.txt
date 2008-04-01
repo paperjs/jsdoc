@@ -28,3 +28,5 @@
   * Added new unit test framework.
   * Underscored symbols are now treated as if they have a @private tag by default.
   * Improved support for anonymous constructors.
+  * Added support for the nocode meta tag.
+  

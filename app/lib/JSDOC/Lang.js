@@ -116,8 +116,11 @@ JSDOC.Lang.matching = function(name) {
 }
 JSDOC.Lang.matching.names = {
 	"LEFT_PAREN": "RIGHT_PAREN",
+	"RIGHT_PAREN": "LEFT_PAREN",
 	"LEFT_CURLY": "RIGHT_CURLY",
-	"LEFT_BRACE": "RIGHT_BRACE"
+	"RIGHT_CURLY": "LEFT_CURLY",
+	"LEFT_BRACE": "RIGHT_BRACE",
+	"RIGHT_BRACE": "LEFT_BRACE"
 }
 
 JSDOC.Lang.isNumber = function(str) {

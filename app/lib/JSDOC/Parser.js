@@ -12,10 +12,7 @@ JSDOC.Parser = {
 		explain:                   true  // factory: false
 	},
 	
-	//_symbols: [],
-	//_symbolIndex: {}, // maps name to array index
 	addSymbol: function(symbol) {
-		if (JSDOC.Parser.conf.ignoreAnonymous && symbol.name.match(/\$anonymous\b/)) return;
 		if (JSDOC.Parser.conf.ignoreAnonymous && symbol.name.match(/\$anonymous\b/)) return;
 		
 		if (typeof JSDOC.Parser._symbolIndex[symbol.name] != "undefined") {
@@ -41,8 +38,7 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	JSDOC.DocComment.shared = "";
 	
 	if (!JSDOC.Walker) load("app/lib/JSDOC/Walker.js");
-	var walker = new JSDOC.Walker(ts, {});
-	walker.walk();
+	var walker = new JSDOC.Walker(ts);
 	
 	if (JSDOC.Parser.conf.explain) {
 		print("\n"+srcFile+"\n-------------------");

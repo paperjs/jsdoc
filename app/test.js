@@ -265,7 +265,14 @@ var testCases = [
 		is('symbols[9].name', 'module.pub', 'In parenthesized anonymous function executed inline function scoped variables arent documented.');
 
 	}
-
+	,
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/oblit_anon.js"]});
+		is('symbols[0].name', 'opt', 'Anonymous object properties are assigned to $anonymous.');
+		is('symbols[2].name', 'opt.conf.keep', 'Anonymous object properties are assigned to $anonymous.');
+		is('symbols[3].name', 'opt.conf.base', 'Anonymous object properties are assigned to $anonymous.');
+		
+	}
 ];
 //print(Dumper.dump(symbols));	
 

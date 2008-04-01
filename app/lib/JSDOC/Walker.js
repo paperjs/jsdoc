@@ -1,22 +1,22 @@
 if (typeof JSDOC == "undefined") JSDOC = {};
 
-// todo
-// foo = function() {}() and foo = (function() {})()
-// foo# should be a synonym for foo.prototype
-
 JSDOC.Walker = function(/**JSDOC.TokenStream*/ts) {
-	if (arguments.length > 0) this.init(ts);
+	this.init();
+	if (typeof ts != "undefined") {
+		this.walk(ts);
+	}
 }
 
-JSDOC.Walker.prototype.init = function(ts) {
-	this.ts = ts;
+JSDOC.Walker.prototype.init = function() {
+	this.ts = null;
 	this.namescope = [new JSDOC.Symbol("_global_", [], "GLOBAL", new JSDOC.DocComment(""))];
 	this.namescope.last = function(n){ if (!n) n = 0; return this[this.length-(1+n)] || "" };
 	this.lastDoc = null;
 	this.token = null;
 }
 
-JSDOC.Walker.prototype.walk = function() {
+JSDOC.Walker.prototype.walk = function(/**JSDOC.TokenStream*/ts) {
+	this.ts = ts;
 	while (this.token = this.ts.look()) {
 		if (this.token.popNamescope) {
 			/*debug*///print("~~ }");
@@ -71,6 +71,8 @@ JSDOC.Walker.prototype.step = function() {
 		else if (doc.meta) { // it's a meta doclet
 			if (doc.meta == "@+") JSDOC.DocComment.shared = doc.src;
 			else if (doc.meta == "@-") JSDOC.DocComment.shared = "";
+			else if (doc.meta == "nocode+") JSDOC.Parser.conf.ignoreCode = true;
+			else if (doc.meta == "nocode-") JSDOC.Parser.conf.ignoreCode = JSDOC.opt.n;
 			else throw "Unrecognized meta comment: "+doc.meta;
 			
 			this.lastDoc = null;
@@ -97,8 +99,26 @@ JSDOC.Walker.prototype.step = function() {
 			var doc = null;
 			var params = [];
 			
+			// it's an anonymous object
+			if (this.ts.look(1).is("COLON") && this.ts.look(-1).is("LEFT_CURLY") && !(this.ts.look(-2).is("JSDOC") || this.ts.look(-2).is("ASSIGN") || this.ts.look(-2).is("COLON"))) {
+				name = "$anonymous";
+				name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
+				
+				params = [];
+				
+				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
+
+				JSDOC.Parser.addSymbol(symbol);
+				
+				this.namescope.push(symbol);
+				
+				/*debug*///print("~~ function name is  "+name+" "+params);
+				/*debug*///print("~~ {");
+				var matching = this.ts.getMatchingToken(null, "RIGHT_CURLY");
+				matching.popNamescope = name;
+			}
 			// function foo() {}
-			if (this.ts.look(-1).is("FUNCTION") && this.ts.look(1).is("LEFT_PAREN")) {
+			else if (this.ts.look(-1).is("FUNCTION") && this.ts.look(1).is("LEFT_PAREN")) {
 				var isInner;
 				if (this.namescope.length) {
 					name = this.namescope.last().alias+"-"+name;
@@ -171,7 +191,7 @@ JSDOC.Walker.prototype.step = function() {
 			
 				JSDOC.Parser.addSymbol(symbol);
 				
-symbol.scopeType = "INSTANCE";
+				symbol.scopeType = "INSTANCE";
 				this.namescope.push(symbol);
 				/*debug*///print("~~ doc is  "+doc);
 				/*debug*///print("~~ function name is  "+name+" "+params);
