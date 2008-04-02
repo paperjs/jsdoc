@@ -18,7 +18,8 @@ JSDOC.Parser = {
 		if (typeof JSDOC.Parser._symbolIndex[symbol.name] != "undefined") {
 			LOG.warn("The symbol named '"+symbol.name+"' is defined more than once.");
 		}
-		JSDOC.Parser._symbolIndex[symbol.name] = JSDOC.Parser._symbols.length - 1;
+print("~~ adding index to "+symbol.name);
+		JSDOC.Parser._symbolIndex[symbol.name] = JSDOC.Parser._symbols.length;
 		
 		if (JSDOC.Parser.conf.treatUnderscoredAsPrivate && symbol.name.indexOf("_") == 0) {
 			symbol.isPrivate = true;

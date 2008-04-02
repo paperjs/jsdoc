@@ -255,8 +255,7 @@ JSDOC.Walker.prototype.step = function() {
 			}
 			// foo = x
 			else if (this.ts.look(1).is("ASSIGN")) {
-				if (this.lastDoc) doc = this.lastDoc;
-				if (!doc) return false;
+				
 				var isInner;
 				if (this.ts.look(-1).is("VAR")) {
 //TODO this.namescope.length will always be > 0 because of global object, so why check?
@@ -267,6 +266,7 @@ JSDOC.Walker.prototype.step = function() {
 					name = this.resolveThis(name);
 				}
 				
+				if (this.lastDoc) doc = this.lastDoc;
 				
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				if (isInner) symbol.isInner = true;
@@ -367,12 +367,12 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 	
 	// if we are in a function, `this` means the container (possibly the global)
 	else if (scopeType == "FUNCTION") {
-		var parent = symbol.alias;
 		// in a method of a prototype, so `this` means the constructor
-		if (parent.match(/(^.*)[#.-][^#.-]+/)) {
-			parent = RegExp.$1;
-//print("~~ parent.scopeType is "+parent.scopeType);
-			name = parent+(symbol.is("CONSTRUCTOR")?"#":".")+nameFragment;
+		if (symbol.alias.match(/(^.*)[#.-][^#.-]+/)) {
+			var parentName = RegExp.$1;
+			var parentIndex = JSDOC.Parser._symbolIndex[parentName];
+			var parent = JSDOC.Parser._symbols[parentIndex];
+			name = parentName+(parent.is("CONSTRUCTOR")?"#":".")+nameFragment;
 		}
 		else {
 			parent = this.namescope.last(1);
