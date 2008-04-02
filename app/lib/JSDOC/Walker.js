@@ -99,7 +99,7 @@ JSDOC.Walker.prototype.step = function() {
 			var doc = null;
 			var params = [];
 			
-			// it's an anonymous object
+			// it's inside an anonymous object
 			if (this.ts.look(1).is("COLON") && this.ts.look(-1).is("LEFT_CURLY") && !(this.ts.look(-2).is("JSDOC") || this.ts.look(-2).is("ASSIGN") || this.ts.look(-2).is("COLON"))) {
 				name = "$anonymous";
 				name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
@@ -243,7 +243,7 @@ JSDOC.Walker.prototype.step = function() {
 				if (isInner) symbol.isInner = true;
 				
 			
-				JSDOC.Parser.addSymbol(symbol);
+				if (doc) JSDOC.Parser.addSymbol(symbol);
 
 				this.namescope.push(symbol);
 				
@@ -255,22 +255,24 @@ JSDOC.Walker.prototype.step = function() {
 			}
 			// foo = x
 			else if (this.ts.look(1).is("ASSIGN")) {
+				if (this.lastDoc) doc = this.lastDoc;
+				if (!doc) return false;
 				var isInner;
 				if (this.ts.look(-1).is("VAR")) {
-					name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
+//TODO this.namescope.length will always be > 0 because of global object, so why check?
+					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
 				else if (name.indexOf("this.") == 0) {
-					name = this.resolveThis(name); //this.namescope.last()+(this.namescope.length?".":"")+name
+					name = this.resolveThis(name);
 				}
 				
-				if (this.lastDoc) doc = this.lastDoc;
 				
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				if (isInner) symbol.isInner = true;
 				
 			
-				JSDOC.Parser.addSymbol(symbol);
+				if (doc) JSDOC.Parser.addSymbol(symbol);
 
 				/*debug*///print("~~ doc is  "+doc);
 				/*debug*///print("~~ object name is  "+name);
@@ -284,7 +286,7 @@ JSDOC.Walker.prototype.step = function() {
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				
 			
-				JSDOC.Parser.addSymbol(symbol);
+				if (doc) JSDOC.Parser.addSymbol(symbol);
 				
 				this.namescope.push(symbol);
 				
@@ -303,9 +305,9 @@ JSDOC.Walker.prototype.step = function() {
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				
 			
-				if (this.namescope.length) {
-					JSDOC.Parser.addSymbol(symbol);
-				}
+				//if (this.namescope.length) {
+					if (doc) JSDOC.Parser.addSymbol(symbol);
+				//}
 				/*debug*///print("~~ doc is  "+doc);
 				/*debug*///print("~~ object name is  "+name);
 			}

@@ -1,3 +1,4 @@
+/** the parent */
 var box = {};
 
 /** @namespace */

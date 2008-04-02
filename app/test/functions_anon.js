@@ -1,9 +1,11 @@
 /** an anonymous constructor executed inline */
 a = new function() {
-	/** a property of instance a */
-    this.b = 1;               // a.b
-    this.f = function() {     // a.f
-    	this.c = 2;           // a.c
+	/** a.b*/
+    this.b = 1;
+    /** a.f */
+    this.f = function() {
+    	/** a.c */
+    	this.c = 2;
     }
 }
 

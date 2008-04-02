@@ -202,11 +202,11 @@ var testCases = [
 		is('symbols[0].methods[1].isStatic', false, 'Instance method is known to be not static.');
 		
 		is('symbols[0].methods[2].name', "sing", 'Instance method name from second lend comment can be found.');
-		is('symbols[5].name', "getCount", 'Static method name from second lend comment can be found.');
-		is('symbols[5].isStatic', true, 'Static method from second lend comment is known to be static.');
+		is('symbols[4].name', "getCount", 'Static method name from second lend comment can be found.');
+		is('symbols[4].isStatic', true, 'Static method from second lend comment is known to be static.');
 		
-		is('symbols[6].name', "Unknown.isok", 'Static instance method from lend comment is kept.');
-		is('symbols[7].name', "_global_", 'Orphaned instance method from lend comment is discarded.');
+		is('symbols[5].name', "Unknown.isok", 'Static instance method from lend comment is kept.');
+		is('symbols[6].name', "_global_", 'Orphaned instance method from lend comment is discarded.');
 	}
 	,
 	function() {

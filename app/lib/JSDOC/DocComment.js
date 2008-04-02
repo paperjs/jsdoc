@@ -33,8 +33,9 @@ JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
 	
 	this.meta = "";
 	if (this.src.indexOf("#") == 0) {
-		this.meta = this.src.substring(1, 3);
-		this.src = this.src.substring(3);
+		this.src.match(/#(.+[+-])([\s\S]*)$/);
+		if (RegExp.$1) this.meta = RegExp.$1;
+		if (RegExp.$2) this.src = RegExp.$2;
 	}
 	
 	this.fixDesc();
