@@ -9,8 +9,6 @@ function main() {
 	if (JSDOC.opt.v) LOG.verbose = true;
 	if (JSDOC.opt.o) LOG.out = IO.open(JSDOC.opt.o);
 	
-	var jsdoc = new JSDOC.JsDoc();
-	
 	if (JSDOC.opt.T) {
 		LOG.inform("JsDoc Toolkit running in test mode at "+new Date()+".");
 		IO.include("frame/Testrun.js");
@@ -27,10 +25,12 @@ function main() {
 			LOG.inform("    "+o+": "+JSDOC.opt[o]);
 		}
 		
+		var jsdoc = new JSDOC.JsDoc();
+		
 		if (JSDOC.opt.Z) { // secret debugging option
 			LOG.warn("So you want to see the data structure, eh? This might hang if you have circular refs...");
 			IO.include("frame/Dumper.js");
-			var symbols = jsdoc.symbolGroup.getSymbols();
+			var symbols = jsdoc.symbolSet.toArray();
 			for (var i = 0, l = symbols.length; i < l; i++) {
 				var symbol = symbols[i];
 				print("// symbol: " + symbol.alias);
@@ -38,18 +38,22 @@ function main() {
 			}
 		}
 		else {
-			var template = JSDOC.opt.t||System.getProperty("jsdoc.template.dir");
+			var template = JSDOC.opt.t || System.getProperty("jsdoc.template.dir");
 
-			var handler = jsdoc.symbolGroup.handler;
+			var handler = jsdoc.symbolSet.handler;
 			if (handler && handler.publish) {
-				handler.publish(jsdoc.symbolGroup);
+				handler.publish(jsdoc.symbolSet);
 			}
 			else {
 				if (typeof template != "undefined") {
 					try {
 						load(template+"/publish.js");
-						if (!publish) LOG.warn("No publish() function is defined in that template so nothing to do.");
-						else publish(jsdoc.symbolGroup);
+						if (!publish) {
+							LOG.warn("No publish() function is defined in that template so nothing to do.");
+						}
+						else {
+							publish(jsdoc.symbolSet);
+						}
 					}
 					catch(e) {
 						LOG.warn("Sorry, that doesn't seem to be a valid template: "+template+"/publish.js : "+e);

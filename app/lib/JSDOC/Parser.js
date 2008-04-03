@@ -1,3 +1,7 @@
+load("app/lib/JSDOC/Walker.js");
+//load("app/lib/JSDOC/Relator.js");
+load("app/lib/JSDOC/SymbolSet.js");
+
 /**
 	@namespace
 	@requires JSDOC.Walker
@@ -15,36 +19,57 @@ JSDOC.Parser = {
 	addSymbol: function(symbol) {
 		if (JSDOC.Parser.conf.ignoreAnonymous && symbol.name.match(/\$anonymous\b/)) return;
 		
-		if (typeof JSDOC.Parser._symbolIndex[symbol.name] != "undefined") {
+		if (JSDOC.Parser.symbols.hasSymbol(symbol.alias)) {
 			LOG.warn("The symbol named '"+symbol.name+"' is defined more than once.");
 		}
-print("~~ adding index to "+symbol.name);
-		JSDOC.Parser._symbolIndex[symbol.name] = JSDOC.Parser._symbols.length;
-		
-		if (JSDOC.Parser.conf.treatUnderscoredAsPrivate && symbol.name.indexOf("_") == 0) {
+
+		if (JSDOC.Parser.conf.treatUnderscoredAsPrivate && symbol.name.match(/[.#-]_[^.#-]+$/)) {
 			symbol.isPrivate = true;
 		}
 		
-		JSDOC.Parser._symbols.push(symbol);
+		if ((symbol.isInner || symbol.isPrivate) && !JSDOC.opt.p) return;
+		if (symbol.isIgnored) return;
+		
+		JSDOC.Parser.symbols.addSymbol(symbol);
 	},
-	getSymbols: function() {
-		return JSDOC.Parser._symbols
+	
+	init: function() {
+		JSDOC.Parser.symbols = new JSDOC.SymbolSet();
+		JSDOC.Parser.walker = new JSDOC.Walker();
+	},
+	
+	finish: function() {
+		JSDOC.Parser.symbols.relate();
 	}
 }
 
 JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
-	JSDOC.Parser._symbols = [];
-	JSDOC.Parser._symbolIndex = {};
 	JSDOC.Symbol.srcFile = (srcFile || "");
 	JSDOC.DocComment.shared = "";
 	
-	if (!JSDOC.Walker) load("app/lib/JSDOC/Walker.js");
-	var walker = new JSDOC.Walker(ts);
+	if (!JSDOC.Parser.walker) JSDOC.Parser.init();
+	JSDOC.Parser.walker.walk(ts);
+	
+	// filter symbols by option
+	for (p in JSDOC.Parser.symbols._index) {
+		var symbol = JSDOC.Parser.symbols._index[p];
+		if (symbol.is("FILE") || symbol.is("GLOBAL")) continue;
+		else if (!JSDOC.opt.a && !symbol.comment.isUserComment) {
+			JSDOC.Parser.symbols.deleteByAlias(symbol.alias);
+		}
+		
+		if (/#$/.test(symbol.alias)) { // we don't document prototypes
+			JSDOC.Parser.symbols.deleteByAlias(symbol.alias);
+		}
+	}
 	
 	if (JSDOC.Parser.conf.explain) {
 		print("\n"+srcFile+"\n-------------------");
-		JSDOC.Parser.getSymbols().map(function($){ print($.name) });
+		var symbolNames = JSDOC.Parser.symbols.keys().sort();
+		for (var i = 0, l = symbolNames.length; i < l; i++) {
+			var symbol = JSDOC.Parser.symbols.getSymbol(symbolNames[i]);
+			print(i+":\n  alias => "+symbol.alias + "\n  name => "+symbol.name + "\n  memberOf => " + symbol.memberOf + "\n  isStatic => " + symbol.isStatic + ",  isInner => " + symbol.isInner);
+		}
 	}
-	
-	return JSDOC.Parser.getSymbols();
+	return JSDOC.Parser.symbols.toArray();
 }

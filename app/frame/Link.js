@@ -62,6 +62,7 @@ function Link() {
 		else if (this.file) {
 			linkString = thisLink._makeFileLink(this.file);
 		}
+
 		return linkString;
 	}
 }
@@ -80,18 +81,21 @@ Link.symbolNameToLinkName = function(symbol) {
 /** Create a link to a snother symbol. */
 Link.prototype._makeSymbolLink = function(alias) {
 	var linkBase = Link.base+publish.conf.symbolsDir;
-	var linkTo;
+	var linkTo = Link.symbolSet.getSymbol(alias);
 	var linkPath;
 	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
-	
+
 	// is it an internal link?
 	if (alias.charAt(0) == "#") var linkPath = alias;
+	
 	// if there is no symbol by that name just return the name unaltered
-	else if (!(linkTo = Link.symbolGroup.getSymbol(alias))) return this.text || alias;
+	else if (!linkTo) return this.text || alias;
+	
 	// it's a symbol in another file
 	else {
+
 		if (!linkTo.is("CONSTRUCTOR") && !linkTo.isNamespace) { // it's a method or property
-			linkPath = escape(linkTo.parentConstructor) || "_global_";
+			linkPath = escape(linkTo.memberOf) || "_global_";
 			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
 		}
 		else {

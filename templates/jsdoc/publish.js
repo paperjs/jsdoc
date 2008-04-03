@@ -1,4 +1,4 @@
-function publish(symbolGroup) {
+function publish(symbolSet) {
 	publish.conf = {  // trailing slash expected for dirs
 		ext: ".html",
 		outDir: JSDOC.opt.d || SYS.pwd+"../out/jsdoc/",
@@ -17,7 +17,7 @@ function publish(symbolGroup) {
 	IO.mkPath((publish.conf.outDir+"symbols/src").split("/"));
 		
 	// used to check the details of things being linked to
-	Link.symbolGroup = symbolGroup;
+	Link.symbolSet = symbolSet;
 
 	try {
 		var classTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"class.tmpl");
@@ -33,7 +33,7 @@ function publish(symbolGroup) {
 	function isaFile($) {return ($.is("FILE"))}
 	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace)}
 	
-	var symbols = symbolGroup.getSymbols();
+	var symbols = symbolSet.toArray();
 	
 	var files = JSDOC.opt.srcFiles;
  	for (var i = 0, l = files.length; i < l; i++) {

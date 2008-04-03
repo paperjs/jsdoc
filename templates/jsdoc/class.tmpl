@@ -130,15 +130,16 @@
 				<if test="data.inheritsFrom.length">
 				<dl class="inheritsList">
 				{!
-					var inheritedMembers = data.properties.filter(function($) {return $.memberOf != data.alias});
+					var borrowedMembers = data.properties.filter(function($) {return $.memberOf != data.alias});
+					
 					var contributers = [];
-					inheritedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
+					borrowedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
 					for (var i = 0, l = contributers.length; i < l; i++) {
 						output +=
 							"<dt>Fields borrowed from class "+new Link().toSymbol(contributers[i])+": </dt>"
 							+
 							"<dd>" +
-							inheritedMembers
+							borrowedMembers
 							.filter(
 								function($) { return $.memberOf == contributers[i] }
 							)
@@ -189,15 +190,15 @@
 				<if test="data.inheritsFrom.length">
 				<dl class="inheritsList">
 				{!
-					var inheritedMembers = data.methods.filter(function($) {return $.memberOf != data.alias});
+					var borrowedMembers = data.methods.filter(function($) {return $.memberOf != data.alias});
 					var contributers = [];
-					inheritedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
+					borrowedMembers.map(function($) {if (contributers.indexOf($.memberOf) < 0) contributers.push($.memberOf)});
 					for (var i = 0, l = contributers.length; i < l; i++) {
 						output +=
 							"<dt>Methods borrowed from class "+new Link().toSymbol(contributers[i])+": </dt>"
 							+
 							"<dd>" +
-							inheritedMembers
+							borrowedMembers
 							.filter(
 								function($) { return $.memberOf == contributers[i] }
 							)

@@ -37,7 +37,7 @@ JSDOC.Symbol.prototype.init = function() {
 	this.memberOf = "";
 	this.methods = [];
 	this._name = "";
-	this.parentConstructor = "";
+	//this.parentConstructor = "";
 	this._params = [];
 	this.properties = [];
 	this.requires = [];
@@ -536,26 +536,32 @@ JSDOC.Symbol.prototype.inherit = function(symbol) {
 	}
 }
 
-JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
-	alias = alias.replace(/\.prototype(\.|$)/g, "#");
-	var thisAlias = this.alias;
-	
-	var joiner = ".";
-	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
-		joiner = "";
-	}
-	if (thisAlias.match(new RegExp('^('+alias+'[.#-]?)'))) {
-		thisAlias = thisAlias.substr(RegExp.$1.length);
-		this.name = thisAlias;
-	}
-	else {
-		this.alias = alias + joiner + thisAlias;
-	}
-	this.memberOf = alias;
-}
+// JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
+// print("~~ makeMemberOf("+alias+")");
+// 	alias = alias.replace(/\.prototype(\.|$)/g, "#");
+// 	var thisAlias = this.alias;
+// 	
+// 	var joiner = ".";
+// 	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
+// 		joiner = "";
+// 	}
+// 	if (thisAlias.match(new RegExp('^('+alias+'[.#-]?)'))) {
+// 		thisAlias = thisAlias.substr(RegExp.$1.length);
+// 		this.name = thisAlias;
+// 	}
+// 	else {
+// 		this.alias = alias + joiner + thisAlias;
+// 	}
+// 	this.memberOf = alias;
+// }
 
 JSDOC.Symbol.prototype.hasMember = function(name) {
 	return (this.hasMethod(name) || this.hasProperty(name));
+}
+
+JSDOC.Symbol.prototype.addMember = function(symbol) {
+	if (symbol.is("FUNCTION")) { this.addMethod(symbol); }
+	else if (symbol.is("OBJECT")) { this.addProperty(symbol); }
 }
 
 JSDOC.Symbol.prototype.hasMethod = function(name) {

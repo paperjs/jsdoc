@@ -9,7 +9,15 @@ JSDOC.Walker = function(/**JSDOC.TokenStream*/ts) {
 
 JSDOC.Walker.prototype.init = function() {
 	this.ts = null;
-	this.namescope = [new JSDOC.Symbol("_global_", [], "GLOBAL", new JSDOC.DocComment(""))];
+	
+	                                 //("_global_", [], "CONSTRUCTOR", new JSDOC.DocComment("/** BUILTIN */")
+	var globalSymbol = new JSDOC.Symbol("_global_", [], "GLOBAL", new JSDOC.DocComment("/** BUILTIN */"));
+	globalSymbol.isNamespace = true;
+	globalSymbol.srcFile = "";
+	globalSymbol.isPrivate = false;
+	JSDOC.Parser.addSymbol(globalSymbol);
+	
+	this.namescope = [globalSymbol];
 	this.namescope.last = function(n){ if (!n) n = 0; return this[this.length-(1+n)] || "" };
 	this.lastDoc = null;
 	this.token = null;
@@ -370,8 +378,7 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 		// in a method of a prototype, so `this` means the constructor
 		if (symbol.alias.match(/(^.*)[#.-][^#.-]+/)) {
 			var parentName = RegExp.$1;
-			var parentIndex = JSDOC.Parser._symbolIndex[parentName];
-			var parent = JSDOC.Parser._symbols[parentIndex];
+			var parent = JSDOC.Parser.symbols.getSymbol(parentName);
 			name = parentName+(parent.is("CONSTRUCTOR")?"#":".")+nameFragment;
 		}
 		else {

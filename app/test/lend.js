@@ -1,4 +1,4 @@
-/** @class */
+ /** @class  */
 var Person = Class.create(
     /**
       @lends Person.prototype
@@ -11,7 +11,7 @@ var Person = Class.create(
             return this.name + ': ' + message;
         }
     }
-);
+ );
 
 /** @lends Person.prototype */
 {

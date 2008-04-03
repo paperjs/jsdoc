@@ -82,7 +82,7 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 			}
 		}
 	}
-
+	
 	// Give plugins a chance to initialize
 	if (defined(JSDOC.PluginManager)) {
 		JSDOC.PluginManager.run("onInit", this);
@@ -90,9 +90,9 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 
 	JSDOC.opt.srcFiles = this._getSrcFiles();
 	var symbols = this._getSymbols();
-	var handler = symbols.handler;
-	this.symbolGroup = new JSDOC.SymbolGroup(symbols);
-	this.symbolGroup.handler = handler;
+	//var handler = symbols.handler;
+	this.symbolSet = JSDOC.Parser.symbols;
+	//this.symbolGroup.handler = handler;
 }
 
 /**
@@ -100,14 +100,15 @@ JSDOC.JsDoc = function(/**object*/ opt) {
  */
 JSDOC.JsDoc.prototype._getSrcFiles = function() {
 	if (this.srcFiles) return this.srcFiles;
-	var srcFiles = [];
+	this.srcFiles = [];
+	
 	var ext = ["js"];
 	if (JSDOC.opt.x) {
 		ext = JSDOC.opt.x.split(",").map(function($) {return $.toLowerCase()});
 	}
 	
 	for (var i = 0; i < JSDOC.opt._.length; i++) {
-		srcFiles = srcFiles.concat(
+		this.srcFiles = this.srcFiles.concat(
 			IO.ls(JSDOC.opt._[i], JSDOC.opt.r).filter(
 				function($) {
 					var thisExt = $.split(".").pop().toLowerCase();
@@ -116,13 +117,12 @@ JSDOC.JsDoc.prototype._getSrcFiles = function() {
 			)
 		);
 	}
-	this.srcFiles = srcFiles;
+	
 	return this.srcFiles;
 }
 
 JSDOC.JsDoc.prototype._getSymbols = function() {
 	if (this.symbols) return this.symbols;
-	var symbols = [];
 
 	for (var i = 0, l = this.srcFiles.length; i < l; i++) {
 		var srcFile = this.srcFiles[i];
@@ -131,31 +131,24 @@ JSDOC.JsDoc.prototype._getSymbols = function() {
 			var src = IO.readFile(srcFile);
 		}
 		catch(e) {
-			print("oops: "+e.message);
+			LOG.warn("Can't read source file '"+srcFile+"': "+e.message);
 		}
 
 		// Check to see if there is a handler for this file type
 		var ext = FilePath.fileExtension(srcFile);
-		if (JSDOC.handlers[ext]) {
-			LOG.inform(" Using external handler for '" + ext + "'");
-
-			symbols = symbols.concat(JSDOC.handlers[ext].handle(srcFile, src));
-			symbols.handler = JSDOC.handlers[ext];
-		}
-		else {
+// 		if (JSDOC.handlers[ext]) {
+// 			LOG.inform(" Using external handler for '" + ext + "'");
+// 
+// 			symbols = symbols.concat(JSDOC.handlers[ext].handle(srcFile, src));
+// 			symbols.handler = JSDOC.handlers[ext];
+// 		}
+// 		else {
 			// The default (JSDOC) handler
 			var tr = new JSDOC.TokenReader();
 			var tokens = tr.tokenize(new JSDOC.TextStream(src));
 	
-			symbols = symbols.concat(
-				JSDOC.Parser.parse(
-					new JSDOC.TokenStream(tokens),
-					srcFile
-				)
-			);
-		}
+			this.symbols = JSDOC.Parser.parse(new JSDOC.TokenStream(tokens), srcFile);
+//		}
 	}
-
-	this.symbols = symbols;
-	return this.symbols;
+	JSDOC.Parser.finish();
 }
