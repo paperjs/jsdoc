@@ -124,6 +124,7 @@ JSDOC.JsDoc.prototype._getSrcFiles = function() {
 JSDOC.JsDoc.prototype._getSymbols = function() {
 	if (this.symbols) return this.symbols;
 
+	JSDOC.Parser.init();
 	for (var i = 0, l = this.srcFiles.length; i < l; i++) {
 		var srcFile = this.srcFiles[i];
 		

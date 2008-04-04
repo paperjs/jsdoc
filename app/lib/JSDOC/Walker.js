@@ -69,7 +69,7 @@ JSDOC.Walker.prototype.step = function() {
 			if (!virtualName) throw "@name tag requires a value.";
 			
 			var symbol = new JSDOC.Symbol(virtualName, [], "VIRTUAL", doc);
-			symbol.isVirtual = true;
+//			symbol.isVirtual = true;
 			
 			JSDOC.Parser.addSymbol(symbol);
 			

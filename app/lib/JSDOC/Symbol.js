@@ -33,7 +33,7 @@ JSDOC.Symbol.prototype.init = function() {
 	this.isNamespace = false;
 	this.isPrivate = false;
 	this.isStatic = false;
-	this.isVirtual = false;
+//	this.isVirtual = false;
 	this.memberOf = "";
 	this.methods = [];
 	this._name = "";
@@ -497,6 +497,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	var memberOfs = this.comment.getTag("memberOf");
 	if (memberOfs.length) {
 		this.memberOf = memberOfs[0].desc;
+		this.memberOf = this.memberOf.replace(/\.prototype\.?/g, "#");
 	}
 
 	/*~t

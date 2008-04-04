@@ -13,7 +13,7 @@ JSDOC.Parser = {
 		ignoreCode:               JSDOC.opt.n,
 		ignoreAnonymous:           true, // factory: true
 		treatUnderscoredAsPrivate: true, // factory: true
-		explain:                   true  // factory: false
+		explain:                   false // factory: false
 	},
 	
 	addSymbol: function(symbol) {

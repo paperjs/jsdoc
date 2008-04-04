@@ -10,4 +10,11 @@ pack = function() {
 pack.install = function() {}
 
 /** @memberOf pack */
+pack.install.overwrite = function() {}
+
+/** @memberOf pack */
 clean = function() {}
+
+
+/** @memberOf pack-config */
+install = function() {};

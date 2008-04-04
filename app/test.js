@@ -3,145 +3,141 @@ function symbolize(opt) {
 	//jsdoc = null;
 	symbols = null;
 	jsdoc = new JSDOC.JsDoc(opt);
-	symbols = jsdoc.symbolGroup.toArray();
+	symbols = jsdoc.symbolSet;
 }
 
 
 var testCases = [
-/*	function() {
+	function() {
 		symbolize({_: [SYS.pwd+"test/name.js"]});
 
-		is('symbols[1].alias', "Response", 'Virtual class name is found.');
-		is('symbols[2].alias', "Response#text", 'Virtual method name is found.');
-		is('symbols[2].memberOf', "Response", 'Virtual method parent name is found.');
-		is('symbols[2].isVirtual', true, 'Virtual method is marked as virtual.');
+		is('symbols.getSymbol("Response").name', "Response", 'Virtual class name is found.');
+		is('symbols.getSymbol("Response#text").alias', "Response#text", 'Virtual method name is found.');
+		is('symbols.getSymbol("Response#text").memberOf', "Response", 'Virtual method parent name is found.');
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype.js"]});
 
-		is('symbols[1].name', "Article", 'Function set to constructor prototype with inner constructor name is found.');
-		is('symbols[1].methods[0].name', "init", 'The initializer method name of prototype function is correct.');
-		is('symbols[1].properties[0].name', "title", 'A property set on the initializer "this"  is on the outer constructor.');
-		is('symbols[4].name', "counter", 'A static property set in the initializer has the name set correctly.');
-		is('symbols[4].memberOf', "Article", 'A static property set in the initializer has the memberOf set correctly.');
-		is('symbols[4].isStatic', true, 'A static property set in the initializer has isStatic set to true.');
-
+		is('symbols.getSymbol("Article").name', "Article", 'Function set to constructor prototype with inner constructor name is found.');
+		is('symbols.getSymbol("Article").hasMethod("init")', true, 'The initializer method name of prototype function is correct.');
+		is('symbols.getSymbol("Article").hasMember("counter")', true, 'A static property set in the prototype definition is found.');
+		is('symbols.getSymbol("Article").hasMember("title")', true, 'An instance property set in the prototype is found.');
+		is('symbols.getSymbol("Article#title").isStatic', false, 'An instance property has isStatic set to false.');
+		is('symbols.getSymbol("Article.counter").name', "counter", 'A static property set in the initializer has the name set correctly.');
+		is('symbols.getSymbol("Article.counter").memberOf', "Article", 'A static property set in the initializer has the memberOf set correctly.');
+		is('symbols.getSymbol("Article.counter").isStatic', true, 'A static property set in the initializer has isStatic set to true.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/prototype_oblit.js"]});
 		
-		is('symbols[1].name', "Article", 'Oblit set to constructor prototype name is found.');
-		is('symbols[1].memberOf', "", 'The memberOf of prototype oblit is correct.');
-		is('symbols[1].methods[0].name', "getTitle", 'The nonstatic method name of prototype oblit is correct.');
-		is('symbols[1].methods[0].isStatic', false, 'The isStatic of a nonstatic method of prototype oblit is correct.');
-		is('symbols[1].methods[1].name', "getTitle", 'The static method name of prototype oblit is correct.');
-		is('symbols[1].methods[1].isStatic', true, 'The isStatic of a static method of prototype oblit is correct.');
-		is('symbols[2].alias', "Article#getTitle", 'The alias of non-static method of prototype oblit is correct.');
-		is('symbols[2].isa', "FUNCTION", 'The isa of non-static method of prototype oblit is correct.');
-		is('symbols[3].alias', "Article.getTitle", 'The alias of a static method of prototype oblit is correct.');
-		is('symbols[2].isa', "FUNCTION", 'The isa of static method of prototype oblit is correct.');
+		is('symbols.getSymbol("Article").name', "Article", 'Oblit set to constructor prototype name is found.');
+		is('typeof symbols.getSymbol("Article.prototype")', "undefined", 'The prototype oblit is not a symbol.');
+		is('symbols.getSymbol("Article#getTitle").name', "getTitle", 'The nonstatic method name of prototype oblit is correct.');
+		is('symbols.getSymbol("Article#getTitle").alias', "Article#getTitle", 'The alias of non-static method of prototype oblit is correct.');
+		is('symbols.getSymbol("Article#getTitle").isStatic', false, 'The isStatic of a nonstatic method of prototype oblit is correct.');
+		is('symbols.getSymbol("Article.getTitle").name', "getTitle", 'The static method name of prototype oblit is correct.');
+		is('symbols.getSymbol("Article.getTitle").isStatic', true, 'The isStatic of a static method of prototype oblit is correct.');
+		is('symbols.getSymbol("Article#getTitle").isa', "FUNCTION", 'The isa of non-static method of prototype oblit is correct.');
+		is('symbols.getSymbol("Article.getTitle").alias', "Article.getTitle", 'The alias of a static method of prototype oblit is correct.');
+		is('symbols.getSymbol("Article.getTitle").isa', "FUNCTION", 'The isa of static method of prototype oblit is correct.');
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype_oblit_constructor.js"]});
 		
-		is('symbols[1].name', "Article", 'Oblit set to constructor prototype with inner constructor name is found.');
-		is('symbols[1].methods[0].name', "init", 'The initializer method name of prototype oblit is correct.');
-		is('symbols[1].properties[0].name', "pages", 'Property set by initializer method "this" is on the outer constructor.');
-		is('symbols[2].name', "Title", 'Name of the inner constructor name is found.');
-		is('symbols[2].memberOf', "Article", 'The memberOf of the inner constructor name is found.');
-		is('symbols[2].isa', "CONSTRUCTOR", 'The isa of the inner constructor name is constructor.');
-		is('symbols[2].properties[0].name', "title", 'A property set on the inner constructor "this"  is on the inner constructor.');
+		is('symbols.getSymbol("Article").name', "Article", 'Oblit set to constructor prototype with inner constructor name is found.');
+		is('symbols.getSymbol("Article#init").name', "init", 'The initializer method name of prototype oblit is correct.');
+		is('symbols.getSymbol("Article").hasMember("pages")', true, 'Property set by initializer method "this" is on the outer constructor.');
+		is('symbols.getSymbol("Article#Title").name', "Title", 'Name of the inner constructor name is found.');
+		is('symbols.getSymbol("Article#Title").memberOf', "Article", 'The memberOf of the inner constructor name is found.');
+		is('symbols.getSymbol("Article#Title").isa', "CONSTRUCTOR", 'The isa of the inner constructor name is constructor.');
+		is('symbols.getSymbol("Article#Title").hasMember("title")', true, 'A property set on the inner constructor "this"  is on the inner constructor.');
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/inner.js"]});
 		
-		is('symbols[1].name', "Outer", 'Outer constructor prototype name is found.');
-		is('symbols[1].methods.length', 1, 'Inner function doesnt appear as a method of the outer.');
-		is('symbols[1].methods[0].alias', "Outer#open", 'Outer constructors methods arent affected by inner function.');
-		is('symbols[2].alias', "Outer-Inner", 'Alias of inner function is found.');
-		is('symbols[2].isa', "CONSTRUCTOR", 'isa of inner function constructor is found.');
-		is('symbols[2].memberOf', "Outer", 'The memberOf of inner function is found.');
-		is('symbols[2].name', "Inner", 'The name of inner function is found.');
-		is('symbols[3].name', "name", 'A member of the inner function constructor, attached to "this" is found on inner.');
-		is('symbols[3].memberOf', "Outer-Inner", 'The memberOf of an inner function member is found.');		
+		is('symbols.getSymbol("Outer").name', "Outer", 'Outer constructor prototype name is found.');
+		is('symbols.getSymbol("Outer").methods.length', 1, 'Inner function doesnt appear as a method of the outer.');
+		is('symbols.getSymbol("Outer").hasMethod("open")', true, 'Outer constructors methods arent affected by inner function.');
+		is('symbols.getSymbol("Outer-Inner").alias', "Outer-Inner", 'Alias of inner function is found.');
+		is('symbols.getSymbol("Outer-Inner").isa', "CONSTRUCTOR", 'isa of inner function constructor is found.');
+		is('symbols.getSymbol("Outer-Inner").memberOf', "Outer", 'The memberOf of inner function is found.');
+		is('symbols.getSymbol("Outer-Inner").name', "Inner", 'The name of inner function is found.');
+		is('symbols.getSymbol("Outer-Inner#name").name', "name", 'A member of the inner function constructor, attached to "this" is found on inner.');
+		is('symbols.getSymbol("Outer-Inner#name").memberOf', "Outer-Inner", 'The memberOf of an inner function member is found.');		
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/prototype_nested.js"]});
 		
-		is('symbols[1].name', "Word", 'Base constructor name is found.');
-		is('symbols[1].methods[0].name', "reverse", 'Base constructor method is found.');
-		is('symbols[1].methods.length', 1, 'Base constructor has only one method.');
-		is('symbols[1].memberOf', "", 'Base constructor memberOf is empty.');
-		is('symbols[2].name', "reverse", 'Member of constructor prototype name is found.');
-		is('symbols[2].memberOf', "Word", 'Member of constructor prototype memberOf is found.');
-		is('symbols[2].methods[0].name', "utf8", 'Member of constructor prototype method name is found.');
-		is('symbols[3].name', "utf8", 'Static nested member name is found.');
-		is('symbols[3].memberOf', "Word#reverse", 'Static nested member memberOf is found.');
+		is('symbols.getSymbol("Word").name', "Word", 'Base constructor name is found.');
+		is('symbols.getSymbol("Word").hasMethod("reverse")', true, 'Base constructor method is found.');
+		is('symbols.getSymbol("Word").methods.length', 1, 'Base constructor has only one method.');
+		is('symbols.getSymbol("Word").memberOf', "", 'Base constructor memberOf is empty.');
+		is('symbols.getSymbol("Word#reverse").name', "reverse", 'Member of constructor prototype name is found.');
+		is('symbols.getSymbol("Word#reverse").memberOf', "Word", 'Member of constructor prototype memberOf is found.');
+		is('symbols.getSymbol("Word#reverse.utf8").name', "utf8", 'Member of constructor prototype method name is found.');
+		is('symbols.getSymbol("Word#reverse.utf8").memberOf', "Word#reverse", 'Static nested member memberOf is found.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/namespace_nested.js"]});
 		
-		is('symbols[1].name', "ns1", 'Base namespace name is found.');
-		is('symbols[1].memberOf', "", 'Base namespace memberOf is empty (its a constructor).');
-		is('symbols[2].name', "ns2", 'Nested namespace name is found.');
-		is('symbols[2].alias', "ns1.ns2", 'Nested namespace alias is found.');
-		is('symbols[2].memberOf', "ns1", 'Nested namespace memberOf is found.');
-		is('symbols[3].name', "Function1", 'Method of nested namespace name is found.');
-		is('symbols[3].memberOf', "ns1.ns2", 'Constructor of nested namespace memberOf is found.');			
+		is('symbols.getSymbol("ns1").name', "ns1", 'Base namespace name is found.');
+		is('symbols.getSymbol("ns1").memberOf', "", 'Base namespace memberOf is empty (its a constructor).');
+		is('symbols.getSymbol("ns1.ns2").name', "ns2", 'Nested namespace name is found.');
+ 		is('symbols.getSymbol("ns1.ns2").alias', "ns1.ns2", 'Nested namespace alias is found.');
+ 		is('symbols.getSymbol("ns1.ns2").memberOf', "ns1", 'Nested namespace memberOf is found.');
+ 		is('symbols.getSymbol("ns1.ns2.Function1").name', "Function1", 'Method of nested namespace name is found.');
+ 		is('symbols.getSymbol("ns1.ns2.Function1").memberOf', "ns1.ns2", 'Constructor of nested namespace memberOf is found.');			
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/functions_nested.js"]});
 		
-		is('symbols[1].name', "Zop", 'Any constructor name is found.');
-		is('symbols[1].isa', "CONSTRUCTOR", 'It isa constructor.');
-		is('symbols[1].methods[0].name', "zap", 'Its method name, set later, is in methods array.');
-		is('symbols[2].name', "Foo", 'Containing constructor name is found.');
-		is('symbols[2].methods[0].name', "methodOne", 'Its method name is found.');
-		is('symbols[2].methods[1].name', "methodTwo", 'Its second method name is found.');
-		is('symbols[3].alias', "Foo#methodOne", 'A methods alias is found.');
-		is('symbols[3].isStatic', false, 'A methods is not static.');
-		is('symbols[5].name', "Bar", 'A function set inside another function is found.');
-		is('symbols[5].isa', "FUNCTION", 'It isa function.');
-		is('symbols[7].name', "inner", 'An inner functions name is found.');
-		is('symbols[7].memberOf', "Foo", 'It is member of the outer function.');
-		is('symbols[7].isInner', true, 'It is an inner function.');
-		is('symbols[7].alias', "Foo-inner", 'The inner functions alias is found.');
+		is('symbols.getSymbol("Zop").name', "Zop", 'Any constructor name is found.');
+		is('symbols.getSymbol("Zop").isa', "CONSTRUCTOR", 'It isa constructor.');
+		is('symbols.getSymbol("Zop").hasMethod("zap")', true, 'Its method name, set later, is in methods array.');
+		is('symbols.getSymbol("Foo").name', "Foo", 'The containing constructor name is found.');
+		is('symbols.getSymbol("Foo").hasMethod("methodOne")', true, 'Its method name is found.');
+		is('symbols.getSymbol("Foo").hasMethod("methodTwo")', true, 'Its second method name is found.');
+		is('symbols.getSymbol("Foo#methodOne").alias', "Foo#methodOne", 'A methods alias is found.');
+		is('symbols.getSymbol("Foo#methodOne").isStatic', false, 'A methods is not static.');
+		is('symbols.getSymbol("Bar").name', "Bar", 'A global function declared inside another function is found.');
+		is('symbols.getSymbol("Bar").isa', "FUNCTION", 'It isa function.');
+		is('symbols.getSymbol("Bar").memberOf', "", 'It is global.');
+		is('symbols.getSymbol("Foo-inner").name', "inner", 'An inner functions name is found.');
+		is('symbols.getSymbol("Foo-inner").memberOf', "Foo", 'It is member of the outer function.');
+		is('symbols.getSymbol("Foo-inner").isInner', true, 'It is an inner function.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/memberof_constructor.js"]});
 		
-		is('symbols[2].name', "Tangent", 'Constructor set on prototype using @member has correct name.');
-		is('symbols[2].memberOf', "Circle", 'Constructor set on prototype using @member has correct memberOf.');
-		is('symbols[2].alias', "Circle#Tangent", 'Constructor set on prototype using @member has correct alias.');
-		is('symbols[2].isa', "CONSTRUCTOR", 'Constructor set on prototype using @member has correct isa.');
-		is('symbols[2].isStatic', false, 'Constructor set on prototype using @member is not static.');
-		is('symbols[3].name', "getDiameter", 'Method set on prototype using @member has correct name.');
-		is('symbols[3].memberOf', "Circle#Tangent", 'Method set on prototype using @member has correct memberOf.');
-		is('symbols[3].alias', "Circle#Tangent#getDiameter", 'Method set on prototype using @member has correct alias.');
-		is('symbols[3].isa', "FUNCTION", 'Method set on prototype using @member has correct isa.');
-		is('symbols[3].isStatic', false, 'Method set on prototype using @member is not static.');
+		is('symbols.getSymbol("Circle#Tangent").name', "Tangent", 'Constructor set on prototype using @member has correct name.');
+ 		is('symbols.getSymbol("Circle#Tangent").memberOf', "Circle", 'Constructor set on prototype using @member has correct memberOf.');
+ 		is('symbols.getSymbol("Circle#Tangent").alias', "Circle#Tangent", 'Constructor set on prototype using @member has correct alias.');
+ 		is('symbols.getSymbol("Circle#Tangent").isa', "CONSTRUCTOR", 'Constructor set on prototype using @member has correct isa.');
+		is('symbols.getSymbol("Circle#Tangent").isStatic', false, 'Constructor set on prototype using @member is not static.');
+		is('symbols.getSymbol("Circle#Tangent#getDiameter").name', "getDiameter", 'Method set on prototype using @member has correct name.');
+		is('symbols.getSymbol("Circle#Tangent#getDiameter").memberOf', "Circle#Tangent", 'Method set on prototype using @member has correct memberOf.');
+		is('symbols.getSymbol("Circle#Tangent#getDiameter").alias', "Circle#Tangent#getDiameter", 'Method set on prototype using @member has correct alias.');
+		is('symbols.getSymbol("Circle#Tangent#getDiameter").isa', "FUNCTION", 'Method set on prototype using @member has correct isa.');
+		is('symbols.getSymbol("Circle#Tangent#getDiameter").isStatic', false, 'Method set on prototype using @member is not static.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/memberof.js"]});
 		
-		is('symbols[3].alias', "pack.build.install", 'Using @memberOf sets alias.');
-		is('symbols[3].name', "build.install", 'Using @memberOf sets name, even if the name is dotted.');
-		is('symbols[3].memberOf', "pack", 'Using @memberOf sets memberOf.');
-		is('symbols[4].alias', "pack.build.test", 'Using @memberOf with value ending in dot sets alias.');
-		is('symbols[4].name', "build.test", 'Using @memberOf with value ending in dot sets name, even if the name is dotted.');
-		is('symbols[4].memberOf', "pack", 'Using @memberOf with value ending in dot sets memberOf.');
-		is('symbols[4].isStatic', true, 'Using @memberOf with value ending in dot sets isStatic to true.');
+		is('symbols.getSymbol("pack.install").alias', "pack.install", 'Using @memberOf sets alias, when parent name is in memberOf tag.');
+		is('symbols.getSymbol("pack.install.overwrite").name', "install.overwrite", 'Using @memberOf sets name, even if the name is dotted.');
+		is('symbols.getSymbol("pack.install.overwrite").memberOf', "pack", 'Using @memberOf sets memberOf.');
+ 		is('symbols.getSymbol("pack.install.overwrite").isStatic', true, 'Using @memberOf with value not ending in octothorp sets isStatic to true.');
 	}
-	,
+/*	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/borrows.js"]});
 //print(Dumper.dump(symbols));
@@ -160,7 +156,7 @@ var testCases = [
 	
 	}
 	,
-*/	function() {
+	function() {
 		symbolize({a: true, _: [SYS.pwd+"test/augments.js", SYS.pwd+"test/augments2.js"]});
 		
 		is('symbols[5].augments[0]', "Layout", 'An augmented class can be found.');
