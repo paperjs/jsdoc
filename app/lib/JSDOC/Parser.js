@@ -39,7 +39,21 @@ JSDOC.Parser = {
 	},
 	
 	finish: function() {
-		JSDOC.Parser.symbols.relate();
+		JSDOC.Parser.symbols.relate();		
+
+		if (JSDOC.Parser.conf.explain) {
+			var symbols = JSDOC.Parser.symbols.toArray();
+			var srcFile = "@";
+			for (var i = 0, l = symbols.length; i < l; i++) {
+				var symbol = symbols[i];
+				if (srcFile != symbol.srcFile) {
+					srcFile = symbol.srcFile;
+					print("\n"+srcFile+"\n-------------------");
+				}
+				print(i+":\n  alias => "+symbol.alias + "\n  name => "+symbol.name+ "\n  isa => "+symbol.isa + "\n  memberOf => " + symbol.memberOf + "\n  isStatic => " + symbol.isStatic + ",  isInner => " + symbol.isInner);
+			}
+			print("-------------------\n");
+		}
 	}
 }
 
@@ -63,13 +77,5 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 		}
 	}
 	
-	if (JSDOC.Parser.conf.explain) {
-		print("\n"+srcFile+"\n-------------------");
-		var symbolNames = JSDOC.Parser.symbols.keys().sort();
-		for (var i = 0, l = symbolNames.length; i < l; i++) {
-			var symbol = JSDOC.Parser.symbols.getSymbol(symbolNames[i]);
-			print(i+":\n  alias => "+symbol.alias + "\n  name => "+symbol.name + "\n  memberOf => " + symbol.memberOf + "\n  isStatic => " + symbol.isStatic + ",  isInner => " + symbol.isInner);
-		}
-	}
 	return JSDOC.Parser.symbols.toArray();
 }

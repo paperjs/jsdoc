@@ -108,7 +108,7 @@ var testCases = [
 		is('symbols.getSymbol("Foo#methodOne").isStatic', false, 'A methods is not static.');
 		is('symbols.getSymbol("Bar").name', "Bar", 'A global function declared inside another function is found.');
 		is('symbols.getSymbol("Bar").isa', "FUNCTION", 'It isa function.');
-		is('symbols.getSymbol("Bar").memberOf', "", 'It is global.');
+		is('symbols.getSymbol("Bar").memberOf', "_global_", 'It is global.');
 		is('symbols.getSymbol("Foo-inner").name', "inner", 'An inner functions name is found.');
 		is('symbols.getSymbol("Foo-inner").memberOf', "Foo", 'It is member of the outer function.');
 		is('symbols.getSymbol("Foo-inner").isInner', true, 'It is an inner function.');
@@ -130,97 +130,93 @@ var testCases = [
 	}
 	,
 	function() {
-		symbolize({a:true, _: [SYS.pwd+"test/memberof.js"]});
+		symbolize({a:true, p: true,  _: [SYS.pwd+"test/memberof.js"]});
 		
 		is('symbols.getSymbol("pack.install").alias', "pack.install", 'Using @memberOf sets alias, when parent name is in memberOf tag.');
 		is('symbols.getSymbol("pack.install.overwrite").name', "install.overwrite", 'Using @memberOf sets name, even if the name is dotted.');
 		is('symbols.getSymbol("pack.install.overwrite").memberOf', "pack", 'Using @memberOf sets memberOf.');
  		is('symbols.getSymbol("pack.install.overwrite").isStatic', true, 'Using @memberOf with value not ending in octothorp sets isStatic to true.');
 	}
-/*	,
+	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/borrows.js"]});
-//print(Dumper.dump(symbols));
-		is('symbols[1].name', "Layout", 'Constructor can be found.');
-		is('symbols[1].methods[0].name', "init", 'Constructor method name can be found.');
-		is('symbols[1].properties[0].name', "orientation", 'Constructor property name can be found.');
-		
-		is('symbols[6].methods[0].name', "reset", 'Second constructor method name can be found.');
-		is('symbols[6].properties[0].name', "orientation", 'Second constructor borrowed property name can be found in properties.');
-		is('symbols[6].properties[0].memberOf', "Page", 'Second constructor borrowed property memberOf can be found.');
-		is('symbols[6].methods[1].name', "myGetInnerElements", 'Can borrow an inner function, add it as a static function.');
 
-		is('symbols[8].methods[0].alias', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is borrowed.');
-		is('symbols[8].methods[1].alias', "ThreeColumnPage#reset", 'Borrowed method can be found.');
-		is('symbols[8].properties[0].alias', "ThreeColumnPage#orientation", 'Twice borrowed method can be found.');
+		is('symbols.getSymbol("Layout").name', "Layout", 'Constructor can be found.');
+		is('symbols.getSymbol("Layout").hasMethod("init")', true, 'Constructor method name can be found.');
+		is('symbols.getSymbol("Layout").hasMember("orientation")', true, 'Constructor property name can be found.');
+		
+		is('symbols.getSymbol("Page").hasMethod("reset")', true, 'Second constructor method name can be found.');
+		is('symbols.getSymbol("Page").hasMember("orientation")', true, 'Second constructor borrowed property name can be found in properties.');
+		is('symbols.getSymbol("Page#orientation").memberOf', "Page", 'Second constructor borrowed property memberOf can be found.');
+		is('symbols.getSymbol("Page").hasMethod("myGetInnerElements")', true, 'Can borrow an inner function, add it as a static function.');
+
+		is('symbols.getSymbol("ThreeColumnPage#init").alias', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is borrowed.');
+		is('symbols.getSymbol("ThreeColumnPage#reset").alias', "ThreeColumnPage#reset", 'Borrowed method can be found.');
+		is('symbols.getSymbol("ThreeColumnPage#orientation").alias', "ThreeColumnPage#orientation", 'Twice borrowed method can be found.');
 	
 	}
 	,
 	function() {
 		symbolize({a: true, _: [SYS.pwd+"test/augments.js", SYS.pwd+"test/augments2.js"]});
 		
-		is('symbols[5].augments[0]', "Layout", 'An augmented class can be found.');
-		is('symbols[5].methods[0].alias', "Page#reset", 'Method of augmenter can be found.');
-		is('symbols[5].methods[1].alias', "Layout#init", 'Method from augmented can be found.');
-		is('symbols[5].properties[0].alias', "Layout#orientation", 'Property from augmented can be found.');
-		is('symbols[5].methods.length', 3, 'Methods of augmented class are included in methods array.');
+		is('symbols.getSymbol("Page").augments[0]', "Layout", 'An augmented class can be found.');
+		is('symbols.getSymbol("Page#reset").alias', "Page#reset", 'Method of augmenter can be found.');
+		is('symbols.getSymbol("Page").hasMethod("Layout#init")', true, 'Method from augmented can be found.');
+		is('symbols.getSymbol("Page").hasMember("Layout#orientation")', true, 'Property from augmented can be found.');
+		is('symbols.getSymbol("Page").methods.length', 3, 'Methods of augmented class are included in methods array.');
+	
+		is('symbols.getSymbol("ThreeColumnPage").augments[0]', "Page", 'The extends tag is a synonym for augments.');
+		is('symbols.getSymbol("ThreeColumnPage").hasMethod("ThreeColumnPage#init")', true, 'Local method overrides augmented method of same name.');
+		is('symbols.getSymbol("ThreeColumnPage").methods.length', 3, 'Local method count is right.');
 		
-		is('symbols[7].augments[0]', "Page", 'The extends tag is a synonym for augments.');
-		is('symbols[7].methods[0].alias', "ThreeColumnPage#init", 'Local method overrides augmented method of same name.');
-		is('symbols[7].methods.length', 3, 'Local method count is right.');
-		
-		is('symbols[13].augments[0]', "ThreeColumnPage", 'Can augment across file boundaries.');
-		is('symbols[13].augments.length', 2, 'Multiple augments are supported.');
-		is('symbols[13].inherits[0].alias', "Junkmail#annoy", 'Inherited method with augments.');
-		is('symbols[13].methods.length', 6, 'Methods of augmented class are included in methods array across files.');
-		is('symbols[13].properties.length', 1, 'Properties of augmented class are included in properties array across files.');
+		is('symbols.getSymbol("NewsletterPage").augments[0]', "ThreeColumnPage", 'Can augment across file boundaries.');
+		is('symbols.getSymbol("NewsletterPage").augments.length', 2, 'Multiple augments are supported.');
+		is('symbols.getSymbol("NewsletterPage").inherits[0].alias', "Junkmail#annoy", 'Inherited method with augments.');
+		is('symbols.getSymbol("NewsletterPage").methods.length', 6, 'Methods of augmented class are included in methods array across files.');
+		is('symbols.getSymbol("NewsletterPage").properties.length', 1, 'Properties of augmented class are included in properties array across files.');
 	}
 	,
-/*	
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/static_this.js"]});
 		
-		is('symbols[2].name', "box.holder", 'Static namespace name can be found.');
-		is('symbols[3].name', "foo", 'Static namespace method name can be found.');
-		is('symbols[3].isStatic', true, 'Static namespace method is static.');
+		is('symbols.getSymbol("box.holder").name', "holder", 'Static namespace name can be found.');
+		is('symbols.getSymbol("box.holder.foo").name', "foo", 'Static namespace method name can be found.');
+		is('symbols.getSymbol("box.holder").isStatic', true, 'Static namespace method is static.');
 		
-		is('symbols[4].name', "counter", 'Instance namespace property name set on "this" can be found.');
-		is('symbols[4].alias', "box.holder.counter", 'Instance namespace property alias set on "this" can be found.');
-		is('symbols[4].memberOf', "box.holder", 'Static namespace property memberOf set on "this" can be found.');
+		is('symbols.getSymbol("box.holder.counter").name', "counter", 'Instance namespace property name set on "this" can be found.');
+		is('symbols.getSymbol("box.holder.counter").alias', "box.holder.counter", 'Instance namespace property alias set on "this" can be found.');
+		is('symbols.getSymbol("box.holder.counter").memberOf', "box.holder", 'Static namespace property memberOf set on "this" can be found.');
 	}
 	,
-
 	function() {
 		symbolize({a:true, p: true, _: [SYS.pwd+"test/lend.js"]});
 //print(Dumper.dump(symbols));
-		is('symbols[1].name', "Person", 'Class defined in lend comment is found.');
-		is('symbols[1].methods[0].name', "initialize", 'Lent instance method name can be found.');
-		is('symbols[1].methods[1].name', "say", 'Second instance method can be found.');
-		is('symbols[1].methods[1].isStatic', false, 'Instance method is known to be not static.');
+		is('symbols.getSymbol("Person").name', "Person", 'Class defined in lend comment is found.');
+		is('symbols.getSymbol("Person").hasMethod("initialize")', true, 'Lent instance method name can be found.');
+		is('symbols.getSymbol("Person").hasMethod("say")', true, 'Second instance method can be found.');
+		is('symbols.getSymbol("Person#sing").isStatic', false, 'Instance method is known to be not static.');
 		
-		is('symbols[1].methods[2].name', "sing", 'Instance method name from second lend comment can be found.');
-		is('symbols[5].name', "getCount", 'Static method name from second lend comment can be found.');
-		is('symbols[5].isStatic', true, 'Static method from second lend comment is known to be static.');
-		
-		is('symbols[6].name', "Unknown.isok", 'Static instance method from lend comment is kept.');
-		is('symbols[0].name', "_global_", 'Orphaned instance method from lend comment is discarded.');
+		is('symbols.getSymbol("Person.getCount").name', "getCount", 'Static method name from second lend comment can be found.');
+		is('symbols.getSymbol("Person.getCount").isStatic', true, 'Static method from second lend comment is known to be static.');
+	
+		is('LOG.warnings.filter(function($){if($.indexOf("notok") > -1) return $}).length', 1, 'A warning is emitted when lending to an undocumented parent.');
 	}
 	,
 	function() {
 		symbolize({a:true, _: [SYS.pwd+"test/param_inline.js"]});
 	
-		is('symbols[0].params[0].type', "int", 'Inline param name is set.');
-		is('symbols[0].params[0].desc', "The number of columns.", 'Inline param desc is set from comment.');
-		is('symbols[1].params[0].name', "id", 'User defined param documentation takes precedence over parser defined.');
-		is('symbols[1].params[0].isOptional', true, 'Default for param is to not be optional.');
-		is('symbols[1].params[1].isOptional', false, 'Can mark a param as being optional.');
-		is('symbols[1].params[1].type', "number|string", 'Type of inline param doc can have multiple values.');
-		is('symbols[2].params[0].type', "", 'Type can be not defined for some params.');
-		is('symbols[2].params[2].type', "int", 'Type can be defined inline for only some params.');
-		is('symbols[4].params.length', 0, 'Docomments inside function sig is ignored without a param.');
-		is('symbols[5].params[2].type', "zoppler", 'Doc comment type overrides inline type for param with same name.');
+		is('symbols.getSymbol("Layout").params[0].type', "int", 'Inline param name is set.');
+		is('symbols.getSymbol("Layout").params[0].desc', "The number of columns.", 'Inline param desc is set from comment.');
+		is('symbols.getSymbol("Layout#getElement").params[0].name', "id", 'User defined param documentation takes precedence over parser defined.');
+		is('symbols.getSymbol("Layout#getElement").params[0].isOptional', true, 'Default for param is to not be optional.');
+		is('symbols.getSymbol("Layout#getElement").params[1].isOptional', false, 'Can mark a param as being optional.');
+		is('symbols.getSymbol("Layout#getElement").params[1].type', "number|string", 'Type of inline param doc can have multiple values.');
+		is('symbols.getSymbol("Layout#Canvas").params[0].type', "", 'Type can be not defined for some params.');
+		is('symbols.getSymbol("Layout#Canvas").params[2].type', "int", 'Type can be defined inline for only some params.');
+		is('symbols.getSymbol("Layout#rotate").params.length', 0, 'Docomments inside function sig is ignored without a param.');
+		is('symbols.getSymbol("Layout#init").params[2].type', "zoppler", 'Doc comment type overrides inline type for param with same name.');
 	}
-	,
+/*	,
 	function() {
 		symbolize({a: true, _: [SYS.pwd+"test/shared.js", SYS.pwd+"test/shared2.js"]});
 

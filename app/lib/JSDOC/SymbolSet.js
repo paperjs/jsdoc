@@ -107,7 +107,7 @@ JSDOC.SymbolSet.prototype.resolveMemberOf = function() {
 		if (this._index[k].is("FILE") || this._index[k].is("GLOBAL")) continue;
 		
 		// the memberOf value was provided in the @memberOf tag
-		if (this._index[k].memberOf) {
+		else if (this._index[k].memberOf) {
 			var parts = this._index[k].alias.match(new RegExp("^("+this._index[k].memberOf+"[.#-])(.+)$"));
 			
 			// like foo.bar is a memberOf foo
@@ -150,6 +150,11 @@ JSDOC.SymbolSet.prototype.resolveMemberOf = function() {
 			}
 		}
 		
+		// unowned methods and fields belong to the global object
+		if (!this._index[k].is("CONSTRUCTOR") && !this._index[k].isNamespace && this._index[k].memberOf == "") {
+			this._index[k].memberOf = "_global_";
+		}
+		
 		// clean up
 		if (this._index[k].memberOf.match(/[.#-]$/)) {
 			this._index[k].memberOf = this._index[k].memberOf.substr(0, this._index[k].memberOf.length-1);
@@ -159,7 +164,7 @@ JSDOC.SymbolSet.prototype.resolveMemberOf = function() {
 		if (this._index[k].memberOf) {
 			var container = this.getSymbol(this._index[k].memberOf);
 			if (!container) {
-				LOG.warn("Can't add "+this._index[k].name+" as a member of non-existent "+this._index[k].memberOf);
+				LOG.warn("Can't add '"+this._index[k].name+"' as a member of unseen symbol: "+this._index[k].memberOf);
 			}
 			else {
 				container.addMember(this._index[k]);

@@ -26,13 +26,7 @@ var Person = Class.create(
 	}
 }
 
-/** @lends Unknown */
-{
-	isok: function() {
-	}
-}
-
-/** @scope Unknown.prototype */
+/** @lends Unknown.prototype */
 {
 	notok: function() {
 	}
