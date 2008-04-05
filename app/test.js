@@ -15,7 +15,7 @@ var testCases = [
 		is('symbols.getSymbol("Response#text").alias', "Response#text", 'Virtual method name is found.');
 		is('symbols.getSymbol("Response#text").memberOf', "Response", 'Virtual method parent name is found.');
 	}
-	,
+/*	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype.js"]});
 
@@ -216,57 +216,58 @@ var testCases = [
 		is('symbols.getSymbol("Layout#rotate").params.length', 0, 'Docomments inside function sig is ignored without a param.');
 		is('symbols.getSymbol("Layout#init").params[2].type', "zoppler", 'Doc comment type overrides inline type for param with same name.');
 	}
-/*	,
+	,
 	function() {
 		symbolize({a: true, _: [SYS.pwd+"test/shared.js", SYS.pwd+"test/shared2.js"]});
 
-		is('symbols[1].name', 'some', 'The name of a symbol in a shared section is found.');
-		is('symbols[1].alias', 'Array#some', 'The alias of a symbol in a shared section is found.');
-		is('symbols[1].desc', "Extension to builtin array.", 'A description can be shared.');
-		is('symbols[2].desc', "Extension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
-		is('symbols[3].desc', "A first in, first out data structure.", 'A description is not shared when outside a shared section.');
-		is('symbols[4].alias', "Queue.rewind", 'Second shared tag can be started.');
-		is('symbols[5].alias', "_global_.startOver", 'Shared tag doesnt cross over files.');
+		is('symbols.getSymbol("Array#some").name', 'some', 'The name of a symbol in a shared section is found.');
+		is('symbols.getSymbol("Array#some").alias', 'Array#some', 'The alias of a symbol in a shared section is found.');
+		is('symbols.getSymbol("Array#some").desc', "Extension to builtin array.", 'A description can be shared.');
+		is('symbols.getSymbol("Array#filter").desc', "Extension to builtin array.\nChange every element of an array.", 'A shared description is appended.');
+		is('symbols.getSymbol("Queue").desc', "A first in, first out data structure.", 'A description is not shared when outside a shared section.');
+		is('symbols.getSymbol("Queue.rewind").alias', "Queue.rewind", 'Second shared tag can be started.');
+		is('symbols.getSymbol("startOver").alias', "startOver", 'Shared tag doesnt cross over files.');
 	}
 	,
 	function() {
 		symbolize({a: true, _: [SYS.pwd+"test/config.js"]});
-		is('symbols[0].params[0].name', 'person', 'The name of a param is found.');
-		is('symbols[0].params[1].name', 'person.name', 'The name of a param set with a dot name is found.');
-		is('symbols[0].params[2].name', 'person.age', 'The name of a param set with a dot name is found.');
-		is('symbols[0].params[4].name', 'connection', 'The name of a param after config is found.');
+		is('symbols.getSymbol("Contact").params[0].name', 'person', 'The name of a param is found.');
+		is('symbols.getSymbol("Contact").params[1].name', 'person.name', 'The name of a param set with a dot name is found.');
+		is('symbols.getSymbol("Contact").params[2].name', 'person.age', 'The name of a param set with a dot name is found.');
+		is('symbols.getSymbol("Contact").params[4].name', 'connection', 'The name of a param after config is found.');
 		
-		is('symbols[1].params[0].name', 'persons', 'Another name of a param is found.');
-		is('symbols[1].params[1].name', 'persons.Father', 'The name of a param+config is found.');
-		is('symbols[1].params[2].name', 'persons.Mother', 'The name of a second param+config is found.');
-		is('symbols[1].params[3].name', 'persons.Children', 'The name of a third param+config is found.');
+		is('symbols.getSymbol("Family").params[0].name', 'persons', 'Another name of a param is found.');
+		is('symbols.getSymbol("Family").params[1].name', 'persons.Father', 'The name of a param+config is found.');
+		is('symbols.getSymbol("Family").params[2].name', 'persons.Mother', 'The name of a second param+config is found.');
+		is('symbols.getSymbol("Family").params[3].name', 'persons.Children', 'The name of a third param+config is found.');
 			
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/ignore.js"]});
-		is('symbols.length', 1, 'Only the global object is documented when a parent is ignored.');
+		is('LOG.warnings.filter(function($){if($.indexOf("unseen symbol: Ignored") > -1) return $}).length', 1, 'A warning is emitted when documenting members of an ignored parent.');
+
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/functions_anon.js"]});
-		is('symbols[2].name', 'a.b', 'In anonymous constructor this is found to be the container object.');
-		is('symbols[3].name', 'a.f', 'In anonymous constructor this can have a method.');
-		is('symbols[4].name', 'a.c', 'In anonymous constructor method this is found to be the container object.');
-		is('symbols[6].name', 'g', 'In anonymous function executed inline this is the global.');
-		is('symbols[8].name', 'bar2.p', 'In named constructor executed inline this is the container object.');
-		is('symbols[10].name', 'module.pub', 'In parenthesized anonymous function executed inline function scoped variables arent documented.');
+		is('symbols.getSymbol("a.b").alias', 'a.b', 'In anonymous constructor this is found to be the container object.');
+		is('symbols.getSymbol("a.f").alias', 'a.f', 'In anonymous constructor this can have a method.');
+		is('symbols.getSymbol("a.c").alias', 'a.c', 'In anonymous constructor method this is found to be the container object.');
+		is('symbols.getSymbol("g").alias', 'g', 'In anonymous function executed inline this is the global.');
+		is('symbols.getSymbol("bar2.p").alias', 'bar2.p', 'In named constructor executed inline this is the container object.');
+		is('symbols.getSymbol("module.pub").alias', 'module.pub', 'In parenthesized anonymous function executed inline function scoped variables arent documented.');
 
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/oblit_anon.js"]});
-		is('symbols[1].name', 'opt', 'Anonymous object properties are assigned to $anonymous.');
-		is('symbols[3].name', 'opt.conf.keep', 'Anonymous object properties are assigned to $anonymous.');
-		is('symbols[4].name', 'opt.conf.base', 'Anonymous object properties are assigned to $anonymous.');
+		is('symbols.getSymbol("opt").name', 'opt', 'Anonymous object properties are assigned to $anonymous.');
+		is('symbols.getSymbol("opt.conf.keep").alias', 'opt.conf.keep', 'Anonymous object properties are assigned to $anonymous.');
+		is('symbols.getSymbol("opt.conf.base").alias', 'opt.conf.base', 'Anonymous object properties are assigned to $anonymous.');
 		
 	}
-*/
+	*/
 ];
 //print(Dumper.dump(symbols));	
 

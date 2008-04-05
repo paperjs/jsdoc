@@ -17,17 +17,31 @@ JSDOC.Parser = {
 	},
 	
 	addSymbol: function(symbol) {
-		if (JSDOC.Parser.conf.ignoreAnonymous && symbol.name.match(/\$anonymous\b/)) return;
-		
+		// if a symbol alias is documented more than once the last one with the user docs wins
 		if (JSDOC.Parser.symbols.hasSymbol(symbol.alias)) {
-			LOG.warn("The symbol named '"+symbol.name+"' is defined more than once.");
+			var currentSymbol = JSDOC.Parser.symbols.getSymbol(symbol.alias);
+			if (currentSymbol.comment.isUserComment) {
+				if (symbol.comment.isUserComment) {
+					LOG.warn("The symbol '"+symbol.alias+"' is documented more than once.");
+				}
+				else {
+					return;
+				}
+			}
 		}
+		
+		// we don't document anonymous things
+		if (JSDOC.Parser.conf.ignoreAnonymous && symbol.name.match(/\$anonymous\b/)) return;
 
+		// uderscored things may be treated as if they were marked private, this cascades
 		if (JSDOC.Parser.conf.treatUnderscoredAsPrivate && symbol.name.match(/[.#-]_[^.#-]+$/)) {
 			symbol.isPrivate = true;
 		}
 		
+		// -p flag is required to document private things
 		if ((symbol.isInner || symbol.isPrivate) && !JSDOC.opt.p) return;
+		
+		// ignored things are not documented, this doesn't cascade
 		if (symbol.isIgnored) return;
 		
 		JSDOC.Parser.symbols.addSymbol(symbol);
@@ -40,7 +54,8 @@ JSDOC.Parser = {
 	
 	finish: function() {
 		JSDOC.Parser.symbols.relate();		
-
+		
+		// make a litle report about what was found
 		if (JSDOC.Parser.conf.explain) {
 			var symbols = JSDOC.Parser.symbols.toArray();
 			var srcFile = "@";
@@ -67,13 +82,15 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	// filter symbols by option
 	for (p in JSDOC.Parser.symbols._index) {
 		var symbol = JSDOC.Parser.symbols._index[p];
-		if (symbol.is("FILE") || symbol.is("GLOBAL")) continue;
+		if (symbol.is("FILE") || symbol.is("GLOBAL")) {
+			continue;
+		}
 		else if (!JSDOC.opt.a && !symbol.comment.isUserComment) {
-			JSDOC.Parser.symbols.deleteByAlias(symbol.alias);
+			JSDOC.Parser.symbols.deleteSymbol(symbol.alias);
 		}
 		
 		if (/#$/.test(symbol.alias)) { // we don't document prototypes
-			JSDOC.Parser.symbols.deleteByAlias(symbol.alias);
+			JSDOC.Parser.symbols.deleteSymbol(symbol.alias);
 		}
 	}
 	

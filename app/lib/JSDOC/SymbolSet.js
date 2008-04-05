@@ -22,8 +22,7 @@ JSDOC.SymbolSet.prototype.hasSymbol = function(alias) {
 
 JSDOC.SymbolSet.prototype.addSymbol = function(symbol) {
 	if (this.hasSymbol(symbol.alias)) {
-		LOG.warn(symbol.alias + " is documented more than once.");
-		return;
+		LOG.warn("Overwriting symbol documentation for: "+symbol.alias + ".");
 	}
 	this._index[symbol.alias] = symbol;
 }

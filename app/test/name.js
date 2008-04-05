@@ -12,6 +12,7 @@ Response.prototype = {
 	 @returns {String}
 		Response as text
 	*/
+
 	text: function() {
 		return this.nativeResponse.responseText;
 	}
