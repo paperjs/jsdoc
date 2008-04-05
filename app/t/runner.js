@@ -1,3 +1,5 @@
+// try: java -jar ../../jsrun.jar runner.js
+
 load("TestDoc.js");
 
 TestDoc.add("../frame/String.js");

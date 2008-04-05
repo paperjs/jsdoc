@@ -166,21 +166,18 @@ JSDOC.DocTag.prototype.nibbleType = function(src) {
 JSDOC.DocTag.prototype.nibbleName = function(src) {
 	if (typeof src != "string") throw "src must be a string not "+(typeof src);
 	
-	var parts = src.match(/^\s*(\S+)(?:\s([\s\S]*))?$/);
-	if (parts) {
-		if (parts[1]) this.name = parts[1].trim();
-		if (parts[2]) src = parts[2];
-		else src = "";
-		
-		// is optional?
-		if (this.name.match(/^\[/)) {
-			var nameRange = this.name.balance("[", "]");
-			if (nameRange[1] == -1) {
-				throw "Malformed comment tag ignored. Tag optional name requires an opening [ and a closing ]: "+src;
-			}
-			this.name = this.name.substring(nameRange[0]+1, nameRange[1]);
-			this.isOptional = true;
+	src = src.trim();
+	
+	// is optional?
+	if (src.charAt(0) == "[") {
+		var nameRange = src.balance("[", "]");
+		if (nameRange[1] == -1) {
+			throw "Malformed comment tag ignored. Tag optional name requires an opening [ and a closing ]: "+src;
 		}
+		this.name = src.substring(nameRange[0]+1, nameRange[1]).trim();
+		this.isOptional = true;
+		
+		src = src.substring(nameRange[1]+1);
 		
 		// has default value?
 		var nameAndValue = this.name.split("=");
@@ -189,6 +186,14 @@ JSDOC.DocTag.prototype.nibbleName = function(src) {
 			this.defaultValue = nameAndValue.join("=");
 		}
 	}
+	else {
+		var parts = src.match(/^(\S+)(?:\s([\s\S]*))?$/);
+		if (parts) {
+			if (parts[1]) this.name = parts[1];
+			if (parts[2]) src = parts[2].trim();
+			else src = "";
+		}
+	}	
 
 	return src;
 }
@@ -210,6 +215,9 @@ JSDOC.DocTag.prototype.nibbleName = function(src) {
 	tag.init().nibbleName("[foo=7] This is a description.");
  	assertEqual(tag.name, "foo", "optional param name is found when default value.");
  	assertEqual(tag.defaultValue, 7, "optional param default value is found when default value.");
+ 	
+ 	//tag.init().nibbleName("[foo= a value] This is a description.");
+ 	//assertEqual(tag.defaultValue, " a value", "optional param default value is found when default value has spaces (issue #112).");
  	
  	tag.init().nibbleName("[foo=[]] This is a description.");
  	assertEqual(tag.defaultValue, "[]", "optional param default value is found when default value is [] (issue #95).");
