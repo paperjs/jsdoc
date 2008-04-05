@@ -15,7 +15,7 @@ var testCases = [
 		is('symbols.getSymbol("Response#text").alias', "Response#text", 'Virtual method name is found.');
 		is('symbols.getSymbol("Response#text").memberOf', "Response", 'Virtual method parent name is found.');
 	}
-/*	,
+	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/prototype.js"]});
 
@@ -267,7 +267,18 @@ var testCases = [
 		is('symbols.getSymbol("opt.conf.base").alias', 'opt.conf.base', 'Anonymous object properties are assigned to $anonymous.');
 		
 	}
-	*/
+	,
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/params_optional.js"]});
+		is('symbols.getSymbol("Document").params.length', 3, 'Correct number of params are found when optional param syntax is used.');
+		is('symbols.getSymbol("Document").params[1].name', "id", 'Name of optional param is found.');
+		is('symbols.getSymbol("Document").params[1].isOptional', true, 'Optional param is marked isOptional.');
+		is('symbols.getSymbol("Document").params[2].name', "title", 'Name of optional param with default value is found.');
+		is('symbols.getSymbol("Document").params[2].isOptional', true, 'Optional param with default value is marked isOptional.');
+		is('symbols.getSymbol("Document").params[2].defaultValue', " This is untitled.", 'Optional param default value is found.');
+
+
+	}
 ];
 //print(Dumper.dump(symbols));	
 
