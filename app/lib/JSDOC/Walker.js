@@ -1,5 +1,6 @@
 if (typeof JSDOC == "undefined") JSDOC = {};
 
+/** @constructor */
 JSDOC.Walker = function(/**JSDOC.TokenStream*/ts) {
 	this.init();
 	if (typeof ts != "undefined") {
@@ -9,18 +10,21 @@ JSDOC.Walker = function(/**JSDOC.TokenStream*/ts) {
 
 JSDOC.Walker.prototype.init = function() {
 	this.ts = null;
-	
-	                                 //("_global_", [], "CONSTRUCTOR", new JSDOC.DocComment("/** BUILTIN */")
+
 	var globalSymbol = new JSDOC.Symbol("_global_", [], "GLOBAL", new JSDOC.DocComment("/** BUILTIN */"));
 	globalSymbol.isNamespace = true;
 	globalSymbol.srcFile = "";
 	globalSymbol.isPrivate = false;
 	JSDOC.Parser.addSymbol(globalSymbol);
-	
-	this.namescope = [globalSymbol];
-	this.namescope.last = function(n){ if (!n) n = 0; return this[this.length-(1+n)] || "" };
 	this.lastDoc = null;
 	this.token = null;
+	
+	/**
+		The chain of symbols under which we are currently nested.
+		@type Array
+	*/
+	this.namescope = [globalSymbol];
+	this.namescope.last = function(n){ if (!n) n = 0; return this[this.length-(1+n)] || "" };
 }
 
 JSDOC.Walker.prototype.walk = function(/**JSDOC.TokenStream*/ts) {
@@ -69,7 +73,6 @@ JSDOC.Walker.prototype.step = function() {
 			if (!virtualName) throw "@name tag requires a value.";
 			
 			var symbol = new JSDOC.Symbol(virtualName, [], "VIRTUAL", doc);
-//			symbol.isVirtual = true;
 			
 			JSDOC.Parser.addSymbol(symbol);
 			
@@ -89,7 +92,6 @@ JSDOC.Walker.prototype.step = function() {
 		else if (doc.getTag("overview").length > 0) { // it's a file overview
 			symbol = new JSDOC.Symbol("", [], "FILE", doc);
 			
-
 			JSDOC.Parser.addSymbol(symbol);
 			
 			this.lastDoc = null;

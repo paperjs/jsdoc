@@ -1,3 +1,8 @@
+/**
+	@name String
+	@class Additions to the core string object.
+*/
+
 /** @author Steven Levithan, released as public domain. */
 String.prototype.trim = function() {
 	var str = this.replace(/^\s+/, '');
