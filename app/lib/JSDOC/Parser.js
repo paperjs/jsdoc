@@ -1,6 +1,4 @@
-load("app/lib/JSDOC/Walker.js");
-//load("app/lib/JSDOC/Relator.js");
-load("app/lib/JSDOC/SymbolSet.js");
+if (typeof JSDOC == "undefined") JSDOC = {};
 
 /**
 	@namespace
