@@ -14,10 +14,6 @@ function main() {
 		IO.include("frame/Testrun.js");
 		IO.include("test.js");
 	}
-	else if (JSDOC.opt._.length == 0) {
-		LOG.warn("No source files to work on. Nothing to do.");
-		quit();
-	}
 	else {
 		LOG.inform("JsDoc Toolkit main() running at "+new Date()+".");
 		LOG.inform("With options: ");

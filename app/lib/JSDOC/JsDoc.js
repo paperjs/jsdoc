@@ -26,6 +26,10 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 	}
 	
 	// defend against options that are not sane 
+	if (JSDOC.opt._.length == 0) {
+		LOG.warn("No source files to work on. Nothing to do.");
+		quit();
+	}
 	if (JSDOC.opt.t === true || JSDOC.opt.d === true) {
 		JSDOC.usage();
 	}
