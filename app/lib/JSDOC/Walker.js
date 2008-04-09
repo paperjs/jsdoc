@@ -63,7 +63,8 @@ JSDOC.Walker.prototype.step = function() {
 			/*debug*///print("~~ oblit name is  "+name);
 			/*debug*///print("~~ {");
 			var matching = this.ts.getMatchingToken("LEFT_CURLY");
-			matching.popNamescope = name;
+			if (matching) matching.popNamescope = name;
+			else LOG.warn("Mismatched } character. Can't parse code.");
 			
 			this.lastDoc = null;
 			return true;
@@ -125,7 +126,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ function name is  "+name+" "+params);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken(null, "RIGHT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 			// function foo() {}
 			else if (this.ts.look(-1).is("FUNCTION") && this.ts.look(1).is("LEFT_PAREN")) {
@@ -152,7 +154,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ function name is  "+name+" "+params);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 			// foo = function() {}
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("FUNCTION")) {
@@ -179,7 +182,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ function name is  "+name+" "+params);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 			// foo = new function() {}
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("NEW") && this.ts.look(3).is("FUNCTION")) {
@@ -207,7 +211,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ function name is  "+name+" "+params);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 			// foo: function() {}
 			else if (this.ts.look(1).is("COLON") && this.ts.look(2).is("FUNCTION")) {
@@ -234,7 +239,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ function name is  "+name+" "+params);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 			// foo = {}
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("LEFT_CURLY")) {
@@ -261,7 +267,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ oblit name is  "+name);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 			// foo = x
 			else if (this.ts.look(1).is("ASSIGN")) {
@@ -304,7 +311,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ oblit name is  "+name);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 			// foo: x
 			else if (this.ts.look(1).is("COLON")) {
@@ -345,7 +353,8 @@ JSDOC.Walker.prototype.step = function() {
 				/*debug*///print("~~ function name is  "+name+" "+params);
 				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				matching.popNamescope = name;
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
 		}
 	}
@@ -397,6 +406,10 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 }
 
 JSDOC.Walker.onParamList = function(/**Array*/paramTokens) {
+	if (!paramTokens) {
+		LOG.warn("Malformed parameter list. Can't parse code.");
+		return [];
+	}
 	var params = [];
 	for (var i = 0, l = paramTokens.length; i < l; i++) {
 		if (paramTokens[i].is("JSDOC")) {

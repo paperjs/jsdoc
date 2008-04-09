@@ -23,6 +23,16 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 		if (typeof JSDOC.conf["_"] != "undefined") {
 			JSDOC.opt["_"] = JSDOC.opt["_"].concat(JSDOC.conf["_"]);
 		}
+		
+		LOG.inform("With configuration: ");
+		for (var o in JSDOC.opt) {
+			LOG.inform("    "+o+": "+JSDOC.opt[o]);
+		}
+	}
+	
+	if (JSDOC.opt.h) {
+		JSDOC.usage();
+		quit();
 	}
 	
 	// defend against options that are not sane 
@@ -32,11 +42,6 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 	}
 	if (JSDOC.opt.t === true || JSDOC.opt.d === true) {
 		JSDOC.usage();
-	}
-
-	if (JSDOC.opt.h) {
-		JSDOC.usage();
-		quit();
 	}
 	
 	if (typeof JSDOC.opt.d == "string") {
