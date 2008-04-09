@@ -390,7 +390,14 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 		if (symbol.alias.match(/(^.*)[#.-][^#.-]+/)) {
 			var parentName = RegExp.$1;
 			var parent = JSDOC.Parser.symbols.getSymbol(parentName);
-			name = parentName+(parent.is("CONSTRUCTOR")?"#":".")+nameFragment;
+
+			if (!parent) {
+				if (JSDOC.Lang.isBuiltin(parentName)) parent = JSDOC.Parser.addBuiltin(parentName);
+				else {
+					LOG.warn("Can't document "+symbol.alias +" without first documenting "+parentName+".");
+				}
+			}
+			if (parent) name = parentName+(parent.is("CONSTRUCTOR")?"#":".")+nameFragment;
 		}
 		else {
 			parent = this.namescope.last(1);

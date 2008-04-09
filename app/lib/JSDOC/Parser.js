@@ -45,6 +45,15 @@ JSDOC.Parser = {
 		JSDOC.Parser.symbols.addSymbol(symbol);
 	},
 	
+	addBuiltin: function(name) {
+		var builtin = new JSDOC.Symbol(name, [], "CONSTRUCTOR", new JSDOC.DocComment(""));
+		builtin.isNamespace = true;
+		builtin.srcFile = "";
+		builtin.isPrivate = false;
+		JSDOC.Parser.addSymbol(builtin);
+		return builtin;
+	},
+	
 	init: function() {
 		JSDOC.Parser.symbols = new JSDOC.SymbolSet();
 		JSDOC.Parser.walker = new JSDOC.Walker();

@@ -163,11 +163,13 @@ JSDOC.SymbolSet.prototype.resolveMemberOf = function() {
 		if (this._index[k].memberOf) {
 			var container = this.getSymbol(this._index[k].memberOf);
 			if (!container) {
-				LOG.warn("Can't add '"+this._index[k].name+"' as a member of unseen symbol: "+this._index[k].memberOf);
+				if (JSDOC.Lang.isBuiltin(this._index[k].memberOf)) container = JSDOC.Parser.addBuiltin(this._index[k].memberOf);
+				else {
+					LOG.warn("Can't document "+this._index[k].name +" as a member of undocumented symbo "+this._index[k].memberOf+".");
+				}
 			}
-			else {
-				container.addMember(this._index[k]);
-			}
+			
+			if (container) container.addMember(this._index[k]);
 		}
 	}
 }
