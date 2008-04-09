@@ -165,7 +165,7 @@ JSDOC.SymbolSet.prototype.resolveMemberOf = function() {
 			if (!container) {
 				if (JSDOC.Lang.isBuiltin(this._index[k].memberOf)) container = JSDOC.Parser.addBuiltin(this._index[k].memberOf);
 				else {
-					LOG.warn("Can't document "+this._index[k].name +" as a member of undocumented symbo "+this._index[k].memberOf+".");
+					LOG.warn("Can't document "+this._index[k].name +" as a member of undocumented symbol "+this._index[k].memberOf+".");
 				}
 			}
 			

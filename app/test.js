@@ -245,7 +245,7 @@ var testCases = [
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/ignore.js"]});
-		is('LOG.warnings.filter(function($){if($.indexOf("unseen symbol: Ignored") > -1) return $}).length', 1, 'A warning is emitted when documenting members of an ignored parent.');
+		is('LOG.warnings.filter(function($){if($.indexOf("undocumented symbol Ignored") > -1) return $}).length', 1, 'A warning is emitted when documenting members of an ignored parent.');
 
 	}
 	,
