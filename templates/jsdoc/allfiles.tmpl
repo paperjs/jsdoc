@@ -24,7 +24,7 @@
 			
 			<for each="item" in="data">
 			<div>
-				<h2>{+new Link().toSrc(item.alias)+} {+item.srcFile+}</h2>
+				<h2>{+new Link().toSrc(item.alias)+}</h2>
 				<if test="item.desc">{+resolveLinks(summarize(item.desc))+}</if>
 				<dl>
 					<if test="item.author">
