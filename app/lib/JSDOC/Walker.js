@@ -11,7 +11,7 @@ JSDOC.Walker = function(/**JSDOC.TokenStream*/ts) {
 JSDOC.Walker.prototype.init = function() {
 	this.ts = null;
 
-	var globalSymbol = new JSDOC.Symbol("_global_", [], "GLOBAL", new JSDOC.DocComment("/** BUILTIN */"));
+	var globalSymbol = new JSDOC.Symbol("_global_", [], "GLOBAL", new JSDOC.DocComment(""));
 	globalSymbol.isNamespace = true;
 	globalSymbol.srcFile = "";
 	globalSymbol.isPrivate = false;
@@ -31,7 +31,7 @@ JSDOC.Walker.prototype.walk = function(/**JSDOC.TokenStream*/ts) {
 	this.ts = ts;
 	while (this.token = this.ts.look()) {
 		if (this.token.popNamescope) {
-			/*debug*///print("~~ }");
+			
 			var symbol = this.namescope.pop();
 			if (symbol.is("FUNCTION")) {
 				if (this.ts.look(1).is("LEFT_PAREN") && symbol.comment.getTag("function").length == 0) {
@@ -58,10 +58,7 @@ JSDOC.Walker.prototype.step = function() {
 			var symbol = new JSDOC.Symbol(name, [], "OBJECT", doc);
 			
 			this.namescope.push(symbol);
-			//JSDOC.Parser.addSymbol(new JSDOC.Symbol(name, [], "OBJECT", doc));
-			/*debug*///print("~~ doc is  "+doc);
-			/*debug*///print("~~ oblit name is  "+name);
-			/*debug*///print("~~ {");
+			
 			var matching = this.ts.getMatchingToken("LEFT_CURLY");
 			if (matching) matching.popNamescope = name;
 			else LOG.warn("Mismatched } character. Can't parse code.");
@@ -113,7 +110,7 @@ JSDOC.Walker.prototype.step = function() {
 			// it's inside an anonymous object
 			if (this.ts.look(1).is("COLON") && this.ts.look(-1).is("LEFT_CURLY") && !(this.ts.look(-2).is("JSDOC") || this.ts.look(-2).is("ASSIGN") || this.ts.look(-2).is("COLON"))) {
 				name = "$anonymous";
-				name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
+				name = this.namescope.last().alias+"-"+name
 				
 				params = [];
 				
@@ -123,8 +120,6 @@ JSDOC.Walker.prototype.step = function() {
 				
 				this.namescope.push(symbol);
 				
-				/*debug*///print("~~ function name is  "+name+" "+params);
-				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken(null, "RIGHT_CURLY");
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
@@ -132,13 +127,8 @@ JSDOC.Walker.prototype.step = function() {
 			// function foo() {}
 			else if (this.ts.look(-1).is("FUNCTION") && this.ts.look(1).is("LEFT_PAREN")) {
 				var isInner;
-				if (this.namescope.length) {
-					name = this.namescope.last().alias+"-"+name;
-					if (!this.namescope.last().is("GLOBAL")) isInner = true;
-				}
-				else {
-					name = this.namescope.last().alias+""+name;
-				}
+				name = this.namescope.last().alias+"-"+name;
+				if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				
 				if (this.lastDoc) doc = this.lastDoc;
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
@@ -150,9 +140,7 @@ JSDOC.Walker.prototype.step = function() {
 				JSDOC.Parser.addSymbol(symbol);
 				
 				this.namescope.push(symbol);
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ function name is  "+name+" "+params);
-				/*debug*///print("~~ {");
+				
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
@@ -161,7 +149,7 @@ JSDOC.Walker.prototype.step = function() {
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("FUNCTION")) {
 				var isInner;
 				if (this.ts.look(-1).is("VAR")) {
-					name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
+					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
 				else if (name.indexOf("this.") == 0) {
@@ -174,13 +162,10 @@ JSDOC.Walker.prototype.step = function() {
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 				if (isInner) symbol.isInner = true;
 				
-			
 				JSDOC.Parser.addSymbol(symbol);
 				
 				this.namescope.push(symbol);
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ function name is  "+name+" "+params);
-				/*debug*///print("~~ {");
+				
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
@@ -189,7 +174,7 @@ JSDOC.Walker.prototype.step = function() {
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("NEW") && this.ts.look(3).is("FUNCTION")) {
 				var isInner;
 				if (this.ts.look(-1).is("VAR")) {
-					name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
+					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
 				else if (name.indexOf("this.") == 0) {
@@ -207,9 +192,7 @@ JSDOC.Walker.prototype.step = function() {
 				
 				symbol.scopeType = "INSTANCE";
 				this.namescope.push(symbol);
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ function name is  "+name+" "+params);
-				/*debug*///print("~~ {");
+				
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
@@ -227,7 +210,7 @@ JSDOC.Walker.prototype.step = function() {
 
 					symbol = new JSDOC.Symbol(name, params, "CONSTRUCTOR", doc);
 				}
-				else if (this.namescope.length) {
+				else {
 					symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 				}
 				
@@ -235,9 +218,7 @@ JSDOC.Walker.prototype.step = function() {
 				JSDOC.Parser.addSymbol(symbol);
 				
 				this.namescope.push(symbol);
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ function name is  "+name+" "+params);
-				/*debug*///print("~~ {");
+				
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
@@ -246,36 +227,6 @@ JSDOC.Walker.prototype.step = function() {
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("LEFT_CURLY")) {
 				var isInner;
 				if (this.ts.look(-1).is("VAR")) {
-					name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
-					if (!this.namescope.last().is("GLOBAL")) isInner = true;
-				}
-				else if (name.indexOf("this.") == 0) {
-					name = this.resolveThis(name); //this.namescope.last()+(this.namescope.length?".":"")+name
-				}
-				
-				if (this.lastDoc) doc = this.lastDoc;
-				
-				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
-				if (isInner) symbol.isInner = true;
-				
-			
-				if (doc) JSDOC.Parser.addSymbol(symbol);
-
-				this.namescope.push(symbol);
-				
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ oblit name is  "+name);
-				/*debug*///print("~~ {");
-				var matching = this.ts.getMatchingToken("LEFT_CURLY");
-				if (matching) matching.popNamescope = name;
-				else LOG.warn("Mismatched } character. Can't parse code.");
-			}
-			// foo = x
-			else if (this.ts.look(1).is("ASSIGN")) {
-				
-				var isInner;
-				if (this.ts.look(-1).is("VAR")) {
-//TODO this.namescope.length will always be > 0 because of global object, so why check?
 					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
@@ -291,8 +242,31 @@ JSDOC.Walker.prototype.step = function() {
 			
 				if (doc) JSDOC.Parser.addSymbol(symbol);
 
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ object name is  "+name);
+				this.namescope.push(symbol);
+				
+				var matching = this.ts.getMatchingToken("LEFT_CURLY");
+				if (matching) matching.popNamescope = name;
+				else LOG.warn("Mismatched } character. Can't parse code.");
+			}
+			// foo = x
+			else if (this.ts.look(1).is("ASSIGN")) {
+				
+				var isInner;
+				if (this.ts.look(-1).is("VAR")) {
+					name = this.namescope.last().alias+"-"+name
+					if (!this.namescope.last().is("GLOBAL")) isInner = true;
+				}
+				else if (name.indexOf("this.") == 0) {
+					name = this.resolveThis(name);
+				}
+				
+				if (this.lastDoc) doc = this.lastDoc;
+				
+				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
+				if (isInner) symbol.isInner = true;
+				
+			
+				if (doc) JSDOC.Parser.addSymbol(symbol);
 			}
 			// foo: {}
 			else if (this.ts.look(1).is("COLON") && this.ts.look(2).is("LEFT_CURLY")) {
@@ -307,9 +281,6 @@ JSDOC.Walker.prototype.step = function() {
 				
 				this.namescope.push(symbol);
 				
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ oblit name is  "+name);
-				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
@@ -323,11 +294,7 @@ JSDOC.Walker.prototype.step = function() {
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				
 			
-				//if (this.namescope.length) {
-					if (doc) JSDOC.Parser.addSymbol(symbol);
-				//}
-				/*debug*///print("~~ doc is  "+doc);
-				/*debug*///print("~~ object name is  "+name);
+				if (doc) JSDOC.Parser.addSymbol(symbol);
 			}
 			this.lastDoc = null;
 		}
@@ -337,8 +304,7 @@ JSDOC.Walker.prototype.step = function() {
 				&& !this.ts.look(1).is("NAME")
 			) {
 				name = "$anonymous";
-				name = this.namescope.last().alias+(this.namescope.length?"-":"")+name
-				
+				name = this.namescope.last().alias+"-"+name
 				
 				if (this.lastDoc) doc = this.lastDoc;
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
@@ -350,8 +316,6 @@ JSDOC.Walker.prototype.step = function() {
 				
 				this.namescope.push(symbol);
 				
-				/*debug*///print("~~ function name is  "+name+" "+params);
-				/*debug*///print("~~ {");
 				var matching = this.ts.getMatchingToken("LEFT_CURLY");
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
@@ -408,7 +372,7 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 	else {
 		name = nameFragment;
 	}
-	/*debug*///print("~~ resolved name is "+name);	
+	
 	return name;
 }
 

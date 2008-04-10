@@ -125,7 +125,7 @@ Shape.prototype.setCoords = function(coordinates){
  * @param other There is no other param, but it can still be documented if
  *              optional parameters are used
  * @throws NonExistantColorException (no, not really!)
- * @see #setColor
+ * @see #getColor
  */
 Shape.prototype.setColor = function(color){
    this.color = color;

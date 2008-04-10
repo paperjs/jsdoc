@@ -113,18 +113,14 @@ JsDoc Toolkit is a larger work that uses the Rhino JavaScript engine
 but is not derived from it in any way. The Rhino library is used 
 without modification and without any claims whatsoever.
 
-Venkman
+The Rhino Debugger
 
-The Venkman Debugger is open source and licensed by Mozilla under the
-GNU Lesser General Public License, the text of which is available at
-http://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License
+You can obtain more information about the Rhino Debugger from the 
+Mozilla web site at http://www.mozilla.org/rhino/debugger.html
 
-You can obtain the source code for Venkman from the Mozilla web site
-at http://www.mozilla.org/projects/venkman/
-
-JsDoc Toolkit is a larger work that uses the Venkman JavaScript 
-Debugger but is not derived from it in any way. The Venkman library
-is used without modification and without any claims whatsoever.
+JsDoc Toolkit is a larger work that uses the Rhino Debugger but
+is not derived from it in any way. The Rhino Debugger is used
+without modification and without any claims whatsoever.
 
 JsDoc Toolkit
 
