@@ -1,5 +1,6 @@
 if (typeof JSDOC == "undefined") JSDOC = {};
 
+/** @constructor */
 JSDOC.SymbolSet = function() {
 	this.init();
 }

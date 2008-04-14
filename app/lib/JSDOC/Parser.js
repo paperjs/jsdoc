@@ -17,12 +17,12 @@ JSDOC.Parser = {
 	addSymbol: function(symbol) {
 		// if a symbol alias is documented more than once the last one with the user docs wins
 		if (JSDOC.Parser.symbols.hasSymbol(symbol.alias)) {
-			var currentSymbol = JSDOC.Parser.symbols.getSymbol(symbol.alias);
-			if (currentSymbol.comment.isUserComment) {
-				if (symbol.comment.isUserComment) {
+			var oldSymbol = JSDOC.Parser.symbols.getSymbol(symbol.alias);
+			if (oldSymbol.comment.isUserComment) {
+				if (symbol.comment.isUserComment) { // old and new are both documented
 					LOG.warn("The symbol '"+symbol.alias+"' is documented more than once.");
 				}
-				else {
+				else { // old is documented but new isn't
 					return;
 				}
 			}
@@ -65,7 +65,7 @@ JSDOC.Parser = {
 		// make a litle report about what was found
 		if (JSDOC.Parser.conf.explain) {
 			var symbols = JSDOC.Parser.symbols.toArray();
-			var srcFile = "@";
+			var srcFile = "";
 			for (var i = 0, l = symbols.length; i < l; i++) {
 				var symbol = symbols[i];
 				if (srcFile != symbol.srcFile) {
@@ -81,10 +81,10 @@ JSDOC.Parser = {
 
 JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	JSDOC.Symbol.srcFile = (srcFile || "");
-	JSDOC.DocComment.shared = "";
+	JSDOC.DocComment.shared = ""; // shared comments don't cross file boundaries
 	
 	if (!JSDOC.Parser.walker) JSDOC.Parser.init();
-	JSDOC.Parser.walker.walk(ts);
+	JSDOC.Parser.walker.walk(ts); // adds to our symbols
 	
 	// filter symbols by option
 	for (p in JSDOC.Parser.symbols._index) {

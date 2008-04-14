@@ -6,7 +6,7 @@ JSDOC.PluginManager.registerPlugin(
 				return; // already generated src code
 			}
 			else JsHilite.cache[src.path] = true;
-			
+		
 			try {
 				var sourceCode = IO.readFile(src.path);
 			}
@@ -45,7 +45,7 @@ function JsHilite(src, charset) {
 	.NUMB {color: #393;}\n\
 	.STRN {color: #393;}\n\
 	.REGX {color: #339;}\n\
-	.linenumber {border-right: 1px dotted #666; color: #666; font-style: normal;}\n\
+	.line {border-right: 1px dotted #666; color: #666; font-style: normal;}\n\
 	</style></head><body><pre>";
 	this.footer = "</pre></body></html>";
 	this.showLinenumbers = true;
@@ -55,8 +55,8 @@ JsHilite.cache = {};
 
 JsHilite.prototype.hilite = function() {
 	var hilited = this.tokens.join("");
-	var linenumber = 1;
-	if (this.showLinenumbers) hilited = hilited.replace(/(^|\n)/g, function(m){return m+"<span class='linenumber'>"+((linenumber<10)? " ":"")+((linenumber<100)? " ":"")+(linenumber++)+"</span> "});
+	var line = 1;
+	if (this.showLinenumbers) hilited = hilited.replace(/(^|\n)/g, function(m){return m+"<span class='line'>"+((line<10)? " ":"")+((line<100)? " ":"")+(line++)+"</span> "});
 	
 	return this.header+hilited+this.footer;
 }

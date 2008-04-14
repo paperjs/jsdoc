@@ -73,7 +73,7 @@ JSDOC.JsDoc = function(/**object*/ opt) {
  			JSDOC.opt.D[c] = JSDOC.conf.D[c];
  		}
  	}
-
+/*
 	// Load additional file handlers
 	// the -H option: filetype handlers
 	JSDOC.handlers = {};
@@ -91,24 +91,24 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 			}
 		}
 	}
-	
+*/	
 	// Give plugins a chance to initialize
 	if (defined(JSDOC.PluginManager)) {
 		JSDOC.PluginManager.run("onInit", this);
 	}
 
 	JSDOC.opt.srcFiles = this._getSrcFiles();
-	var symbols = this._getSymbols();
+	this._parseSrcFiles();
 	//var handler = symbols.handler;
 	this.symbolSet = JSDOC.Parser.symbols;
 	//this.symbolGroup.handler = handler;
 }
 
 /**
-	Lazy retrieval of source file list, only happens when requested, only once.
+	Retrieve source file list.
+	@returns {String[]} The pathnames of the files to be parsed.
  */
 JSDOC.JsDoc.prototype._getSrcFiles = function() {
-	if (this.srcFiles) return this.srcFiles;
 	this.srcFiles = [];
 	
 	var ext = ["js"];
@@ -130,9 +130,7 @@ JSDOC.JsDoc.prototype._getSrcFiles = function() {
 	return this.srcFiles;
 }
 
-JSDOC.JsDoc.prototype._getSymbols = function() {
-	if (this.symbols) return this.symbols;
-
+JSDOC.JsDoc.prototype._parseSrcFiles = function() {
 	JSDOC.Parser.init();
 	for (var i = 0, l = this.srcFiles.length; i < l; i++) {
 		var srcFile = this.srcFiles[i];
@@ -145,7 +143,7 @@ JSDOC.JsDoc.prototype._getSymbols = function() {
 		}
 
 		// Check to see if there is a handler for this file type
-		var ext = FilePath.fileExtension(srcFile);
+//		var ext = FilePath.fileExtension(srcFile);
 // 		if (JSDOC.handlers[ext]) {
 // 			LOG.inform(" Using external handler for '" + ext + "'");
 // 
@@ -155,9 +153,9 @@ JSDOC.JsDoc.prototype._getSymbols = function() {
 // 		else {
 			// The default (JSDOC) handler
 			var tr = new JSDOC.TokenReader();
-			var tokens = tr.tokenize(new JSDOC.TextStream(src));
+			var ts = new JSDOC.TokenStream(tr.tokenize(new JSDOC.TextStream(src)));
 	
-			this.symbols = JSDOC.Parser.parse(new JSDOC.TokenStream(tokens), srcFile);
+			JSDOC.Parser.parse(ts, srcFile);
 //		}
 	}
 	JSDOC.Parser.finish();

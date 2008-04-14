@@ -53,8 +53,10 @@ function Shape(){
  * reality it is completely unrelated to Shape.
  * @param {int} sideLength The length of one side for the new Hexagon
  * @example
- *    hex   = new Hexagon(5);
- *    color = hex.getColor();
+ * if (hasHex) {
+ *     hex   = new Hexagon(5);
+ *     color = hex.getColor();
+ * }
  */
 function Hexagon(sideLength) {
 }
@@ -151,6 +153,7 @@ Shape.prototype.clone = function(){
  * @author Gabriel Reid
  * @see Shape is the base class for this
  * @augments Shape
+ * @hilited
  */
 function Rectangle(width, // This is the width 
                   height // This is the height

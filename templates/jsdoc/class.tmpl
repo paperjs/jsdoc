@@ -84,7 +84,7 @@
 							if (data.isPrivate) output += "&lt;private&gt; ";
 							if (data.isInner) output += "&lt;inner&gt; ";
 						!}&nbsp;</td>
-						<td class="nameDescription">
+						<td class="nameDescription" {!if (data.comment.getTag("hilited").length){output += 'style="color: red"'}!}>
 							<div class="fixedFont">
 								<b>{+ new Link().toSymbol(data.alias).inner('constructor')+}</b><if test="classType != 'Namespace '">{+ makeSignature(data.params) +}</if>
 							</div>
