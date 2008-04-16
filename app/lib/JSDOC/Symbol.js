@@ -99,7 +99,7 @@ JSDOC.Symbol.prototype.populate = function(
 ) {
 	this.$args = arguments;
 	
-	this.name = name; //.replace(/(^|\.)this\./g, "#");
+	this.name = name;
 	this.alias = this.name;
 	this.params = params;
 	this.isa = (isa == "VIRTUAL")? "OBJECT":isa;
@@ -537,25 +537,6 @@ JSDOC.Symbol.prototype.inherit = function(symbol) {
 			this.properties.push(symbol);
 	}
 }
-
-// JSDOC.Symbol.prototype.makeMemberOf = function(alias) {
-// print("~~ makeMemberOf("+alias+")");
-// 	alias = alias.replace(/\.prototype(\.|$)/g, "#");
-// 	var thisAlias = this.alias;
-// 	
-// 	var joiner = ".";
-// 	if (alias.charAt(alias.length-1) == "#" || thisAlias.charAt(0) == "#") {
-// 		joiner = "";
-// 	}
-// 	if (thisAlias.match(new RegExp('^('+alias+'[.#-]?)'))) {
-// 		thisAlias = thisAlias.substr(RegExp.$1.length);
-// 		this.name = thisAlias;
-// 	}
-// 	else {
-// 		this.alias = alias + joiner + thisAlias;
-// 	}
-// 	this.memberOf = alias;
-// }
 
 JSDOC.Symbol.prototype.hasMember = function(name) {
 	return (this.hasMethod(name) || this.hasProperty(name));
