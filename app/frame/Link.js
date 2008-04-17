@@ -67,6 +67,9 @@ function Link() {
 	}
 }
 
+/** prefixed for hashes */
+Link.hashPrefix = "";
+
 /** Appended to the front of relative link paths. */
 Link.base = "";
 
@@ -75,7 +78,7 @@ Link.symbolNameToLinkName = function(symbol) {
 	if (symbol.isStatic) linker = ".";
 	else if (symbol.isInner) linker = "-";
 	
-	return linker+symbol.name;
+	return Link.hashPrefix+linker+symbol.name;
 }
 
 /** Create a link to a snother symbol. */
@@ -100,7 +103,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 		}
 		else {
 			linkPath = escape(linkTo.alias);
-			linkPath += publish.conf.ext + (this.classLink? "":"#constructor");
+			linkPath += publish.conf.ext + (this.classLink? "":"#" + Link.hashPrefix + "constructor");
 		}
 		linkPath = linkBase + linkPath
 	}
