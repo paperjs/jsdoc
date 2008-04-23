@@ -104,7 +104,7 @@ JSDOC.Walker.prototype.step = function() {
 		if (this.token.is("NAME")) {
 			var symbol;
 			var name = this.token.data;
-			var doc = null;
+			var doc = null; if (this.lastDoc) doc = this.lastDoc;
 			var params = [];
 			
 			// it's inside an anonymous object
@@ -127,10 +127,11 @@ JSDOC.Walker.prototype.step = function() {
 			// function foo() {}
 			else if (this.ts.look(-1).is("FUNCTION") && this.ts.look(1).is("LEFT_PAREN")) {
 				var isInner;
+				
+				if (this.lastDoc) doc = this.lastDoc;
 				name = this.namescope.last().alias+"-"+name;
 				if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				
-				if (this.lastDoc) doc = this.lastDoc;
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
 				
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
@@ -148,7 +149,7 @@ JSDOC.Walker.prototype.step = function() {
 			// foo = function() {}
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("FUNCTION")) {
 				var isInner;
-				if (this.ts.look(-1).is("VAR")) {
+				if (this.ts.look(-1).is("VAR") || this.isInner) {
 					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
@@ -173,7 +174,7 @@ JSDOC.Walker.prototype.step = function() {
 			// foo = new function() {}
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("NEW") && this.ts.look(3).is("FUNCTION")) {
 				var isInner;
-				if (this.ts.look(-1).is("VAR")) {
+				if (this.ts.look(-1).is("VAR") || this.isInner) {
 					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
@@ -226,7 +227,7 @@ JSDOC.Walker.prototype.step = function() {
 			// foo = {}
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("LEFT_CURLY")) {
 				var isInner;
-				if (this.ts.look(-1).is("VAR")) {
+				if (this.ts.look(-1).is("VAR") || this.isInner) {
 					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
@@ -252,7 +253,7 @@ JSDOC.Walker.prototype.step = function() {
 			else if (this.ts.look(1).is("ASSIGN")) {
 				
 				var isInner;
-				if (this.ts.look(-1).is("VAR")) {
+				if (this.ts.look(-1).is("VAR") || this.isInner) {
 					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
@@ -296,6 +297,14 @@ JSDOC.Walker.prototype.step = function() {
 			
 				if (doc) JSDOC.Parser.addSymbol(symbol);
 			}
+			// foo(...)
+			else if (this.ts.look(1).is("LEFT_PAREN")) {
+				var functionCall = {name: name};
+				if (this.ts.look(2).is("STRN")) functionCall.arg1 = this.ts.look(2).data;
+				if (typeof JSDOC.PluginManager != "undefined") {
+					JSDOC.PluginManager.run("onFunctionCall", functionCall);
+				}
+			}
 			this.lastDoc = null;
 		}
 		else if (this.token.is("FUNCTION")) { // it's an anonymous function
@@ -303,10 +312,11 @@ JSDOC.Walker.prototype.step = function() {
 				(!this.ts.look(-1).is("COLON") || !this.ts.look(-1).is("ASSIGN"))
 				&& !this.ts.look(1).is("NAME")
 			) {
+				if (this.lastDoc) doc = this.lastDoc;
+				
 				name = "$anonymous";
 				name = this.namescope.last().alias+"-"+name
 				
-				if (this.lastDoc) doc = this.lastDoc;
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
 				
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
