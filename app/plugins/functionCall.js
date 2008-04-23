@@ -2,8 +2,9 @@ JSDOC.PluginManager.registerPlugin(
 	"JSDOC.functionCall",
 	{
 		onFunctionCall: function(functionCall) {
-			print("~~ functionCall.name is "+functionCall.name);
-			print("~~ functionCall.arg1 is "+functionCall.arg1);
+			if (functionCall.name == "dojo.define" && functionCall.arg1) {
+				functionCall.doc = "/** @lends "+eval(functionCall.arg1)+".prototype */";
+			}
 		}
 	}
 );

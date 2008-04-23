@@ -108,7 +108,7 @@ JSDOC.Walker.prototype.step = function() {
 			var params = [];
 			
 			// it's inside an anonymous object
-			if (this.ts.look(1).is("COLON") && this.ts.look(-1).is("LEFT_CURLY") && !(this.ts.look(-2).is("JSDOC") || this.ts.look(-2).is("ASSIGN") || this.ts.look(-2).is("COLON"))) {
+			if (this.ts.look(1).is("COLON") && this.ts.look(-1).is("LEFT_CURLY") && !(this.ts.look(-2).is("JSDOC") || this.namescope.last().comment.getTag("lends").length || this.ts.look(-2).is("ASSIGN") || this.ts.look(-2).is("COLON"))) {
 				name = "$anonymous";
 				name = this.namescope.last().alias+"-"+name
 				
@@ -300,9 +300,13 @@ JSDOC.Walker.prototype.step = function() {
 			// foo(...)
 			else if (this.ts.look(1).is("LEFT_PAREN")) {
 				var functionCall = {name: name};
-				if (this.ts.look(2).is("STRN")) functionCall.arg1 = this.ts.look(2).data;
+				if (!this.ts.look(2).is("RIGHT_PAREN")) functionCall.arg1 = this.ts.look(2).data;
+				
 				if (typeof JSDOC.PluginManager != "undefined") {
 					JSDOC.PluginManager.run("onFunctionCall", functionCall);
+					if (functionCall.doc) {
+						this.ts.insertAhead(new JSDOC.Token(functionCall.doc, "COMM", "JSDOC"));
+					}
 				}
 			}
 			this.lastDoc = null;
@@ -368,7 +372,8 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 			if (!parent) {
 				if (JSDOC.Lang.isBuiltin(parentName)) parent = JSDOC.Parser.addBuiltin(parentName);
 				else {
-					LOG.warn("Can't document "+symbol.alias +" without first documenting "+parentName+".");
+					if (symbol.alias.indexOf("$anonymous") < 0) // these will be ignored eventually
+						LOG.warn("Can't document "+symbol.alias+" without first documenting "+parentName+".");
 				}
 			}
 			if (parent) name = parentName+(parent.is("CONSTRUCTOR")?"#":".")+nameFragment;
