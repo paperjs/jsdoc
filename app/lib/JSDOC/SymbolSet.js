@@ -7,6 +7,11 @@ JSDOC.SymbolSet = function() {
 
 JSDOC.SymbolSet.prototype.init = function() {
 	this._index = {};
+	
+	// clear out built in properties to allow user defined items with these names
+	delete this._index.toSource;
+	delete this._index.toString;
+	delete this._index.constructor;
 }
 
 JSDOC.SymbolSet.prototype.keys = function() {
