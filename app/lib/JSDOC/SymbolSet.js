@@ -12,6 +12,10 @@ JSDOC.SymbolSet.prototype.init = function() {
 	delete this._index.toSource;
 	delete this._index.toString;
 	delete this._index.constructor;
+	
+	// special case must be made for undeletable "valueOf"
+	this._index.__defineSetter__("valueOf", function(v) { this["=valueOf"] = v;    });
+	this._index.__defineGetter__("valueOf", function()  { return this["=valueOf"]; });
 }
 
 JSDOC.SymbolSet.prototype.keys = function() {
