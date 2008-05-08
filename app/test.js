@@ -157,6 +157,19 @@ var testCases = [
 	}
 	,
 	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/borrows2.js"]});
+
+		is('symbols.getSymbol("Foo").hasMethod("my_zop")', true, 'Borrowed method can be found.');		
+		is('symbols.getSymbol("Bar").hasMethod("my_zip")', true, 'Second borrowed method can be found.');
+	}
+	,
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/constructs.js"]});
+
+		is('symbols.getSymbol("Person").hasMethod("say")', true, 'The constructs tag creates a class that lends can add a method to.');		
+	}
+	,
+	function() {
 		symbolize({a: true, _: [SYS.pwd+"test/augments.js", SYS.pwd+"test/augments2.js"]});
 		
 		is('symbols.getSymbol("Page").augments[0]', "Layout", 'An augmented class can be found.');

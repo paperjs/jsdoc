@@ -207,7 +207,9 @@ JSDOC.Walker.prototype.step = function() {
 				
 				if (doc && doc.getTag("constructs").length) {
 					name = name.replace(/\.prototype(\.|$)/, "#");
-					name = name.match(/(^[^#]+)/)[0];
+					
+					if (name.indexOf("#") > -1) name = name.match(/(^[^#]+)/)[0];
+					else name = this.namescope.last().alias;
 
 					symbol = new JSDOC.Symbol(name, params, "CONSTRUCTOR", doc);
 				}
