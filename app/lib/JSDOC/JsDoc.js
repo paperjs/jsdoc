@@ -73,11 +73,11 @@ JSDOC.JsDoc = function(/**object*/ opt) {
  			JSDOC.opt.D[c] = JSDOC.conf.D[c];
  		}
  	}
-/*
+
 	// Load additional file handlers
 	// the -H option: filetype handlers
 	JSDOC.handlers = {};
-	
+/*	
 	if (JSDOC.opt.H) {
 		for (var i = 0; i < JSDOC.opt.H.length; i++) {
 			var handlerDef = JSDOC.opt.H[i].split(":");
