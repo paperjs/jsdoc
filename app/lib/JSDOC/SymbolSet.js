@@ -21,6 +21,7 @@ JSDOC.SymbolSet.prototype.init = function() {
 JSDOC.SymbolSet.prototype.keys = function() {
 	var found = [];
 	for (var p in this._index) {
+		if (p == "valueOf") continue;
 		found.push(p);
 	}
 	return found;
@@ -45,6 +46,7 @@ JSDOC.SymbolSet.prototype.getSymbol = function(alias) {
 JSDOC.SymbolSet.prototype.toArray = function() {
 	var found = [];
 	for (var p in this._index) {
+		if (p == "valueOf") continue;
 		found.push(this._index[p]);
 	}
 	return found;
@@ -70,6 +72,7 @@ JSDOC.SymbolSet.prototype.relate = function() {
 
 JSDOC.SymbolSet.prototype.resolveBorrows = function() {
 	for (p in this._index) {
+		if (p == "valueOf") continue;
 		var symbol = this._index[p];
 		if (symbol.is("FILE") || symbol.is("GLOBAL")) continue;
 		
