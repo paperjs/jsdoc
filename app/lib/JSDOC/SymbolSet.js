@@ -7,28 +7,18 @@ JSDOC.SymbolSet = function() {
 
 JSDOC.SymbolSet.prototype.init = function() {
 	this._index = {};
-	
-	// clear out built in properties to allow user defined items with these names
-	delete this._index.toSource;
-	delete this._index.toString;
-	delete this._index.constructor;
-	
-	// special case must be made for undeletable "valueOf"
-	this._index.__defineSetter__("valueOf", function(v) { this["=valueOf"] = v;    });
-	this._index.__defineGetter__("valueOf", function()  { return this["=valueOf"]; });
 }
 
 JSDOC.SymbolSet.prototype.keys = function() {
 	var found = [];
 	for (var p in this._index) {
-		if (p == "valueOf") continue;
 		found.push(p);
 	}
 	return found;
 }
 
 JSDOC.SymbolSet.prototype.hasSymbol = function(alias) {
-	return (this._index[alias])? true : false;
+	return (this._index[alias] && this._index.hasOwnProperty(alias))? true : false;
 }
 
 JSDOC.SymbolSet.prototype.addSymbol = function(symbol) {
@@ -38,15 +28,13 @@ JSDOC.SymbolSet.prototype.addSymbol = function(symbol) {
 	this._index[symbol.alias] = symbol;
 }
 
-
 JSDOC.SymbolSet.prototype.getSymbol = function(alias) {
-	return this._index[alias];
+	if (this.hasSymbol(alias)) return this._index[alias];
 }
 
 JSDOC.SymbolSet.prototype.toArray = function() {
 	var found = [];
 	for (var p in this._index) {
-		if (p == "valueOf") continue;
 		found.push(this._index[p]);
 	}
 	return found;
@@ -72,7 +60,6 @@ JSDOC.SymbolSet.prototype.relate = function() {
 
 JSDOC.SymbolSet.prototype.resolveBorrows = function() {
 	for (p in this._index) {
-		if (p == "valueOf") continue;
 		var symbol = this._index[p];
 		if (symbol.is("FILE") || symbol.is("GLOBAL")) continue;
 		
