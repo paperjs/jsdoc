@@ -27,7 +27,7 @@ JSDOC.JsPlate.prototype.parse = function() {
 		function (match, code) {
 			code = code.replace(/"/g, "``"); // prevent qoute-escaping of inline code
 			code = code.replace(/(\r?\n)/g, " ");
-			return "``+"+code+"+``";
+			return "``+ ("+code+") +``";
 		}
 	);
 	this.code = this.code.replace(
