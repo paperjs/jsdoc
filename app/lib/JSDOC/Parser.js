@@ -89,7 +89,10 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	
 	// filter symbols by option
 	for (p in JSDOC.Parser.symbols._index) {
-		var symbol = JSDOC.Parser.symbols._index[p];
+		var symbol = JSDOC.Parser.symbols.getSymbol(p);
+		
+		if (!symbol) continue;
+		
 		if (symbol.is("FILE") || symbol.is("GLOBAL")) {
 			continue;
 		}

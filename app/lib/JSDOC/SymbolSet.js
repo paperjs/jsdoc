@@ -18,7 +18,7 @@ JSDOC.SymbolSet.prototype.keys = function() {
 }
 
 JSDOC.SymbolSet.prototype.hasSymbol = function(alias) {
-	return (this._index[alias] && this._index.hasOwnProperty(alias))? true : false;
+	return this._index.hasOwnProperty(alias);
 }
 
 JSDOC.SymbolSet.prototype.addSymbol = function(symbol) {
@@ -41,13 +41,14 @@ JSDOC.SymbolSet.prototype.toArray = function() {
 }
 
 JSDOC.SymbolSet.prototype.deleteSymbol = function(alias) {
-	if (!this._index[alias]) { return; }
+	if (!this.hasSymbol(alias)) return;
 	delete this._index[alias];
 }
 
 JSDOC.SymbolSet.prototype.renameSymbol = function(oldName, newName) {
+	// todo: should check if oldname or newname already exist
 	this._index[newName] = this._index[oldName];
-	delete this._index[oldName];
+	this.deleteSymbol(oldName);
 	this._index[newName].alias = newName;
 	return newName;
 }
@@ -100,87 +101,84 @@ JSDOC.SymbolSet.prototype.resolveBorrows = function() {
 }
 
 JSDOC.SymbolSet.prototype.resolveMemberOf = function() {
-	var keys = this.keys();
-	for (var i = 0; i < keys.length; i++) {
-		var k = keys[i];
-		if (this._index[k].is("FILE") || this._index[k].is("GLOBAL")) continue;
+	for (var p in this._index) {
+		var symbol = this.getSymbol(p);
+		
+		if (symbol.is("FILE") || symbol.is("GLOBAL")) continue;
 		
 		// the memberOf value was provided in the @memberOf tag
-		else if (this._index[k].memberOf) {
-			var parts = this._index[k].alias.match(new RegExp("^("+this._index[k].memberOf+"[.#-])(.+)$"));
+		else if (symbol.memberOf) {
+			var parts = symbol.alias.match(new RegExp("^("+symbol.memberOf+"[.#-])(.+)$"));
 			
 			// like foo.bar is a memberOf foo
 			if (parts) {
-				this._index[k].memberOf = parts[1];
-				this._index[k].name = parts[2];
+				symbol.memberOf = parts[1];
+				symbol.name = parts[2];
 			}
 			// like bar is a memberOf foo
 			else {
-				var joiner = this._index[k].memberOf.charAt(this._index[k].memberOf.length-1);
-				if (!/[.#-]/.test(joiner)) this._index[k].memberOf += ".";
+				var joiner = symbol.memberOf.charAt(symbol.memberOf.length-1);
+				if (!/[.#-]/.test(joiner)) symbol.memberOf += ".";
 				
-				k = this.renameSymbol(k, this._index[k].memberOf + this._index[k].name);
+				this.renameSymbol(p, symbol.memberOf + symbol.name);
 			}
 		}
 		// the memberOf must be calculated
 		else {
-			var parts = this._index[k].alias.match(/^(.*[.#-])([^.#-]+)$/);
+			var parts = symbol.alias.match(/^(.*[.#-])([^.#-]+)$/);
 			if (parts) {
-				this._index[k].memberOf = parts[1];
-				this._index[k].name = parts[2];				
+				symbol.memberOf = parts[1];
+				symbol.name = parts[2];				
 			}
 		}
 
 		// set isStatic, isInner
-		if (this._index[k].memberOf) {
-			switch (this._index[k].memberOf.charAt(this._index[k].memberOf.length-1)) {
+		if (symbol.memberOf) {
+			switch (symbol.memberOf.charAt(symbol.memberOf.length-1)) {
 				case '#' :
-					this._index[k].isStatic = false;
-					this._index[k].isInner = false;
+					symbol.isStatic = false;
+					symbol.isInner = false;
 				break;
 				case '.' :
-					this._index[k].isStatic = true;
-					this._index[k].isInner = false;
+					symbol.isStatic = true;
+					symbol.isInner = false;
 				break;
 				case '-' :
-					this._index[k].isStatic = false;
-					this._index[k].isInner = true;
+					symbol.isStatic = false;
+					symbol.isInner = true;
 				break;
 			}
 		}
 		
 		// unowned methods and fields belong to the global object
-		if (!this._index[k].is("CONSTRUCTOR") && !this._index[k].isNamespace && this._index[k].memberOf == "") {
-			this._index[k].memberOf = "_global_";
+		if (!symbol.is("CONSTRUCTOR") && !symbol.isNamespace && symbol.memberOf == "") {
+			symbol.memberOf = "_global_";
 		}
 		
 		// clean up
-		if (this._index[k].memberOf.match(/[.#-]$/)) {
-			this._index[k].memberOf = this._index[k].memberOf.substr(0, this._index[k].memberOf.length-1);
+		if (symbol.memberOf.match(/[.#-]$/)) {
+			symbol.memberOf = symbol.memberOf.substr(0, symbol.memberOf.length-1);
 		}
 		
 		// add to parent's methods or properties list
-		if (this._index[k].memberOf) {
-			var container = this.getSymbol(this._index[k].memberOf);
+		if (symbol.memberOf) {
+			var container = this.getSymbol(symbol.memberOf);
 			if (!container) {
-				if (JSDOC.Lang.isBuiltin(this._index[k].memberOf)) container = JSDOC.Parser.addBuiltin(this._index[k].memberOf);
+				if (JSDOC.Lang.isBuiltin(symbol.memberOf)) container = JSDOC.Parser.addBuiltin(symbol.memberOf);
 				else {
-					LOG.warn("Can't document "+this._index[k].name +" as a member of undocumented symbol "+this._index[k].memberOf+".");
+					LOG.warn("Can't document "+symbol.name +" as a member of undocumented symbol "+symbol.memberOf+".");
 				}
 			}
 			
-			if (container) container.addMember(this._index[k]);
+			if (container) container.addMember(symbol);
 		}
 	}
 }
 
-
-
 JSDOC.SymbolSet.prototype.resolveAugments = function() {
-	var keys = this.keys();
-	for (var i = 0; i < keys.length; i++) {
-		var k = keys[i];
-		var symbol = this._index[k];
+	for (var p in this._index) {
+		var symbol = this.getSymbol(p);
+		
 		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
 		
 		var augments = symbol.augments;
