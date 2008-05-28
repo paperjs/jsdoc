@@ -7,7 +7,7 @@ JSDOC.PluginManager.registerPlugin(
 		
 		onDocCommentTags: function(comment) {
 			for (var i = 0, l = comment.tags.length; i < l; i++) {
-				var title = comment.tags[i].title;
+				var title = comment.tags[i].title.toLowerCase();
 				var syn;
 				if ((syn = JSDOC.tagSynonyms.synonyms["="+title])) {
 					comment.tags[i].title = syn;
