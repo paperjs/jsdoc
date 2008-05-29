@@ -1,5 +1,5 @@
 /**
- * @fileOverview This "library" contains "a 
+ * @overview This "library" contains a 
  *               lot of classes and functions.
  * @example
  <pre>

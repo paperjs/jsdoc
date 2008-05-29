@@ -32,6 +32,13 @@ JSDOC.SymbolSet.prototype.getSymbol = function(alias) {
 	if (this.hasSymbol(alias)) return this._index[alias];
 }
 
+JSDOC.SymbolSet.prototype.getSymbolByName = function(name) {
+	for (var p in this._index) {
+		var symbol = this.getSymbol(p);
+		if (symbol.name == name) return symbol;
+	}
+}
+
 JSDOC.SymbolSet.prototype.toArray = function() {
 	var found = [];
 	for (var p in this._index) {

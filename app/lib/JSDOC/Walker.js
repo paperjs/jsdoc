@@ -66,7 +66,7 @@ JSDOC.Walker.prototype.step = function() {
 			this.lastDoc = null;
 			return true;
 		}
-		else if (doc.getTag("name").length > 0) { // it's a virtual symbol
+		else if (doc.getTag("name").length > 0 && doc.getTag("overview").length == 0) { // it's a virtual symbol
 			var virtualName = doc.getTag("name")[0].desc;
 			if (!virtualName) throw "@name tag requires a value.";
 			

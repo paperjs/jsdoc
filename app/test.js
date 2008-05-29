@@ -1,6 +1,5 @@
 load("app/frame/Dumper.js");
 function symbolize(opt) {
-	//jsdoc = null;
 	symbols = null;
 	jsdoc = new JSDOC.JsDoc(opt);
 	symbols = jsdoc.symbolSet;
@@ -8,6 +7,12 @@ function symbolize(opt) {
 
 
 var testCases = [
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/overview.js"]});
+		//print(Dumper.dump(symbols));	
+		is('symbols.getSymbolByName("My Cool Library").name', 'My Cool Library', 'File overview can be found by alias.');		
+	}
+	,
 	function() {
 		symbolize({_: [SYS.pwd+"test/name.js"]});
 
@@ -203,7 +208,7 @@ var testCases = [
 	,
 	function() {
 		symbolize({a:true, p: true, _: [SYS.pwd+"test/lend.js"]});
-//print(Dumper.dump(symbols));
+
 		is('symbols.getSymbol("Person").name', "Person", 'Class defined in lend comment is found.');
 		is('symbols.getSymbol("Person").hasMethod("initialize")', true, 'Lent instance method name can be found.');
 		is('symbols.getSymbol("Person").hasMethod("say")', true, 'Second instance method can be found.');
@@ -293,7 +298,7 @@ var testCases = [
 
 	}
 ];
-//print(Dumper.dump(symbols));	
+
 
 //// run and print results
 print(testrun(testCases));

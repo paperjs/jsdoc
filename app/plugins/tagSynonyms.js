@@ -2,7 +2,8 @@ JSDOC.PluginManager.registerPlugin(
 	"JSDOC.tagSynonyms",
 	{
 		onDocCommentSrc: function(comment) {
-			comment.src = comment.src.replace(/@methodOf\b/, "@function\n@memberOf");
+			comment.src = comment.src.replace(/@methodOf\b/i, "@function\n@memberOf");
+			comment.src = comment.src.replace(/@fieldOf\b/i, "@field\n@memberOf");
 		},
 		
 		onDocCommentTags: function(comment) {
