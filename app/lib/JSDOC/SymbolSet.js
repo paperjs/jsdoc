@@ -187,28 +187,34 @@ JSDOC.SymbolSet.prototype.resolveAugments = function() {
 		var symbol = this.getSymbol(p);
 		
 		if (symbol.alias == "_global_" || symbol.is("FILE")) continue;
-		
-		var augments = symbol.augments;
-		for(var ii = 0, il = augments.length; ii < il; ii++) {
-			var contributer = this.getSymbol(augments[ii]);
-			if (contributer) {
-				symbol.inheritsFrom.push(contributer.alias);
-				if (!isUnique(symbol.inheritsFrom)) {
-					LOG.warn("Can't resolve augments: Circular reference: "+symbol.alias+" inherits from "+contributer.alias+" more than once.");
-				}
-				else {
-					var cmethods = contributer.methods;
-					var cproperties = contributer.properties;
-					
-					for (var ci = 0, cl = cmethods.length; ci < cl; ci++)
-						symbol.inherit(cmethods[ci]);
-					for (var ci = 0, cl = cproperties.length; ci < cl; ci++)
-						symbol.inherit(cproperties[ci]);
-				}
-			}
-			else LOG.warn("Can't augment contributer: "+augments[ii]+", not found.");
+		JSDOC.SymbolSet.prototype.walk.apply(this, [symbol]);
+	}
+}
 
+JSDOC.SymbolSet.prototype.walk = function(symbol) {
+	var augments = symbol.augments;
+	for(var i = 0; i < augments.length; i++) {
+		var contributer = this.getSymbol(augments[i]);
+		if (contributer) {
+			if (contributer.augments.length) {
+				JSDOC.SymbolSet.prototype.walk.apply(this, [contributer]);
+			}
+			
+			symbol.inheritsFrom.push(contributer.alias);
+			if (!isUnique(symbol.inheritsFrom)) {
+				//LOG.warn("Can't resolve augments: Circular reference: "+symbol.alias+" inherits from "+contributer.alias+" more than once.");
+			}
+			else {
+				var cmethods = contributer.methods;
+				var cproperties = contributer.properties;
+				
+				for (var ci = 0, cl = cmethods.length; ci < cl; ci++)
+					symbol.inherit(cmethods[ci]);
+				for (var ci = 0, cl = cproperties.length; ci < cl; ci++)
+					symbol.inherit(cproperties[ci]);
+			}
 		}
+		else LOG.warn("Can't augment contributer: "+augments[i]+", not found.");
 	}
 }
 
