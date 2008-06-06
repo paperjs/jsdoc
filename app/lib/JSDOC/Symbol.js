@@ -21,7 +21,7 @@ JSDOC.Symbol.prototype.init = function() {
 	this.deprecated = "";
 	this.desc = "";
 	this.events = [];
-	this.example = "";
+	this.example = [];
 	this.exceptions = [];
 	this.inherits = [];
 	this.inheritsFrom = [];
@@ -205,7 +205,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	// @example
 	var examples = this.comment.getTag("example");
 	if (examples.length) {
-		this.example = examples[0];
+		this.example = examples;
 	}
 	
 	/*~t

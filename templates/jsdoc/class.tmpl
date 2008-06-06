@@ -236,8 +236,10 @@
 					<if test="data.author"><br /><i>Author: </i>{+data.author+}.</if>
 				</div>
 				
-				<if test="data.example">
-				<pre class="code">{+data.example+}</pre>
+				<if test="data.example.length">
+				<for each="example" in="data.example">
+				<pre class="code">{+example+}</pre>
+				</for>
 				</if>
 				
 				
@@ -334,10 +336,11 @@
 					</div>
 					
 					<if test="member.example">
-					<pre class="code">{+member.example+}</pre>
+					<for each="example" in="member.example">
+					<pre class="code">{+example+}</pre>
+					</for>
 					</if>
-				
-					
+
 						<if test="member.deprecated">
 							<dl class="detailList">
 							<dt class="heading">Deprecated:</dt>
@@ -400,9 +403,10 @@
 					</div>
 					
 					<if test="member.example">
-					<pre class="code">{+member.example+}</pre>
+					<for each="example" in="member.example">
+					<pre class="code">{+example+}</pre>
+					</for>
 					</if>
-					
 					
 						<if test="member.params.length">
 							<dl class="detailList">
