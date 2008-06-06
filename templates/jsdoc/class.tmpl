@@ -264,9 +264,7 @@
 					<if test="data.since.length">
 						<dl class="detailList">
 						<dt class="heading">Since:</dt>
-						<for each="item" in="data.since">
-							<dd>{+ item +}</dd>
-						</for>
+							<dd>{+ data.since +}</dd>
 						</dl>
 					</if>
 					<if test="data.exceptions.length">
