@@ -205,11 +205,17 @@ JSDOC.Symbol.prototype.setTags = function() {
 	// @example
 	var examples = this.comment.getTag("example");
 	if (examples.length) {
-		this.example = examples;
+		this.example = examples.map(
+			// trim trailing whitespace
+			function($) {
+				$.desc = $.desc.replace(/\s+$/, "");
+				return $;
+			}
+		);
 	}
 	
 	/*~t
-		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@example This\n  is an example.*"+"/"));
+		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@example This\n  is an example. \n*"+"/"));
 		assertEqual(sym.example, "This\n  is an example.", "@deprecated tag, desc is found.");
 	*/
 	
