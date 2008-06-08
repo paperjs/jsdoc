@@ -9,6 +9,7 @@
   * Fixed bug that caused inhertited properties to sometimes not resolve correctly. ( issue #144 )
   * Modified so that trailing whitespace in @example is always trimmed. ( issue #153 )
   * Added support for elseif to JsPlate. (hat tip to fredck)
+  * Added support for @location urls in the @overview comment to the jsdoc template.
 
 == Changes From Versions 1.4.0 to 2.0.0 ==
 

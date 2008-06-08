@@ -35,6 +35,13 @@
 						<dt class="heading">Version:</dt>
 							<dd>{+item.version+}</dd>
 					</if>
+					{! var locations = item.comment.getTag('location').map(function($){return $.toString().replace(/(^\$ ?| ?\$$)/g, '').replace(/^HeadURL: https:/g, 'http:');}) !}
+					<if test="locations.length">
+						<dt class="heading">Location:</dt>
+							<for each="location" in="locations">
+							<dd><a href="{+location+}">{+location+}</a></dd>
+							</for>
+					</if>
 				</dl>
 			</div>
 			<hr />
