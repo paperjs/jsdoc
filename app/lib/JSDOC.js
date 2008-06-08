@@ -1,8 +1,8 @@
 /**
 	@overview
-	@date $Date:$
-	@version $Revision:$ 
-	@location $HeadURL:$
+	@date $Date$
+	@version $Revision$ 
+	@location $HeadURL$
  */
 
 /**
