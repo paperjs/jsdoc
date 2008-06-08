@@ -2,6 +2,8 @@
 
 load("TestDoc.js");
 
+TestDoc.prove("../frame/Opt.js");
+TestDoc.prove("../lib/JSDOC.js");
 TestDoc.prove("../frame/String.js");
 TestDoc.prove("../lib/JSDOC/DocTag.js");
 TestDoc.prove("../lib/JSDOC/DocComment.js");

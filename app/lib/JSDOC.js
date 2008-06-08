@@ -12,6 +12,10 @@
 JSDOC = {
 };
 
+/**
+	@requires Opt
+ */
+if (typeof arguments == "undefined") arguments = [];
 JSDOC.opt = Opt.get(
 	arguments, 
 	{
@@ -62,4 +66,32 @@ JSDOC.usage = function() {
 	quit();
 }
 
-IO.includeDir("lib/JSDOC/");
+/*t:
+	plan(4, "Testing JSDOC namespace.");
+	
+	is(
+		typeof JSDOC,
+		"object",
+		"JSDOC.usage is a function."
+	);
+	
+	is(
+		typeof JSDOC.VERSION,
+		"string",
+		"JSDOC.VERSION is a string."
+	);
+	
+	is(
+		typeof JSDOC.usage,
+		"function",
+		"JSDOC.usage is a function."
+	);
+	
+	is(
+		typeof JSDOC.opt,
+		"object",
+		"JSDOC.opt is a object."
+	);
+ */
+
+if (this.IO) IO.includeDir("lib/JSDOC/");
