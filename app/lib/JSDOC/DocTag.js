@@ -66,10 +66,10 @@ JSDOC.DocTag.prototype.toString = function() {
 }
 
 /*t:
-	assert("testing JSDOC.DocTag#toString");
+	plan(1, "testing JSDOC.DocTag#toString");
 	
 	var tag = new JSDOC.DocTag("param {object} date A valid date.");
-	assertEqual(""+tag, "A valid date.", "stringifying a tag returns the desc.");
+	is(""+tag, "A valid date.", "stringifying a tag returns the desc.");
  */
 
 /**
@@ -90,27 +90,27 @@ JSDOC.DocTag.prototype.nibbleTitle = function(src) {
 }
 
 /*t:
-	assert("testing JSDOC.DocTag#nibbleTitle");
+	plan(8, "testing JSDOC.DocTag#nibbleTitle");
 	
 	var tag = new JSDOC.DocTag();
 	
 	tag.init().nibbleTitle("aTitleGoesHere");
-	assertEqual(tag.title, "aTitleGoesHere", "a title can be found in a single-word string.");
+	is(tag.title, "aTitleGoesHere", "a title can be found in a single-word string.");
 	
 	var src = tag.init().nibbleTitle("aTitleGoesHere and the rest");
-	assertEqual(tag.title, "aTitleGoesHere", "a title can be found in a multi-word string.");
-	assertEqual(src, "and the rest", "the rest is returned when the title is nibbled off.");
+	is(tag.title, "aTitleGoesHere", "a title can be found in a multi-word string.");
+	is(src, "and the rest", "the rest is returned when the title is nibbled off.");
 	
 	src = tag.init().nibbleTitle("");
-	assertEqual(tag.title, "", "given an empty string the title is empty.");
-	assertEqual(src, "", "the rest is empty when the tag is empty.");
+	is(tag.title, "", "given an empty string the title is empty.");
+	is(src, "", "the rest is empty when the tag is empty.");
 
 	var src = tag.init().nibbleTitle(" aTitleGoesHere\n  a description");
-	assertEqual(tag.title, "aTitleGoesHere", "leading and trailing spaces are not part of the title.");
-	assertEqual(src, "  a description", "leading spaces (less one) are part of the description.");
+	is(tag.title, "aTitleGoesHere", "leading and trailing spaces are not part of the title.");
+	is(src, "  a description", "leading spaces (less one) are part of the description.");
 
 	tag.init().nibbleTitle("a.Title::Goes_Here foo");
-	assertEqual(tag.title, "a.Title::Goes_Here", "titles with punctuation are allowed.");
+	is(tag.title, "a.Title::Goes_Here", "titles with punctuation are allowed.");
  */
 
 /**
@@ -136,25 +136,25 @@ JSDOC.DocTag.prototype.nibbleType = function(src) {
 }
 
 /*t:
-	assert("testing JSDOC.DocTag.parser.nibbleType");
+	plan(5, "testing JSDOC.DocTag.parser.nibbleType");
 	requires("../frame/String.js");
 	
 	var tag = new JSDOC.DocTag();
 	
 	tag.init().nibbleType("{String[]} aliases");
-	assertEqual(tag.type, "String[]", "type can have non-alpha characters.");
+	is(tag.type, "String[]", "type can have non-alpha characters.");
 	
 	tag.init().nibbleType("{ aTypeGoesHere  } etc etc");
-	assertEqual(tag.type, "aTypeGoesHere", "type is trimmed.");
+	is(tag.type, "aTypeGoesHere", "type is trimmed.");
 	
 	tag.init().nibbleType("{ oneType, twoType ,\n threeType  } etc etc");
-	assertEqual(tag.type, "oneType|twoType|threeType", "multiple types can be separated by commas.");
+	is(tag.type, "oneType|twoType|threeType", "multiple types can be separated by commas.");
 	
 	var error;
 	try { tag.init().nibbleType("{widget foo"); }
 	catch(e) { error = e; }
-	assertEqual(typeof error, "string", "malformed tag type throws error.");
-	assertNotEqual(error.indexOf("Malformed"), -1, "error message tells tag is malformed.");
+	is(typeof error, "string", "malformed tag type throws error.");
+	isnt(error.indexOf("Malformed"), -1, "error message tells tag is malformed.");
  */
 
 /**
@@ -200,95 +200,95 @@ JSDOC.DocTag.prototype.nibbleName = function(src) {
 
 /*t:
 	requires("../frame/String.js");
-	assert("testing JSDOC.DocTag.parser.nibbleName");
+	plan(9, "testing JSDOC.DocTag.parser.nibbleName");
 	
 	var tag = new JSDOC.DocTag();
 	
 	tag.init().nibbleName("[foo] This is a description.");
-	assertEqual(tag.isOptional, true, "isOptional syntax is detected.");
-	assertEqual(tag.name, "foo", "optional param name is found.");
+	is(tag.isOptional, true, "isOptional syntax is detected.");
+	is(tag.name, "foo", "optional param name is found.");
  	
 	tag.init().nibbleName("[foo] This is a description.");
-	assertEqual(tag.isOptional, true, "isOptional syntax is detected when no type.");
-	assertEqual(tag.name, "foo", "optional param name is found when no type.");
+	is(tag.isOptional, true, "isOptional syntax is detected when no type.");
+	is(tag.name, "foo", "optional param name is found when no type.");
 	
 	tag.init().nibbleName("[foo=7] This is a description.");
- 	assertEqual(tag.name, "foo", "optional param name is found when default value.");
- 	assertEqual(tag.defaultValue, 7, "optional param default value is found when default value.");
+ 	is(tag.name, "foo", "optional param name is found when default value.");
+ 	is(tag.defaultValue, 7, "optional param default value is found when default value.");
  	
  	//tag.init().nibbleName("[foo= a value] This is a description.");
- 	//assertEqual(tag.defaultValue, " a value", "optional param default value is found when default value has spaces (issue #112).");
+ 	//is(tag.defaultValue, " a value", "optional param default value is found when default value has spaces (issue #112).");
  	
  	tag.init().nibbleName("[foo=[]] This is a description.");
- 	assertEqual(tag.defaultValue, "[]", "optional param default value is found when default value is [] (issue #95).");
+ 	is(tag.defaultValue, "[]", "optional param default value is found when default value is [] (issue #95).");
  	
  	tag.init().nibbleName("[foo=a=b] This is a description.");
- 	assertEqual(tag.name, "foo", "optional param name is found when default value is a=b.");
- 	assertEqual(tag.defaultValue, "a=b", "optional param default value is found when default value is a=b.")
+ 	is(tag.name, "foo", "optional param name is found when default value is a=b.");
+ 	is(tag.defaultValue, "a=b", "optional param default value is found when default value is a=b.")
  */
 
 /*t:
-	assert("Testing JSDOC.DocTag.parser.");
+	plan(32, "Testing JSDOC.DocTag.parser.");
 	requires("../frame/String.js");
 	
  	var tag = new JSDOC.DocTag();
  	
- 	assertEqual(typeof tag, "object", "JSDOC.DocTag.parser with an empty string returns an object.");
- 	assertEqual(typeof tag.title, "string", "returned object has a string property 'title'.");
- 	assertEqual(typeof tag.type, "string", "returned object has a string property 'type'.");
- 	assertEqual(typeof tag.name, "string", "returned object has a string property 'name'.");
- 	assertEqual(typeof tag.defaultValue, "string", "returned object has a string property 'defaultValue'.");
- 	assertEqual(typeof tag.isOptional, "boolean", "returned object has a boolean property 'isOptional'.");
- 	assertEqual(typeof tag.desc, "string", "returned object has a string property 'desc'.");
+ 	is(typeof tag, "object", "JSDOC.DocTag.parser with an empty string returns an object.");
+ 	is(typeof tag.title, "string", "returned object has a string property 'title'.");
+ 	is(typeof tag.type, "string", "returned object has a string property 'type'.");
+ 	is(typeof tag.name, "string", "returned object has a string property 'name'.");
+ 	is(typeof tag.defaultValue, "string", "returned object has a string property 'defaultValue'.");
+ 	is(typeof tag.isOptional, "boolean", "returned object has a boolean property 'isOptional'.");
+ 	is(typeof tag.desc, "string", "returned object has a string property 'desc'.");
   
   	tag = new JSDOC.DocTag("param {widget} foo");
-  	assertEqual(tag.title, "param", "param title is found.");
-  	assertEqual(tag.name, "foo", "param name is found when desc is missing.");
- 	assertEqual(tag.desc, "", "param desc is empty when missing.");
+  	is(tag.title, "param", "param title is found.");
+  	is(tag.name, "foo", "param name is found when desc is missing.");
+ 	is(tag.desc, "", "param desc is empty when missing.");
  	
  	tag = new JSDOC.DocTag("param {object} date A valid date.");
- 	assertEqual(tag.name, "date", "param name is found with a type.");
- 	assertEqual(tag.type, "object", "param type is found.");
- 	assertEqual(tag.desc, "A valid date.", "param desc is found with a type.");
+ 	is(tag.name, "date", "param name is found with a type.");
+ 	is(tag.type, "object", "param type is found.");
+ 	is(tag.desc, "A valid date.", "param desc is found with a type.");
  	
   	tag = new JSDOC.DocTag("param aName a description goes\n    here.");
-	assertEqual(tag.name, "aName", "param name is found without a type.");
- 	assertEqual(tag.desc, "a description goes\n    here.", "param desc is found without a type.");
+	is(tag.name, "aName", "param name is found without a type.");
+ 	is(tag.desc, "a description goes\n    here.", "param desc is found without a type.");
  	
  	tag = new JSDOC.DocTag("param {widget}");
- 	assertEqual(tag.name, "", "param name is empty when it is not given.");
+ 	is(tag.name, "", "param name is empty when it is not given.");
 	
 	tag = new JSDOC.DocTag("param {widget} [foo] This is a description.");
-	assertEqual(tag.name, "foo", "optional param name is found.");
+	is(tag.name, "foo", "optional param name is found.");
 	
 	tag = new JSDOC.DocTag("return {aType} This is a description.");
-	assertEqual(tag.type, "aType", "when return tag has no name, type is found.");
-	assertEqual(tag.desc, "This is a description.", "when return tag has no name, desc is found.");
+	is(tag.type, "aType", "when return tag has no name, type is found.");
+	is(tag.desc, "This is a description.", "when return tag has no name, desc is found.");
 	
 	tag = new JSDOC.DocTag("author Joe Coder <jcoder@example.com>");
-	assertEqual(tag.title, "author", "author tag has a title.");
-	assertEqual(tag.type, "", "the author tag has no type.");
-	assertEqual(tag.name, "", "the author tag has no name.");
-	assertEqual(tag.desc, "Joe Coder <jcoder@example.com>", "author tag has desc.");
+	is(tag.title, "author", "author tag has a title.");
+	is(tag.type, "", "the author tag has no type.");
+	is(tag.name, "", "the author tag has no name.");
+	is(tag.desc, "Joe Coder <jcoder@example.com>", "author tag has desc.");
 	
 	tag = new JSDOC.DocTag("private \t\n  ");
-	assertEqual(tag.title, "private", "private tag has a title.");
-	assertEqual(tag.type, "", "the private tag has no type.");
-	assertEqual(tag.name, "", "the private tag has no name.");
-	assertEqual(tag.desc, "", "private tag has no desc.");
+	is(tag.title, "private", "private tag has a title.");
+	is(tag.type, "", "the private tag has no type.");
+	is(tag.name, "", "the private tag has no name.");
+	is(tag.desc, "", "private tag has no desc.");
 
 	tag = new JSDOC.DocTag("example\n   example(code);\n   more();");
-	assertEqual(tag.desc, "   example(code);\n   more();", "leading whitespace (less one) in examples code is preserved.");
+	is(tag.desc, "   example(code);\n   more();", "leading whitespace (less one) in examples code is preserved.");
 	
 	tag = new JSDOC.DocTag("param theName  \n");
-	assertEqual(tag.name, "theName", "name only is found.");
+	is(tag.name, "theName", "name only is found.");
 	
 	tag = new JSDOC.DocTag("type theDesc  \n");
-	assertEqual(tag.desc, "theDesc", "desc only is found.");
+	is(tag.desc, "theDesc", "desc only is found.");
 	
 	tag = new JSDOC.DocTag("type {theType} \n");
-	assertEqual(tag.type, "theType", "type only is found.");
+	is(tag.type, "theType", "type only is found.");
 	
 	tag = new JSDOC.DocTag("");
-	assertEqual(tag.title, "", "title is empty when tag is empty.");
+	is(tag.title, "", "title is empty when tag is empty.");
  */

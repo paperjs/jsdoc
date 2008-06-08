@@ -50,7 +50,6 @@ JSDOC.usage = function() {
 	print("  -t=<PATH> or --template=<PATH>\n          Required. Use this template to format the output.\n");
 	print("  -T or --test\n          Run all unit tests and exit.\n");
 	print("  -v or --verbose\n          Provide verbose feedback about what is happening.\n");
-
 	print("  -x=<EXT>[,EXT]... or --ext=<EXT>[,EXT]...\n          Scan source files with the given extension/s (defaults to js).\n");
 	
 	quit();

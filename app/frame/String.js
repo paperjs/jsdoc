@@ -15,25 +15,25 @@ String.prototype.trim = function() {
 	return str;
 }
 /*t:
-	assert("Testing String.prototype.trim.");
+	plan(6, "Testing String.prototype.trim.");
 	
 	var s = "   a bc   ".trim();
-	assertEqual(s, "a bc", "multiple spaces front and back are trimmed.");
+	is(s, "a bc", "multiple spaces front and back are trimmed.");
 
 	s = "a bc\n\n".trim();
-	assertEqual(s, "a bc", "newlines only in back are trimmed.");
+	is(s, "a bc", "newlines only in back are trimmed.");
 	
 	s = "\ta bc".trim();
-	assertEqual(s, "a bc", "tabs only in front are trimmed.");
+	is(s, "a bc", "tabs only in front are trimmed.");
 	
 	s = "\n \t".trim();
-	assertEqual(s, "", "an all-space string is trimmed to empty.");
+	is(s, "", "an all-space string is trimmed to empty.");
 	
 	s = "a b\nc".trim();
-	assertEqual(s, "a b\nc", "a string with no spaces in front or back is trimmed to itself.");
+	is(s, "a b\nc", "a string with no spaces in front or back is trimmed to itself.");
 	
 	s = "".trim();
-	assertEqual(s, "", "an empty string is trimmed to empty.");
+	is(s, "", "an empty string is trimmed to empty.");
 
 */
 
@@ -57,37 +57,37 @@ String.prototype.balance = function(open, close) {
 	return [i, j];
 }
 /*t:
-	assert("Testing String.prototype.balance.");
+	plan(16, "Testing String.prototype.balance.");
 	
 	var s = "{abc}".balance("{","}");
-	assertEqual(s[0], 0, "opener in first is found.");
-	assertEqual(s[1], 4, "closer in last is found.");
+	is(s[0], 0, "opener in first is found.");
+	is(s[1], 4, "closer in last is found.");
 	
 	s = "ab{c}de".balance("{","}");
-	assertEqual(s[0], 2, "opener in middle is found.");
-	assertEqual(s[1], 4, "closer in middle is found.");
+	is(s[0], 2, "opener in middle is found.");
+	is(s[1], 4, "closer in middle is found.");
 	
 	s = "a{b{c}de}f".balance("{","}");
-	assertEqual(s[0], 1, "nested opener is found.");
-	assertEqual(s[1], 8, "nested closer is found.");
+	is(s[0], 1, "nested opener is found.");
+	is(s[1], 8, "nested closer is found.");
 	
 	s = "{}".balance("{","}");
-	assertEqual(s[0], 0, "opener with no content is found.");
-	assertEqual(s[1], 1, "closer with no content is found.");
+	is(s[0], 0, "opener with no content is found.");
+	is(s[1], 1, "closer with no content is found.");
 	
 	s = "".balance("{","}");
-	assertEqual(s[0], -1, "empty string opener is -1.");
-	assertEqual(s[1], -1, "empty string closer is -1.");
+	is(s[0], -1, "empty string opener is -1.");
+	is(s[1], -1, "empty string closer is -1.");
 	
 	s = "{abc".balance("{","}");
-	assertEqual(s[0], -1, "opener with no closer returns -1.");
-	assertEqual(s[1], -1, "no closer returns -1.");
+	is(s[0], -1, "opener with no closer returns -1.");
+	is(s[1], -1, "no closer returns -1.");
 	
 	s = "abc".balance("{","}");
-	assertEqual(s[0], -1, "no opener or closer returns -1 for opener.");
-	assertEqual(s[1], -1, "no opener or closer returns -1 for closer.");
+	is(s[0], -1, "no opener or closer returns -1 for opener.");
+	is(s[1], -1, "no opener or closer returns -1 for closer.");
 	
 	s = "a<bc}de".balance("<","}");
-	assertEqual(s[0], 1, "unmatching opener is found.");
-	assertEqual(s[1], 4, "unmatching closer is found.");
+	is(s[0], 1, "unmatching opener is found.");
+	is(s[1], 4, "unmatching closer is found.");
 */

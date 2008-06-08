@@ -2,10 +2,10 @@
 
 load("TestDoc.js");
 
-TestDoc.add("../frame/String.js");
-TestDoc.add("../lib/JSDOC/DocTag.js");
-TestDoc.add("../lib/JSDOC/DocComment.js");
-TestDoc.add("../lib/JSDOC/TokenReader.js");
-TestDoc.add("../lib/JSDOC/Symbol.js");
+TestDoc.prove("../frame/String.js");
+TestDoc.prove("../lib/JSDOC/DocTag.js");
+TestDoc.prove("../lib/JSDOC/DocComment.js");
+TestDoc.prove("../lib/JSDOC/TokenReader.js");
+TestDoc.prove("../lib/JSDOC/Symbol.js");
 
 TestDoc.report();

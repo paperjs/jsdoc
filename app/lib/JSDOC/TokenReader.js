@@ -241,7 +241,7 @@ JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, t
 	requires("../lib/JSDOC/Token.js");
 	requires("../lib/JSDOC/Lang.js");
 	
-	assert("testing JSDOC.TokenReader.prototype.read_numb");
+	plan(3, "testing JSDOC.TokenReader.prototype.read_numb");
 	
 	//// setup
 	var src = "function foo(num){while (num+8.0 >= 0x20 && num < 0777){}}";
@@ -256,9 +256,9 @@ JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, t
 	}
 	////
 	
-	assertEqual(decToken.data, "8.0", "decimal number is found in source.");
-	assertEqual(hexToken.data, "0x20", "hexdec number is found in source (issue #99).");
-	assertEqual(octToken.data, "0777", "octal number is found in source.");
+	is(decToken.data, "8.0", "decimal number is found in source.");
+	is(hexToken.data, "0x20", "hexdec number is found in source (issue #99).");
+	is(octToken.data, "0777", "octal number is found in source.");
 */
 
 /**

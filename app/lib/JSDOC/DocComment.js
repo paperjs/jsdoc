@@ -63,21 +63,21 @@ JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
 }
 
 /*t:
-	assert("testing JSDOC.DocComment");
+	plan(5, "testing JSDOC.DocComment");
 	requires("../frame/String.js");
 	requires("../lib/JSDOC/DocTag.js");
 	
 	var com = new JSDOC.DocComment("/**@foo some\n* comment here*"+"/");
-	assertEqual(com.tagTexts[0], "foo some\ncomment here", "first tag text is found.");
-	assertEqual(com.tags[0].title, "foo", "the title is found in a comment with one tag.");
+	is(com.tagTexts[0], "foo some\ncomment here", "first tag text is found.");
+	is(com.tags[0].title, "foo", "the title is found in a comment with one tag.");
 	
 	var com = new JSDOC.DocComment("/** @foo first\n* @bar second*"+"/");
-	assertEqual(com.getTag("bar").length, 1, "getTag() returns one tag by that title.");
+	is(com.getTag("bar").length, 1, "getTag() returns one tag by that title.");
 	
 	JSDOC.DocComment.shared = "@author John Smith";
 	var com = new JSDOC.DocComment("/**@foo some\n* comment here*"+"/");
-	assertEqual(com.tags[0].title, "author", "shared comment is added.");
-	assertEqual(com.tags[1].title, "foo", "shared comment is added to existing tag.");
+	is(com.tags[0].title, "author", "shared comment is added.");
+	is(com.tags[1].title, "foo", "shared comment is added to existing tag.");
 */
 
 /**
@@ -91,29 +91,29 @@ JSDOC.DocComment.prototype.fixDesc = function() {
 }
 
 /*t:
-	assert("testing JSDOC.DocComment#fixDesc");
+	plan(5, "testing JSDOC.DocComment#fixDesc");
 	
 	var com = new JSDOC.DocComment();
 	
 	com.src = "this is a desc\n@author foo";
 	com.fixDesc();
-	assertEqual(com.src, "@desc this is a desc\n@author foo", "if no @desc tag is provided one is added.");
+	is(com.src, "@desc this is a desc\n@author foo", "if no @desc tag is provided one is added.");
 
 	com.src = "x";
 	com.fixDesc();
-	assertEqual(com.src, "@desc x", "if no @desc tag is provided one is added to a single character.");
+	is(com.src, "@desc x", "if no @desc tag is provided one is added to a single character.");
 
 	com.src = "\nx";
 	com.fixDesc();
-	assertEqual(com.src, "@desc \nx", "if no @desc tag is provided one is added to return and character.");
+	is(com.src, "@desc \nx", "if no @desc tag is provided one is added to return and character.");
 	
 	com.src = " ";
 	com.fixDesc();
-	assertEqual(com.src, " ", "if no @desc tag is provided one is not added to just whitespace.");
+	is(com.src, " ", "if no @desc tag is provided one is not added to just whitespace.");
 
 	com.src = "";
 	com.fixDesc();
-	assertEqual(com.src, "", "if no @desc tag is provided one is not added to empty.");
+	is(com.src, "", "if no @desc tag is provided one is not added to empty.");
 */
 
 /**
@@ -127,27 +127,27 @@ JSDOC.DocComment.unwrapComment = function(/**String*/comment) {
 }
 
 /*t:
-	assert("testing JSDOC.DocComment.unwrapComment");
+	plan(5, "testing JSDOC.DocComment.unwrapComment");
 	
 	var com = "/**x*"+"/";
 	var unwrapped = JSDOC.DocComment.unwrapComment(com);
-	assertEqual(unwrapped, "x", "a single character jsdoc is found.");
+	is(unwrapped, "x", "a single character jsdoc is found.");
 	
 	com = "/***x*"+"/";
 	unwrapped = JSDOC.DocComment.unwrapComment(com);
-	assertEqual(unwrapped, "x", "three stars are allowed in the opener.");
+	is(unwrapped, "x", "three stars are allowed in the opener.");
 	
 	com = "/****x*"+"/";
 	unwrapped = JSDOC.DocComment.unwrapComment(com);
-	assertEqual(unwrapped, "*x", "fourth star in the opener is kept.");
+	is(unwrapped, "*x", "fourth star in the opener is kept.");
 	
 	com = "/**x\n * y\n*"+"/";
 	unwrapped = JSDOC.DocComment.unwrapComment(com);
-	assertEqual(unwrapped, "x\ny\n", "leading stars and spaces are trimmed.");
+	is(unwrapped, "x\ny\n", "leading stars and spaces are trimmed.");
 	
 	com = "/**x\n *   y\n*"+"/";
 	unwrapped = JSDOC.DocComment.unwrapComment(com);
-	assertEqual(unwrapped, "x\n  y\n", "only first space after leading stars are trimmed.");
+	is(unwrapped, "x\n  y\n", "only first space after leading stars are trimmed.");
 */
 
 /**
@@ -159,10 +159,10 @@ JSDOC.DocComment.prototype.toString = function() {
 }
 
 /*t:
-	assert("testing JSDOC.DocComment#fixDesc");
+	plan(1, "testing JSDOC.DocComment#fixDesc");
 	var com = new JSDOC.DocComment();
 	com.src = "foo";
-	assertEqual(""+com, "foo", "stringifying a comment returns the unwrapped src.");
+	is(""+com, "foo", "stringifying a comment returns the unwrapped src.");
 */
 
 /**
@@ -174,12 +174,12 @@ JSDOC.DocComment.prototype.getTag = function(/**String*/tagTitle) {
 }
 
 /*t:
-	assert("testing JSDOC.DocComment#getTag");
+	plan(1, "testing JSDOC.DocComment#getTag");
 	requires("../frame/String.js");
 	requires("../lib/JSDOC/DocTag.js");
 	
 	var com = new JSDOC.DocComment("/**@foo some\n* @bar\n* @bar*"+"/");
-	assertEqual(com.getTag("bar").length, 2, "getTag returns expected number of tags.");
+	is(com.getTag("bar").length, 2, "getTag returns expected number of tags.");
 */
 
 /**
@@ -188,13 +188,13 @@ JSDOC.DocComment.prototype.getTag = function(/**String*/tagTitle) {
 JSDOC.DocComment.shared = "";
 
 /*t:
-	assert("testing JSDOC.DocComment.shared");
+	plan(2, "testing JSDOC.DocComment.shared");
 	requires("../frame/String.js");
 	requires("../lib/JSDOC/DocTag.js");
 	
 	JSDOC.DocComment.shared = "@author Michael";
 	
 	var com = new JSDOC.DocComment("/**@foo\n* @foo*"+"/");
-	assertEqual(com.getTag("author").length, 1, "getTag returns shared tag.");
-	assertEqual(com.getTag("foo").length, 2, "getTag returns unshared tags too.");
+	is(com.getTag("author").length, 1, "getTag returns shared tag.");
+	is(com.getTag("foo").length, 2, "getTag returns unshared tags too.");
 */

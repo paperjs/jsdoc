@@ -123,14 +123,14 @@ JSDOC.Symbol.prototype.setTags = function() {
 	}
 	
 	/*t:
-		assert("testing JSDOC.Symbol");
+		plan(34, "testing JSDOC.Symbol");
 		
 		requires("../lib/JSDOC/DocComment.js");
 		requires("../frame/String.js");
 		requires("../lib/JSDOC/DocTag.js");
 
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@author Joe Smith*"+"/"));
-		assertEqual(sym.author, "Joe Smith", "@author tag, author is found.");
+		is(sym.author, "Joe Smith", "@author tag, author is found.");
 	*/
 	
 	// @desc
@@ -141,7 +141,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@desc This is a description.*"+"/"));
-		assertEqual(sym.desc, "This is a description.", "@desc tag, description is found.");
+		is(sym.desc, "This is a description.", "@desc tag, description is found.");
 	*/
 	
 	// @overview
@@ -156,7 +156,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@overview This is an overview.*"+"/"));
-		assertEqual(sym.desc, "\nThis is an overview.", "@overview tag, description is found.");
+		is(sym.desc, "\nThis is an overview.", "@overview tag, description is found.");
 	*/
 	
 	// @since
@@ -167,7 +167,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@since 1.01*"+"/"));
-		assertEqual(sym.since, "1.01", "@since tag, description is found.");
+		is(sym.since, "1.01", "@since tag, description is found.");
 	*/
 	
 	// @constant
@@ -177,7 +177,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@constant*"+"/"));
-		assertEqual(sym.isConstant, true, "@constant tag, isConstant set.");
+		is(sym.isConstant, true, "@constant tag, isConstant set.");
 	*/
 	
 	// @version
@@ -188,7 +188,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@version 2.0x*"+"/"));
-		assertEqual(sym.version, "2.0x", "@version tag, version is found.");
+		is(sym.version, "2.0x", "@version tag, version is found.");
 	*/
 	
 	// @deprecated
@@ -199,7 +199,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@deprecated Use other method.*"+"/"));
-		assertEqual(sym.deprecated, "Use other method.", "@deprecated tag, desc is found.");
+		is(sym.deprecated, "Use other method.", "@deprecated tag, desc is found.");
 	*/
 	
 	// @example
@@ -216,7 +216,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@example This\n  is an example. \n*"+"/"));
-		assertEqual(sym.example, "This\n  is an example.", "@deprecated tag, desc is found.");
+		isnt(typeof sym.example[0], "undefined", "@example tag, creates sym.example array.");
+		is(sym.example[0], "This\n  is an example.", "@example tag, desc is found.");
 	*/
 	
 	// @see
@@ -228,7 +229,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@see The other thing.*"+"/"));
-		assertEqual(sym.see, "The other thing.", "@see tag, desc is found.");
+		is(sym.see, "The other thing.", "@see tag, desc is found.");
 	*/
 	
 	// @class
@@ -240,8 +241,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@class This describes the class.*"+"/"));
-		assertEqual(sym.isa, "CONSTRUCTOR", "@class tag, makes symbol a constructor.");
-		assertEqual(sym.classDesc, "This describes the class.", "@class tag, class description is found.");
+		is(sym.isa, "CONSTRUCTOR", "@class tag, makes symbol a constructor.");
+		is(sym.classDesc, "This describes the class.", "@class tag, class description is found.");
 	*/
 	
 	// @namespace
@@ -253,7 +254,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@namespace This describes the namespace.*"+"/"));
-		assertEqual(sym.classDesc, "This describes the namespace.\n", "@namespace tag, class description is found.");
+		is(sym.classDesc, "This describes the namespace.\n", "@namespace tag, class description is found.");
 	*/
 	
 	// @param
@@ -281,26 +282,26 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [{type: "array", name: "pages"}], "FUNCTION", new JSDOC.DocComment("/**Description.*"+"/"));
-		assertEqual(sym.params.length, 1, "parser defined param is found.");
+		is(sym.params.length, 1, "parser defined param is found.");
 		
 		sym = new JSDOC.Symbol("foo", [], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {array} pages*"+"/"));
-		assertEqual(sym.params.length, 1, "user defined param is found.");
-		assertEqual(sym.params[0].type, "array", "user defined param type is found.");
-		assertEqual(sym.params[0].name, "pages", "user defined param name is found.");
+		is(sym.params.length, 1, "user defined param is found.");
+		is(sym.params[0].type, "array", "user defined param type is found.");
+		is(sym.params[0].name, "pages", "user defined param name is found.");
 		
 		sym = new JSDOC.Symbol("foo", [{type: "array", name: "pages"}], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {string} uid*"+"/"));
-		assertEqual(sym.params.length, 1, "user defined param overwrites parser defined param.");
-		assertEqual(sym.params[0].type, "string", "user defined param type overwrites parser defined param type.");
-		assertEqual(sym.params[0].name, "uid", "user defined param name overwrites parser defined param name.");
+		is(sym.params.length, 1, "user defined param overwrites parser defined param.");
+		is(sym.params[0].type, "string", "user defined param type overwrites parser defined param type.");
+		is(sym.params[0].name, "uid", "user defined param name overwrites parser defined param name.");
 	
 		sym = new JSDOC.Symbol("foo", [{type: "array", name: "pages"}, {type: "number", name: "count"}], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {string} uid*"+"/"));
-		assertEqual(sym.params.length, 2, "user defined params  overlay parser defined params.");
-		assertEqual(sym.params[1].type, "number", "user defined param type overlays parser defined param type.");
-		assertEqual(sym.params[1].name, "count", "user defined param name overlays parser defined param name.");
+		is(sym.params.length, 2, "user defined params  overlay parser defined params.");
+		is(sym.params[1].type, "number", "user defined param type overlays parser defined param type.");
+		is(sym.params[1].name, "count", "user defined param name overlays parser defined param name.");
 
 		sym = new JSDOC.Symbol("foo", [], "FUNCTION", new JSDOC.DocComment("/**Description.\n@param {array} pages The pages description.*"+"/"));
-		assertEqual(sym.params.length, 1, "user defined param with description is found.");
-		assertEqual(sym.params[0].desc, "The pages description.", "user defined param description is found.");
+		is(sym.params.length, 1, "user defined param with description is found.");
+		is(sym.params[0].desc, "The pages description.", "user defined param description is found.");
 	*/
 	
 	// @constructor
@@ -310,7 +311,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@constructor*"+"/"));
-		assertEqual(sym.isa, "CONSTRUCTOR", "@constructor tag, makes symbol a constructor.");
+		is(sym.isa, "CONSTRUCTOR", "@constructor tag, makes symbol a constructor.");
 	*/
 	
 	// @static
@@ -323,8 +324,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@static\n@constructor*"+"/"));
-		assertEqual(sym.isStatic, true, "@static tag, makes isStatic true.");
-		assertEqual(sym.isNamespace, true, "@static and @constructor tag, makes isNamespace true.");
+		is(sym.isStatic, true, "@static tag, makes isStatic true.");
+		is(sym.isNamespace, true, "@static and @constructor tag, makes isNamespace true.");
 	*/
 	
 	// @inner
@@ -335,8 +336,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@inner*"+"/"));
-		assertEqual(sym.isStatic, false, "@inner tag, makes isStatic false.");
-		assertEqual(sym.isInner, true, "@inner makes isInner true.");
+		is(sym.isStatic, false, "@inner tag, makes isStatic false.");
+		is(sym.isInner, true, "@inner makes isInner true.");
 	*/
 	
 	// @field
@@ -346,7 +347,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FUNCTION", new JSDOC.DocComment("/**@field*"+"/"));
-		assertEqual(sym.isa, "OBJECT", "@field tag, makes symbol an object.");
+		is(sym.isa, "OBJECT", "@field tag, makes symbol an object.");
 	*/
 	
 	// @function
@@ -356,7 +357,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@function*"+"/"));
-		assertEqual(sym.isa, "FUNCTION", "@function tag, makes symbol a function.");
+		is(sym.isa, "FUNCTION", "@function tag, makes symbol a function.");
 	*/
 	
 	// @event
@@ -368,8 +369,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@event*"+"/"));
-		assertEqual(sym.isa, "FUNCTION", "@event tag, makes symbol a function.");
-		assertEqual(sym.isEvent, true, "@event makes isEvent true.");
+		is(sym.isa, "FUNCTION", "@event tag, makes symbol a function.");
+		is(sym.isEvent, true, "@event makes isEvent true.");
 	*/
 	
 	// @name
