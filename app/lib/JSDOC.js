@@ -1,4 +1,11 @@
 /**
+	@overview
+	@date $Date$
+	@version $Revision$ 
+	@location $HeadURL$
+ */
+
+/**
 	This is the main container for the JSDOC application.
 	@namespace
 */
