@@ -122,7 +122,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.author = authors.map(function($){return $.desc;}).join(", ");
 	}
 	
-	/*~t
+	/*t:
 		assert("testing JSDOC.Symbol");
 		
 		requires("../lib/JSDOC/DocComment.js");
@@ -139,7 +139,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.desc = descs.map(function($){return $.desc;}).join("\n"); // multiple descriptions are concatenated into one
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@desc This is a description.*"+"/"));
 		assertEqual(sym.desc, "This is a description.", "@desc tag, description is found.");
 	*/
@@ -154,7 +154,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		}
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@overview This is an overview.*"+"/"));
 		assertEqual(sym.desc, "\nThis is an overview.", "@overview tag, description is found.");
 	*/
@@ -165,7 +165,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.since = sinces.map(function($){return $.desc;}).join(", ");
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@since 1.01*"+"/"));
 		assertEqual(sym.since, "1.01", "@since tag, description is found.");
 	*/
@@ -175,7 +175,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isConstant = true;
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@constant*"+"/"));
 		assertEqual(sym.isConstant, true, "@constant tag, isConstant set.");
 	*/
@@ -186,7 +186,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.version = versions.map(function($){return $.desc;}).join(", ");
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@version 2.0x*"+"/"));
 		assertEqual(sym.version, "2.0x", "@version tag, version is found.");
 	*/
@@ -197,7 +197,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.deprecated = deprecateds.map(function($){return $.desc;}).join("\n");
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@deprecated Use other method.*"+"/"));
 		assertEqual(sym.deprecated, "Use other method.", "@deprecated tag, desc is found.");
 	*/
@@ -214,7 +214,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		);
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@example This\n  is an example. \n*"+"/"));
 		assertEqual(sym.example, "This\n  is an example.", "@deprecated tag, desc is found.");
 	*/
@@ -226,7 +226,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		sees.map(function($){thisSee.push($.desc);});
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FILE", new JSDOC.DocComment("/**@see The other thing.*"+"/"));
 		assertEqual(sym.see, "The other thing.", "@see tag, desc is found.");
 	*/
@@ -238,7 +238,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.classDesc = classes[0].desc; // desc can't apply to the constructor as there is none.
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@class This describes the class.*"+"/"));
 		assertEqual(sym.isa, "CONSTRUCTOR", "@class tag, makes symbol a constructor.");
 		assertEqual(sym.classDesc, "This describes the class.", "@class tag, class description is found.");
@@ -251,7 +251,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isNamespace = true;
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@namespace This describes the namespace.*"+"/"));
 		assertEqual(sym.classDesc, "This describes the namespace.\n", "@namespace tag, class description is found.");
 	*/
@@ -279,7 +279,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		}
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [{type: "array", name: "pages"}], "FUNCTION", new JSDOC.DocComment("/**Description.*"+"/"));
 		assertEqual(sym.params.length, 1, "parser defined param is found.");
 		
@@ -308,7 +308,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isa = "CONSTRUCTOR";
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@constructor*"+"/"));
 		assertEqual(sym.isa, "CONSTRUCTOR", "@constructor tag, makes symbol a constructor.");
 	*/
@@ -321,7 +321,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		}
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@static\n@constructor*"+"/"));
 		assertEqual(sym.isStatic, true, "@static tag, makes isStatic true.");
 		assertEqual(sym.isNamespace, true, "@static and @constructor tag, makes isNamespace true.");
@@ -333,7 +333,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isStatic = false;
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@inner*"+"/"));
 		assertEqual(sym.isStatic, false, "@inner tag, makes isStatic false.");
 		assertEqual(sym.isInner, true, "@inner makes isInner true.");
@@ -344,7 +344,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isa = "OBJECT";
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "FUNCTION", new JSDOC.DocComment("/**@field*"+"/"));
 		assertEqual(sym.isa, "OBJECT", "@field tag, makes symbol an object.");
 	*/
@@ -354,7 +354,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isa = "FUNCTION";
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@function*"+"/"));
 		assertEqual(sym.isa, "FUNCTION", "@function tag, makes symbol a function.");
 	*/
@@ -366,7 +366,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isEvent = true;
 	}
 	
-	/*~t
+	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@event*"+"/"));
 		assertEqual(sym.isa, "FUNCTION", "@event tag, makes symbol a function.");
 		assertEqual(sym.isEvent, true, "@event makes isEvent true.");
@@ -378,7 +378,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.name = names[0].desc;
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 	
@@ -398,7 +398,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		}
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 
@@ -409,14 +409,14 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.type = returns.map(function($){return $.type}).join(", ");
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 	
 	// @exception
 	this.exceptions = this.comment.getTag("throws");
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 	
@@ -426,7 +426,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.requires = requires.map(function($){return $.desc});
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 	
@@ -436,7 +436,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.type = types[0].desc; //multiple type tags are ignored
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 	
@@ -450,7 +450,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isIgnored = true;
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 	
@@ -481,7 +481,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		}
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 
@@ -496,7 +496,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		}
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 	
@@ -507,7 +507,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.memberOf = this.memberOf.replace(/\.prototype\.?/g, "#");
 	}
 
-	/*~t
+	/*t:
 		// todo
 	*/
 	
@@ -516,7 +516,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 		this.isPrivate = false;
 	}
 	
-	/*~t
+	/*t:
 		// todo
 	*/
 }

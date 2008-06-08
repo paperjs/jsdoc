@@ -1,3 +1,17 @@
+== 2.0.1 ==
+
+  * Fixed bug that prevented @fileOverview tag from being recognized.
+  * Added support for @fieldOf as a synonym for @field plus @memberOf.
+  * Added support for @name tag in a @fileOverview comment to control the displayed name of the file.
+  * Added support for multiple @example tags. ( issue #152 )
+  * Modified style sheet of jsdoc template to make more readable. ( issue #151 )
+  * Fixed bug that prevented @since documentation from displaying correctly when it appeared in a class. ( issue #150 )
+  * Fixed bug that caused inhertited properties to sometimes not resolve correctly. ( issue #144 )
+  * Modified so that trailing whitespace in @example is always trimmed. ( issue #153 )
+  * Added support for elseif to JsPlate. (hat tip to fredck)
+
+== Changes From Versions 1.4.0 to 2.0.0 ==
+
   * Upgraded included version of Rhino from 1.6 to 1.7R1.
   * Removed circular references in parsed documentation objects.
   * Improved inheritance handling, now properties and events can be inherited same as methods.

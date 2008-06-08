@@ -236,7 +236,7 @@ JSDOC.TokenReader.prototype.read_numb = function(/**JSDOC.TokenStream*/stream, t
 		return true;
 	}
 }
-/*~t
+/*t:
 	requires("../lib/JSDOC/TextStream.js");
 	requires("../lib/JSDOC/Token.js");
 	requires("../lib/JSDOC/Lang.js");

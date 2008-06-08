@@ -14,7 +14,7 @@ String.prototype.trim = function() {
 	}
 	return str;
 }
-/*~t
+/*t:
 	assert("Testing String.prototype.trim.");
 	
 	var s = "   a bc   ".trim();
@@ -56,7 +56,7 @@ String.prototype.balance = function(open, close) {
 	
 	return [i, j];
 }
-/*~t
+/*t:
 	assert("Testing String.prototype.balance.");
 	
 	var s = "{abc}".balance("{","}");

@@ -263,7 +263,7 @@
 						</dt>
 						</dl>
 					</if>
-					<if test="data.since.length">
+					<if test="data.since">
 						<dl class="detailList">
 						<dt class="heading">Since:</dt>
 							<dd>{+ data.since +}</dd>
@@ -335,7 +335,7 @@
 						<if test="member.author"><br /><i>Author: </i>{+member.author+}.</if>
 					</div>
 					
-					<if test="member.example">
+					<if test="member.example.length">
 					<for each="example" in="member.example">
 					<pre class="code">{+example+}</pre>
 					</for>
@@ -349,7 +349,7 @@
 							</dt>
 							</dl>
 						</if>
-						<if test="member.since.length">
+						<if test="member.since">
 							<dl class="detailList">
 							<dt class="heading">Since:</dt>
 								<dd>{+ member.since +}</dd>
@@ -402,7 +402,7 @@
 						<if test="member.author"><br /><i>Author: </i>{+member.author+}.</if>
 					</div>
 					
-					<if test="member.example">
+					<if test="member.example.length">
 					<for each="example" in="member.example">
 					<pre class="code">{+example+}</pre>
 					</for>
@@ -428,7 +428,7 @@
 							</dt>
 							</dl>
 						</if>
-						<if test="member.since.length">
+						<if test="member.since">
 							<dl class="detailList">
 							<dt class="heading">Since:</dt>
 								<dd>{+ member.since +}</dd>

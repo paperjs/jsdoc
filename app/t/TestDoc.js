@@ -15,10 +15,10 @@ TestDoc.record = function(result) {
 TestDoc.add = function(path) {
 	load(path);
 	var src = readFile(path);
-	var chunks = src.split(/\/\*~t/);
+	var chunks = src.split(/\/\*t:/);
 	
 	var run = function(chunk) { eval(chunk); }
-	for (var start = -1, end = 0; (start = src.indexOf("/*~t", end)) > end; start = end) {
+	for (var start = -1, end = 0; (start = src.indexOf("/*t:", end)) > end; start = end) {
 		run(
 			src.substring(
 				start+4,

@@ -20,7 +20,8 @@ JSDOC.JsPlate.prototype.parse = function() {
 		}
 	);	
 	this.code = this.code.replace(/<if test="(.+?)">/g, "``;\rif ($1) { output+=``");
-	this.code = this.code.replace(/<else\s*\/>/g, "``;} else{ output+=``");
+	this.code = this.code.replace(/<elseif test="(.+?)"\s*\/>/g, "``;}\relse if ($1) { output+=``");
+	this.code = this.code.replace(/<else\s*\/>/g, "``;}\relse { output+=``");
 	this.code = this.code.replace(/<\/(if|for)>/g, "``;\r};\routput+=``");
 	this.code = this.code.replace(
 		/\{\+\s*([\s\S]+?)\s*\+\}/gi,

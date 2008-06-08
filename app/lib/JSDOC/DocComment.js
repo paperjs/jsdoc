@@ -62,7 +62,7 @@ JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
 	}
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocComment");
 	requires("../frame/String.js");
 	requires("../lib/JSDOC/DocTag.js");
@@ -90,7 +90,7 @@ JSDOC.DocComment.prototype.fixDesc = function() {
 	}
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocComment#fixDesc");
 	
 	var com = new JSDOC.DocComment();
@@ -126,7 +126,7 @@ JSDOC.DocComment.unwrapComment = function(/**String*/comment) {
 	return unwrapped;
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocComment.unwrapComment");
 	
 	var com = "/**x*"+"/";
@@ -158,7 +158,7 @@ JSDOC.DocComment.prototype.toString = function() {
 	return this.src;
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocComment#fixDesc");
 	var com = new JSDOC.DocComment();
 	com.src = "foo";
@@ -173,7 +173,7 @@ JSDOC.DocComment.prototype.getTag = function(/**String*/tagTitle) {
 	return this.tags.filter(function($){return $.title == tagTitle});
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocComment#getTag");
 	requires("../frame/String.js");
 	requires("../lib/JSDOC/DocTag.js");
@@ -187,7 +187,7 @@ JSDOC.DocComment.prototype.getTag = function(/**String*/tagTitle) {
 */
 JSDOC.DocComment.shared = "";
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocComment.shared");
 	requires("../frame/String.js");
 	requires("../lib/JSDOC/DocTag.js");

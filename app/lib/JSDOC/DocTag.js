@@ -65,7 +65,7 @@ JSDOC.DocTag.prototype.toString = function() {
 	return this.desc;
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocTag#toString");
 	
 	var tag = new JSDOC.DocTag("param {object} date A valid date.");
@@ -89,7 +89,7 @@ JSDOC.DocTag.prototype.nibbleTitle = function(src) {
 	return src;
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocTag#nibbleTitle");
 	
 	var tag = new JSDOC.DocTag();
@@ -135,7 +135,7 @@ JSDOC.DocTag.prototype.nibbleType = function(src) {
 	return src;
 }
 
-/*~t
+/*t:
 	assert("testing JSDOC.DocTag.parser.nibbleType");
 	requires("../frame/String.js");
 	
@@ -198,7 +198,7 @@ JSDOC.DocTag.prototype.nibbleName = function(src) {
 	return src;
 }
 
-/*~t
+/*t:
 	requires("../frame/String.js");
 	assert("testing JSDOC.DocTag.parser.nibbleName");
 	
@@ -227,7 +227,7 @@ JSDOC.DocTag.prototype.nibbleName = function(src) {
  	assertEqual(tag.defaultValue, "a=b", "optional param default value is found when default value is a=b.")
  */
 
-/*~t
+/*t:
 	assert("Testing JSDOC.DocTag.parser.");
 	requires("../frame/String.js");
 	
