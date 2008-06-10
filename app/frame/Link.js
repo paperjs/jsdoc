@@ -44,7 +44,7 @@ function Link() {
 		var thisLink = this;
 
 		if (this.alias) {
-			linkString = this.alias.replace(/(^|[^a-z$0-9_#.:-])([|a-z$0-9_#.:-]+)($|[^a-z$0-9_#.:-])/i,
+			linkString = this.alias.replace(/(^|[^a-z$0-9_#.:^-])([|a-z$0-9_#.:^-]+)($|[^a-z$0-9_#.:^-])/i,
 				function(match, prematch, symbolName, postmatch) {
 					var symbolNames = symbolName.split("|");
 					var links = [];
