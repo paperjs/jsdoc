@@ -14,7 +14,12 @@ JSDOC.TokenReader = function() {
  */
 JSDOC.TokenReader.prototype.tokenize = function(/**JSDOC.TextStream*/stream) {
 	var tokens = [];
-	/**@ignore*/ tokens.last = function() { return tokens[tokens.length-1]; }
+	/**@ignore*/ tokens.last    = function() { return tokens[tokens.length-1]; }
+	/**@ignore*/ tokens.lastSym = function() {
+		for (var i = tokens.length-1; i >= 0; i--) {
+			if (!(tokens[i].is("WHIT") || tokens[i].is("COMM"))) return tokens[i];
+		}
+	}
 
 	while (!stream.look().eof) {
 		if (this.read_mlcomment(stream, tokens)) continue;
@@ -283,17 +288,21 @@ JSDOC.TokenReader.prototype.read_hex = function(/**JSDOC.TokenStream*/stream, to
 	@returns {Boolean} Was the token found?
  */
 JSDOC.TokenReader.prototype.read_regx = function(/**JSDOC.TokenStream*/stream, tokens) {
+	var last;
 	if (
 		stream.look() == "/"
 		&& 
 		(
-			!tokens.last()
-			||
+			
 			(
-				!tokens.last().is("NUMB")
-				&& !tokens.last().is("NAME")
-				&& !tokens.last().is("RIGHT_PAREN")
-				&& !tokens.last().is("RIGHT_BRACKET")
+				!(last = tokens.lastSym()) // there is no last, the regex is the first symbol
+				|| 
+				(
+					   !last.is("NUMB")
+					&& !last.is("NAME")
+					&& !last.is("RIGHT_PAREN")
+					&& !last.is("RIGHT_BRACKET")
+				)
 			)
 		)
 	) {

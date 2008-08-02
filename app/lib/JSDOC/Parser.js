@@ -34,11 +34,11 @@ JSDOC.Parser = {
 
 		// uderscored things may be treated as if they were marked private, this cascades
 		if (JSDOC.Parser.conf.treatUnderscoredAsPrivate && symbol.name.match(/[.#-]_[^.#-]+$/)) {
-			symbol.isPrivate = true;
+			if (!symbol.comment.getTag("public")) symbol.isPrivate = true;
 		}
 		
 		// -p flag is required to document private things
-		if ((symbol.isInner || symbol.isPrivate) && !JSDOC.opt.p) return;
+		if (!JSDOC.opt.p && symbol.isPrivate) return; // issue #161 fixed by mcbain.asm
 		
 		// ignored things are not documented, this doesn't cascade
 		if (symbol.isIgnored) return;

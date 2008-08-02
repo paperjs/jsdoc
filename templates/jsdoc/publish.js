@@ -93,10 +93,10 @@ function publish(symbolSet) {
 }
 
 
-/** Just the first sentence. */
+/** Just the first sentence. Should not break on dotted variable names. */
 function summarize(desc) {
 	if (typeof desc != "undefined")
-		return desc.match(/([\w\W]+?\.)[^a-z0-9]/i)? RegExp.$1 : desc;
+		return desc.match(/([\w\W]+?\.)[^a-z0-9_$]/i)? RegExp.$1 : desc;
 }
 
 /** make a symbol sorter by some attribute */
