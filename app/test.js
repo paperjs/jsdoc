@@ -257,14 +257,12 @@ var testCases = [
 		is('symbols.getSymbol("Family").params[0].name', 'persons', 'Another name of a param is found.');
 		is('symbols.getSymbol("Family").params[1].name', 'persons.Father', 'The name of a param+config is found.');
 		is('symbols.getSymbol("Family").params[2].name', 'persons.Mother', 'The name of a second param+config is found.');
-		is('symbols.getSymbol("Family").params[3].name', 'persons.Children', 'The name of a third param+config is found.');
-			
+		is('symbols.getSymbol("Family").params[3].name', 'persons.Children', 'The name of a third param+config is found.');	
 	}
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/ignore.js"]});
 		is('LOG.warnings.filter(function($){if($.indexOf("undocumented symbol Ignored") > -1) return $}).length', 1, 'A warning is emitted when documenting members of an ignored parent.');
-
 	}
 	,
 	function() {
@@ -275,7 +273,6 @@ var testCases = [
 		is('symbols.getSymbol("g").alias', 'g', 'In anonymous function executed inline this is the global.');
 		is('symbols.getSymbol("bar2.p").alias', 'bar2.p', 'In named constructor executed inline this is the container object.');
 		is('symbols.getSymbol("module.pub").alias', 'module.pub', 'In parenthesized anonymous function executed inline function scoped variables arent documented.');
-
 	}
 	,
 	function() {
@@ -283,7 +280,6 @@ var testCases = [
 		is('symbols.getSymbol("opt").name', 'opt', 'Anonymous object properties are assigned to $anonymous.');
 		is('symbols.getSymbol("opt.conf.keep").alias', 'opt.conf.keep', 'Anonymous object properties are assigned to $anonymous.');
 		is('symbols.getSymbol("opt.conf.base").alias', 'opt.conf.base', 'Anonymous object properties are assigned to $anonymous.');
-		
 	}
 	,
 	function() {
@@ -294,8 +290,11 @@ var testCases = [
 		is('symbols.getSymbol("Document").params[2].name', "title", 'Name of optional param with default value is found.');
 		is('symbols.getSymbol("Document").params[2].isOptional', true, 'Optional param with default value is marked isOptional.');
 		is('symbols.getSymbol("Document").params[2].defaultValue', " This is untitled.", 'Optional param default value is found.');
-
-
+	}
+	,
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/synonyms.js"]});
+		is('symbols.getSymbol("myObject.myFunc").type', 'function', 'Type can be set to function.');
 	}
 ];
 
