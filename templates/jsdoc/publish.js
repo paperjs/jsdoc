@@ -1,40 +1,45 @@
+/** Called automatically by JsDoc Toolkit. */
 function publish(symbolSet) {
 	publish.conf = {  // trailing slash expected for dirs
-		ext: ".html",
-		outDir: JSDOC.opt.d || SYS.pwd+"../out/jsdoc/",
-		templatesDir: SYS.pwd+"../templates/jsdoc/",
-		symbolsDir: "symbols/",
-		srcDir: "symbols/src/"
+		ext:         ".html",
+		outDir:      JSDOC.opt.d || SYS.pwd+"../out/jsdoc/",
+		templatesDir: JSDOC.opt.t || SYS.pwd+"../templates/jsdoc/",
+		symbolsDir:  "symbols/",
+		srcDir:      "symbols/src/"
 	};
 	
-	
+	// is source output is suppressed, just display the links to the source file
 	if (JSDOC.opt.s && defined(Link) && Link.prototype._makeSrcLink) {
 		Link.prototype._makeSrcLink = function(srcFilePath) {
 			return "&lt;"+srcFilePath+"&gt;";
 		}
 	}
 	
+	// create the folders and subfolders to hold the output
 	IO.mkPath((publish.conf.outDir+"symbols/src").split("/"));
 		
-	// used to check the details of things being linked to
+	// used to allow Link to check the details of things being linked to
 	Link.symbolSet = symbolSet;
 
+	// create the required templates
 	try {
 		var classTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"class.tmpl");
 		var classesTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"allclasses.tmpl");
 	}
 	catch(e) {
-		print(e.message);
+		print("Couldn't create the required templates: "+e);
 		quit();
 	}
 	
-	// filters
+	// some ustility filters
 	function hasNoParent($) {return ($.memberOf == "")}
 	function isaFile($) {return ($.is("FILE"))}
 	function isaClass($) {return ($.is("CONSTRUCTOR") || $.isNamespace)}
 	
+	// get an array version of the symbolset, useful for filtering
 	var symbols = symbolSet.toArray();
 	
+	// create the hilited source code files
 	var files = JSDOC.opt.srcFiles;
  	for (var i = 0, l = files.length; i < l; i++) {
  		var file = files[i];
@@ -42,11 +47,14 @@ function publish(symbolSet) {
 		makeSrcFile(file, srcDir);
  	}
  	
+ 	// get a list of all the classes in the symbolset
  	var classes = symbols.filter(isaClass).sort(makeSortby("alias"));
 	
+	// create a class index, displayed in the left-hand column of every class page
 	Link.base = "../";
  	publish.classesIndex = classesTemplate.process(classes); // kept in memory
 	
+	// create each of the class pages
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
 		var output = "";
@@ -55,10 +63,11 @@ function publish(symbolSet) {
 		IO.saveFile(publish.conf.outDir+"symbols/", symbol.alias+publish.conf.ext, output);
 	}
 	
-	// regenrate the index with different relative links
+	// regenerate the index with different relative links, used in the index pages
 	Link.base = "";
 	publish.classesIndex = classesTemplate.process(classes);
 	
+	// create the class index page
 	try {
 		var classesindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"index.tmpl");
 	}
@@ -68,13 +77,14 @@ function publish(symbolSet) {
 	IO.saveFile(publish.conf.outDir, "index"+publish.conf.ext, classesIndex);
 	classesindexTemplate = classesIndex = classes = null;
 	
+	// create the file index page
 	try {
 		var fileindexTemplate = new JSDOC.JsPlate(publish.conf.templatesDir+"allfiles.tmpl");
 	}
 	catch(e) { print(e.message); quit(); }
 	
-	var documentedFiles = symbols.filter(isaFile);
-	var allFiles = [];
+	var documentedFiles = symbols.filter(isaFile); // files that have file-level docs
+	var allFiles = []; // not all files have file-level docs, but we need to list every one
 	
 	for (var i = 0; i < files.length; i++) {
 		allFiles.push(new JSDOC.Symbol(files[i], [], "FILE", new JSDOC.DocComment("/** */")));
@@ -87,19 +97,20 @@ function publish(symbolSet) {
 		
 	allFiles = allFiles.sort(makeSortby("name"));
 
+	// output the file index page
 	var filesIndex = fileindexTemplate.process(allFiles);
 	IO.saveFile(publish.conf.outDir, "files"+publish.conf.ext, filesIndex);
 	fileindexTemplate = filesIndex = files = null;
 }
 
 
-/** Just the first sentence. Should not break on dotted variable names. */
+/** Just the first sentence (up to a full stop). Should not break on dotted variable names. */
 function summarize(desc) {
 	if (typeof desc != "undefined")
 		return desc.match(/([\w\W]+?\.)[^a-z0-9_$]/i)? RegExp.$1 : desc;
 }
 
-/** make a symbol sorter by some attribute */
+/** Make a symbol sorter by some attribute. */
 function makeSortby(attribute) {
 	return function(a, b) {
 		if (a[attribute] != undefined && b[attribute] != undefined) {
@@ -112,11 +123,13 @@ function makeSortby(attribute) {
 	}
 }
 
+/** Pull in the contents of an external file at the given path. */
 function include(path) {
 	var path = publish.conf.templatesDir+path;
 	return IO.readFile(path);
 }
 
+/** Turn a raw source file into a code-hilited page in the docs. */
 function makeSrcFile(path, srcDir, name) {
 	if (JSDOC.opt.s) return;
 	
@@ -136,6 +149,7 @@ function makeSrcFile(path, srcDir, name) {
 	}
 }
 
+/** Build output for displaying function parameters. */
 function makeSignature(params) {
 	if (!params) return "()";
 	var signature = "("

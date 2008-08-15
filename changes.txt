@@ -1,3 +1,7 @@
+== 2.0.3 ==
+
+  * Fixed bug that prevented templates that were not in the jsdoc-toolkit folder from being found. ( issue #176 )
+
 == 2.0.2 ==
 
   * Fixed bug that sometimes caused an example of division in the source code to be interpretted as a regex by the JsDoc Toolkit analyzer. ( issue #158 )
