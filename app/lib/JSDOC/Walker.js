@@ -251,6 +251,26 @@ JSDOC.Walker.prototype.step = function() {
 				if (matching) matching.popNamescope = name;
 				else LOG.warn("Mismatched } character. Can't parse code.");
 			}
+			// var foo;
+			else if (this.ts.look(1).is("SEMICOLON")) {
+				
+				var isInner;
+				if (this.ts.look(-1).is("VAR") || this.isInner) {
+					name = this.namescope.last().alias+"-"+name
+					if (!this.namescope.last().is("GLOBAL")) isInner = true;
+				}
+				else if (name.indexOf("this.") == 0) {
+					name = this.resolveThis(name);
+				}
+				
+				if (this.lastDoc) doc = this.lastDoc;
+				
+				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
+				if (isInner) symbol.isInner = true;
+				
+			
+				if (doc) JSDOC.Parser.addSymbol(symbol);
+			}
 			// foo = x
 			else if (this.ts.look(1).is("ASSIGN")) {
 				
