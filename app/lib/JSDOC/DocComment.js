@@ -38,12 +38,12 @@ JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
 		if (RegExp.$2) this.src = RegExp.$2;
 	}
 	
-	this.fixDesc();
-	
 	if (typeof JSDOC.PluginManager != "undefined") {
 		JSDOC.PluginManager.run("onDocCommentSrc", this);
 	}
 	
+	this.fixDesc();
+
 	this.src = JSDOC.DocComment.shared+"\n"+this.src;
 	
 	this.tagTexts = 
