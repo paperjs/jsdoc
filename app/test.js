@@ -1,10 +1,9 @@
 load("app/frame/Dumper.js");
 function symbolize(opt) {
 	symbols = null;
-	jsdoc = new JSDOC.JsDoc(opt);
-	symbols = jsdoc.symbolSet;
+	JSDOC.JsDoc(opt);
+	symbols = JSDOC.JsDoc.symbolSet;
 }
-
 
 var testCases = [
 	function() {

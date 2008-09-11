@@ -94,13 +94,13 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 */	
 	// Give plugins a chance to initialize
 	if (defined(JSDOC.PluginManager)) {
-		JSDOC.PluginManager.run("onInit", this);
+		//JSDOC.PluginManager.run("onInit", JSDOC.opt);
 	}
 
-	JSDOC.opt.srcFiles = this._getSrcFiles();
-	this._parseSrcFiles();
+	JSDOC.opt.srcFiles = JSDOC.JsDoc._getSrcFiles();
+	JSDOC.JsDoc._parseSrcFiles();
 	//var handler = symbols.handler;
-	this.symbolSet = JSDOC.Parser.symbols;
+	JSDOC.JsDoc.symbolSet = JSDOC.Parser.symbols;
 	//this.symbolGroup.handler = handler;
 }
 
@@ -108,8 +108,8 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 	Retrieve source file list.
 	@returns {String[]} The pathnames of the files to be parsed.
  */
-JSDOC.JsDoc.prototype._getSrcFiles = function() {
-	this.srcFiles = [];
+JSDOC.JsDoc._getSrcFiles = function() {
+	JSDOC.JsDoc.srcFiles = [];
 	
 	var ext = ["js"];
 	if (JSDOC.opt.x) {
@@ -117,7 +117,7 @@ JSDOC.JsDoc.prototype._getSrcFiles = function() {
 	}
 	
 	for (var i = 0; i < JSDOC.opt._.length; i++) {
-		this.srcFiles = this.srcFiles.concat(
+		JSDOC.JsDoc.srcFiles = JSDOC.JsDoc.srcFiles.concat(
 			IO.ls(JSDOC.opt._[i], JSDOC.opt.r).filter(
 				function($) {
 					var thisExt = $.split(".").pop().toLowerCase();
@@ -127,13 +127,13 @@ JSDOC.JsDoc.prototype._getSrcFiles = function() {
 		);
 	}
 	
-	return this.srcFiles;
+	return JSDOC.JsDoc.srcFiles;
 }
 
-JSDOC.JsDoc.prototype._parseSrcFiles = function() {
+JSDOC.JsDoc._parseSrcFiles = function() {
 	JSDOC.Parser.init();
-	for (var i = 0, l = this.srcFiles.length; i < l; i++) {
-		var srcFile = this.srcFiles[i];
+	for (var i = 0, l = JSDOC.JsDoc.srcFiles.length; i < l; i++) {
+		var srcFile = JSDOC.JsDoc.srcFiles[i];
 		
 		try {
 			var src = IO.readFile(srcFile);
