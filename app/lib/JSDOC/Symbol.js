@@ -248,13 +248,13 @@ JSDOC.Symbol.prototype.setTags = function() {
 	// @namespace
 	var namespaces = this.comment.getTag("namespace");
 	if (namespaces.length) {
-		this.classDesc = namespaces[0].desc+"\n"+this.desc; // desc can't apply to the constructor as there is none.
+		this.classDesc = namespaces[0].desc;
 		this.isNamespace = true;
 	}
 	
 	/*t:
 		var sym = new JSDOC.Symbol("foo", [], "OBJECT", new JSDOC.DocComment("/**@namespace This describes the namespace.*"+"/"));
-		is(sym.classDesc, "This describes the namespace.\n", "@namespace tag, class description is found.");
+		is(sym.classDesc, "This describes the namespace.", "@namespace tag, class description is found.");
 	*/
 	
 	// @param
