@@ -17,8 +17,7 @@ JSDOC.Parser = {
 	addSymbol: function(symbol) {
 		// if a symbol alias is documented more than once the last one with the user docs wins
 		if (JSDOC.Parser.symbols.hasSymbol(symbol.alias)) {
-			var oldSymbol = JSDOC.Parser.symbols.getSymbol(symbol.alias);
-
+ 			var oldSymbol = JSDOC.Parser.symbols.getSymbol(symbol.alias);
 			if (oldSymbol.comment.isUserComment) {
 				if (symbol.comment.isUserComment) { // old and new are both documented
 					LOG.warn("The symbol '"+symbol.alias+"' is documented more than once.");
@@ -42,7 +41,6 @@ JSDOC.Parser = {
 		
 		// ignored things are not documented, this doesn't cascade
 		if (symbol.isIgnored) return;
-		
 		JSDOC.Parser.symbols.addSymbol(symbol);
 	},
 	
@@ -88,8 +86,8 @@ JSDOC.Parser.parse = function(/**JSDOC.TokenStream*/ts, /**String*/srcFile) {
 	JSDOC.Parser.walker.walk(ts); // adds to our symbols
 	
 	// filter symbols by option
-	for (p in JSDOC.Parser.symbols._index) {
-		var symbol = JSDOC.Parser.symbols.getSymbol(p);
+	for (var p = JSDOC.Parser.symbols._index.first(); p; p = JSDOC.Parser.symbols._index.next()) {
+		var symbol = p.value;
 		
 		if (!symbol) continue;
 		
