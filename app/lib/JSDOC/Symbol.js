@@ -30,6 +30,7 @@ JSDOC.Symbol.prototype.init = function() {
 	this.isConstant = false;
 	this.isIgnored = false;
 	this.isInner = false;
+	this.isEvent = false;
 	this.isNamespace = false;
 	this.isPrivate = false;
 	this.isStatic = false;
@@ -90,6 +91,27 @@ JSDOC.Symbol.prototype.__defineSetter__("params",
 JSDOC.Symbol.prototype.__defineGetter__("params",
 	function() { return this._params; }
 );
+
+JSDOC.Symbol.prototype.getEvents = function() {
+	var events = [];
+	for (var i = 0, l = this.methods.length; i < l; i++) {
+		if (this.methods[i].isEvent) {
+			events.push(this.methods[i]);
+		}
+	}
+	return events;
+}
+
+JSDOC.Symbol.prototype.getMethods = function() {
+	var nonEvents = [];
+	for (var i = 0, l = this.methods.length; i < l; i++) {
+		if (!this.methods[i].isEvent) {
+			nonEvents.push(this.methods[i]);
+		}
+	}
+	return nonEvents;
+}
+
 
 JSDOC.Symbol.prototype.populate = function(
 		/** String */ name,
@@ -354,6 +376,12 @@ JSDOC.Symbol.prototype.setTags = function() {
 	// @function
 	if (this.comment.getTag("function").length) {
 		this.isa = "FUNCTION";
+	}
+	
+	// @event
+	if (this.comment.getTag("event").length) {
+		this.isa = "FUNCTION";
+		this.isEvent = true;
 	}
 	
 	/*t:
