@@ -71,7 +71,7 @@ JSDOC.Parser = {
 					srcFile = symbol.srcFile;
 					print("\n"+srcFile+"\n-------------------");
 				}
-				print(i+":\n  alias => "+symbol.alias + "\n  name => "+symbol.name+ "\n  isa => "+symbol.isa + "\n  memberOf => " + symbol.memberOf + "\n  isStatic => " + symbol.isStatic + ",  isInner => " + symbol.isInner);
+				print(i+":\n  alias => "+symbol.alias + "\n  name => "+symbol.name+ "\n  isa => "+symbol.isa + "\n  memberOf => " + symbol.memberOf + "\n  isStatic => " + symbol.isStatic + ",  isInner => " + symbol.isInner+ ",  isPrivate => " + symbol.isPrivate);
 			}
 			print("-------------------\n");
 		}

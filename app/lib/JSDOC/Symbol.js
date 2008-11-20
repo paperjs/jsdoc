@@ -101,6 +101,7 @@ JSDOC.Symbol.prototype.populate = function(
 	
 	this.name = name;
 	this.alias = this.name;
+	
 	this.params = params;
 	this.isa = (isa == "VIRTUAL")? "OBJECT":isa;
 	this.comment = comment || new JSDOC.DocComment("");

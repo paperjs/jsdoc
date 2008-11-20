@@ -49,7 +49,7 @@ JSDOC.Walker.prototype.step = function() {
 	
 		var doc = new JSDOC.DocComment(this.token.data);
 		
-		if (doc.getTag("lends").length > 0) { // it's a new namescope
+		if (doc.getTag("lends").length > 0) {
 			var lends = doc.getTag("lends")[0];
 
 			var name = lends.desc
