@@ -1,5 +1,6 @@
-== 2.0.3 ==
+== 2.1.0 ==
 
+  * Fixed bug that prevented the : character from appearing in symbol names.
   * Fixed bug that prevented underscored symbols marked with @public being tagged as private. (issue #184 )
   * Fixed bug that randomly affected the @memberOf tag when the name of the symbol did not include the parent name.
   * Fixed bug that prevented templates that were not in the jsdoc-toolkit folder from being found. ( issue #176 )
