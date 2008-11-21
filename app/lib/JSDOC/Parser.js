@@ -33,7 +33,7 @@ JSDOC.Parser = {
 
 		// uderscored things may be treated as if they were marked private, this cascades
 		if (JSDOC.Parser.conf.treatUnderscoredAsPrivate && symbol.name.match(/[.#-]_[^.#-]+$/)) {
-			if (!symbol.comment.getTag("public")) symbol.isPrivate = true;
+			if (!symbol.comment.getTag("public").length > 0) symbol.isPrivate = true;
 		}
 		
 		// -p flag is required to document private things
