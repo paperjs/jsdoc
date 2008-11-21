@@ -98,8 +98,14 @@ Link.prototype._makeSymbolLink = function(alias) {
 	else {
 
 		if (!linkTo.is("CONSTRUCTOR") && !linkTo.isNamespace) { // it's a method or property
-			linkPath = escape(linkTo.memberOf) || "_global_";
-			linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
+			if (linkTo.isEvent) {
+				linkPath = escape(linkTo.memberOf) || "_global_";
+				linkPath += publish.conf.ext + "#event:" + Link.symbolNameToLinkName(linkTo);
+			}
+			else {
+				linkPath = escape(linkTo.memberOf) || "_global_";
+				linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
+			}
 		}
 		else {
 			linkPath = escape(linkTo.alias);

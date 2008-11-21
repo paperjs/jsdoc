@@ -96,6 +96,7 @@ JSDOC.Symbol.prototype.getEvents = function() {
 	var events = [];
 	for (var i = 0, l = this.methods.length; i < l; i++) {
 		if (this.methods[i].isEvent) {
+			this.methods[i].name = this.methods[i].name.replace("event:", "");
 			events.push(this.methods[i]);
 		}
 	}
@@ -376,12 +377,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	// @function
 	if (this.comment.getTag("function").length) {
 		this.isa = "FUNCTION";
-	}
-	
-	// @event
-	if (this.comment.getTag("event").length) {
-		this.isa = "FUNCTION";
-		this.isEvent = true;
+		if (/event:/.test(this.alias)) this.isEvent = true;
 	}
 	
 	/*t:
@@ -394,6 +390,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	if (events.length) {
 		this.isa = "FUNCTION";
 		this.isEvent = true;
+		this.alias = this.alias.replace(/^(.*[.#-])([^.#-]+)$/, "$1event:$2");
 	}
 	
 	/*t:
