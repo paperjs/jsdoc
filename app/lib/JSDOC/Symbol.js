@@ -20,7 +20,7 @@ JSDOC.Symbol.prototype.init = function() {
 	this.defaultValue = undefined;
 	this.deprecated = "";
 	this.desc = "";
-	this.events = [];
+	this.fires = [];
 	this.example = [];
 	this.exceptions = [];
 	this.inherits = [];
@@ -364,6 +364,16 @@ JSDOC.Symbol.prototype.setTags = function() {
 		is(sym.isInner, true, "@inner makes isInner true.");
 	*/
 	
+	// @name
+	var names = this.comment.getTag("name");
+	if (names.length) {
+		this.name = names[0].desc;
+	}
+	
+	/*t:
+		// todo
+	*/
+	
 	// @field
 	if (this.comment.getTag("field").length) {
 		this.isa = "OBJECT";
@@ -390,7 +400,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 	if (events.length) {
 		this.isa = "FUNCTION";
 		this.isEvent = true;
-		this.alias = this.alias.replace(/^(.*[.#-])([^.#-]+)$/, "$1event:$2");
+		if (!/event:/.test(this.alias))
+			this.alias = this.alias.replace(/^(.*[.#-])([^.#-]+)$/, "$1event:$2");
 	}
 	
 	/*t:
@@ -399,10 +410,12 @@ JSDOC.Symbol.prototype.setTags = function() {
 		is(sym.isEvent, true, "@event makes isEvent true.");
 	*/
 	
-	// @name
-	var names = this.comment.getTag("name");
-	if (names.length) {
-		this.name = names[0].desc;
+	// @fires
+	var fires = this.comment.getTag("fires");
+	if (fires.length) {
+		for (var i = 0; i < fires.length; i++) {
+			this.fires.push(fires[i].desc);
+		}
 	}
 	
 	/*t:

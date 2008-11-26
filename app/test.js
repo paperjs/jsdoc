@@ -250,7 +250,7 @@ var testCases = [
 		symbolize({a: true, _: [SYS.pwd+"test/config.js"]});
 		is('symbols.getSymbol("Contact").params[0].name', 'person', 'The name of a param is found.');
 		is('symbols.getSymbol("Contact").params[1].name', 'person.name', 'The name of a param set with a dot name is found.');
-		is('symbols.getSymbol("Contact").params[2].name', 'person.age', 'The name of a param set with a dot name is found.');
+		is('symbols.getSymbol("Contact").params[2].name', 'person.age', 'The name of a second param set with a dot name is found.');
 		is('symbols.getSymbol("Contact").params[4].name', 'connection', 'The name of a param after config is found.');
 		
 		is('symbols.getSymbol("Family").params[0].name', 'persons', 'Another name of a param is found.');
@@ -276,9 +276,9 @@ var testCases = [
 	,
 	function() {
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/oblit_anon.js"]});
-		is('symbols.getSymbol("opt").name', 'opt', 'Anonymous object properties are assigned to $anonymous.');
-		is('symbols.getSymbol("opt.conf.keep").alias', 'opt.conf.keep', 'Anonymous object properties are assigned to $anonymous.');
-		is('symbols.getSymbol("opt.conf.base").alias', 'opt.conf.base', 'Anonymous object properties are assigned to $anonymous.');
+		is('symbols.getSymbol("opt").name', 'opt', 'Anonymous object properties are created.');
+		is('symbols.getSymbol("opt.conf.keep").alias', 'opt.conf.keep', 'Anonymous object first property is assigned to $anonymous.');
+		is('symbols.getSymbol("opt.conf.base").alias', 'opt.conf.base', 'Anonymous object second property is assigned to $anonymous.');
 	}
 	,
 	function() {
@@ -295,8 +295,13 @@ var testCases = [
 		symbolize({a:true, p:true, _: [SYS.pwd+"test/synonyms.js"]});
 		is('symbols.getSymbol("myObject.myFunc").type', 'function', 'Type can be set to function.');
 	}
+	,
+	function() {
+		symbolize({a:true, p:true, _: [SYS.pwd+"test/event.js"]});
+		is('symbols.getSymbol("Kitchen#event:cakeEaten").isEvent', true, 'Function with event prefix is an event.');
+		is('symbols.getSymbol("Kitchen#cakeEaten").isa', "FUNCTION", 'Function with same name as event isa function.');
+	}
 ];
-
 
 //// run and print results
 print(testrun(testCases));
