@@ -40,7 +40,7 @@ JSDOC.opt = Opt.get(
 );
 
 /** The current version string of this application. */
-JSDOC.VERSION = "2.0.3";
+JSDOC.VERSION = "2.1.0b";
 
 /** Print out usage information and quit. */
 JSDOC.usage = function() {
