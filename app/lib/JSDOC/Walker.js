@@ -133,11 +133,16 @@ JSDOC.Walker.prototype.step = function() {
 				if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
-				
+
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 				if (isInner) symbol.isInner = true;
+
+				if (this.ts.look(1).is("JSDOC")) {
+					var inlineReturn = ""+this.ts.look(1).data;
+					inlineReturn = inlineReturn.replace(/(^\/\*\* *| *\*\/$)/g, "");
+					symbol.type = inlineReturn;
+				}
 				
-			
 				JSDOC.Parser.addSymbol(symbol);
 				
 				this.namescope.push(symbol);
@@ -162,6 +167,12 @@ JSDOC.Walker.prototype.step = function() {
 				
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 				if (isInner) symbol.isInner = true;
+				
+				if (this.ts.look(1).is("JSDOC")) {
+					var inlineReturn = ""+this.ts.look(1).data;
+					inlineReturn = inlineReturn.replace(/(^\/\*\* *| *\*\/$)/g, "");
+					symbol.type = inlineReturn;
+				}
 				
 				JSDOC.Parser.addSymbol(symbol);
 				
@@ -188,7 +199,12 @@ JSDOC.Walker.prototype.step = function() {
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				if (isInner) symbol.isInner = true;
 				
-			
+				if (this.ts.look(1).is("JSDOC")) {
+					var inlineReturn = ""+this.ts.look(1).data;
+					inlineReturn = inlineReturn.replace(/(^\/\*\* *| *\*\/$)/g, "");
+					symbol.type = inlineReturn;
+				}
+				
 				JSDOC.Parser.addSymbol(symbol);
 				
 				symbol.scopeType = "INSTANCE";
@@ -217,6 +233,11 @@ JSDOC.Walker.prototype.step = function() {
 					symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 				}
 				
+				if (this.ts.look(1).is("JSDOC")) {
+					var inlineReturn = ""+this.ts.look(1).data;
+					inlineReturn = inlineReturn.replace(/(^\/\*\* *| *\*\/$)/g, "");
+					symbol.type = inlineReturn;
+				}
 				
 				JSDOC.Parser.addSymbol(symbol);
 				

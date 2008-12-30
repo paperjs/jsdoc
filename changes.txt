@@ -8,6 +8,7 @@
   * Added ability to check for trailing slash on template path. ( issue #177 )
   * Modified classDesc so that it no longer is appended with the constructor desc.
   * Fixed call to plugin onDocCommentSrc.
+  * Added missing support for inline doc comments for function return types. ( issue #189 )
   * Minor optimizations.
 
 == 2.0.2 ==
