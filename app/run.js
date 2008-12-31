@@ -335,7 +335,7 @@ IO = {
 		if (!path) return;
 		
 		for (var lib = IO.ls(SYS.pwd+path), i = 0; i < lib.length; i++) 
-			load(lib[i]);
+			if (/\.js$/i.test(lib[i])) load(lib[i]);
 	}
 }
 
