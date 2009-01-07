@@ -141,4 +141,8 @@ JSDOC.JsDoc._parseSrcFiles = function() {
 
 	}
 	JSDOC.Parser.finish();
+
+	if (JSDOC.PluginManager) {
+		JSDOC.PluginManager.run("onFinishedParsing", JSDOC.Parser.symbols);
+	}
 }

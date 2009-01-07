@@ -524,7 +524,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 	/*t:
 		// todo
 	*/
-
+	
 	// @augments
 	this.augments = this.comment.getTag("augments");
 	
@@ -559,6 +559,10 @@ JSDOC.Symbol.prototype.setTags = function() {
 	/*t:
 		// todo
 	*/
+		
+	if (JSDOC.PluginManager) {
+		JSDOC.PluginManager.run("onSetTags", this);
+	}
 }
 
 JSDOC.Symbol.prototype.is = function(what) {

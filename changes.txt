@@ -10,7 +10,8 @@
   * Fixed call to plugin onDocCommentSrc.
   * Added missing support for inline doc comments for function return types. ( issue #189 )
   * Added command line option -q, --quiet.
-  * Added command line option -E, --exclude.
+  * Added command line option -E, --exclude. ( issue #143 )
+  * Added 2 more hooks for plugins. ( issue #163 )
   * Minor optimizations.
 
 == 2.0.2 ==
