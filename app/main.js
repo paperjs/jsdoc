@@ -75,7 +75,7 @@ function main() {
 	}
 	
 	// notify of any warnings
-	if (LOG.warnings.length) {
+	if (!JSDOC.opt.q && LOG.warnings.length) {
 		print(LOG.warnings.length+" warning"+(LOG.warnings.length != 1? "s":"")+".");
 	}
 	

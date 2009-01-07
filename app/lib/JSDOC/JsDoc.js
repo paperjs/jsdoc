@@ -73,35 +73,15 @@ JSDOC.JsDoc = function(/**object*/ opt) {
  			JSDOC.opt.D[c] = JSDOC.conf.D[c];
  		}
  	}
-
-	// Load additional file handlers
-	// the -H option: filetype handlers
-	JSDOC.handlers = {};
-/*	
-	if (JSDOC.opt.H) {
-		for (var i = 0; i < JSDOC.opt.H.length; i++) {
-			var handlerDef = JSDOC.opt.H[i].split(":");
-			LOG.inform("Adding '." + handlerDef[0] + "' content handler from handlers/" + handlerDef[1] + ".js");
-			IO.include("handlers/" + handlerDef[1] + ".js");
-			if (!eval("typeof "+handlerDef[1])) {
-				LOG.warn(handlerDef[1] + "is not defined in "+handlerDef[1] + ".js");
-			}
-			else {
-				JSDOC.handlers[handlerDef[0]] = eval(handlerDef[1]);
-			}
-		}
-	}
-*/	
+	
 	// Give plugins a chance to initialize
 	if (defined(JSDOC.PluginManager)) {
-		//JSDOC.PluginManager.run("onInit", JSDOC.opt);
+		JSDOC.PluginManager.run("onInit", JSDOC.opt);
 	}
 
 	JSDOC.opt.srcFiles = JSDOC.JsDoc._getSrcFiles();
 	JSDOC.JsDoc._parseSrcFiles();
-	//var handler = symbols.handler;
 	JSDOC.JsDoc.symbolSet = JSDOC.Parser.symbols;
-	//this.symbolGroup.handler = handler;
 }
 
 /**
@@ -121,6 +101,16 @@ JSDOC.JsDoc._getSrcFiles = function() {
 			IO.ls(JSDOC.opt._[i], JSDOC.opt.r).filter(
 				function($) {
 					var thisExt = $.split(".").pop().toLowerCase();
+					
+					if (JSDOC.opt.E) {
+						for(var n = 0; n < JSDOC.opt.E.length; n++) {
+							if ($.match(new RegExp(JSDOC.opt.E[n]))) {
+								LOG.inform("Excluding " + $);
+								return false; // if the file matches the regex then it's excluded.
+							}
+						}
+					}
+					
 					return (ext.indexOf(thisExt) > -1 || thisExt in JSDOC.handlers); // we're only interested in files with certain extensions
 				}
 			)
@@ -135,6 +125,8 @@ JSDOC.JsDoc._parseSrcFiles = function() {
 	for (var i = 0, l = JSDOC.JsDoc.srcFiles.length; i < l; i++) {
 		var srcFile = JSDOC.JsDoc.srcFiles[i];
 		
+		if (JSDOC.opt.v) LOG.inform("Parsing file: " + srcFile);
+		
 		try {
 			var src = IO.readFile(srcFile);
 		}
@@ -142,21 +134,11 @@ JSDOC.JsDoc._parseSrcFiles = function() {
 			LOG.warn("Can't read source file '"+srcFile+"': "+e.message);
 		}
 
-		// Check to see if there is a handler for this file type
-//		var ext = FilePath.fileExtension(srcFile);
-// 		if (JSDOC.handlers[ext]) {
-// 			LOG.inform(" Using external handler for '" + ext + "'");
-// 
-// 			symbols = symbols.concat(JSDOC.handlers[ext].handle(srcFile, src));
-// 			symbols.handler = JSDOC.handlers[ext];
-// 		}
-// 		else {
-			// The default (JSDOC) handler
-			var tr = new JSDOC.TokenReader();
-			var ts = new JSDOC.TokenStream(tr.tokenize(new JSDOC.TextStream(src)));
-	
-			JSDOC.Parser.parse(ts, srcFile);
-//		}
+		var tr = new JSDOC.TokenReader();
+		var ts = new JSDOC.TokenStream(tr.tokenize(new JSDOC.TextStream(src)));
+
+		JSDOC.Parser.parse(ts, srcFile);
+
 	}
 	JSDOC.Parser.finish();
 }

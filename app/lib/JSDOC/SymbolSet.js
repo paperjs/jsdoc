@@ -173,7 +173,7 @@ JSDOC.SymbolSet.prototype.resolveMemberOf = function() {
 			if (!container) {
 				if (JSDOC.Lang.isBuiltin(symbol.memberOf)) container = JSDOC.Parser.addBuiltin(symbol.memberOf);
 				else {
-					LOG.warn("Can't document "+symbol.name +" as a member of undocumented symbol "+symbol.memberOf+".");
+					LOG.warn("Trying to document "+symbol.name +" as a member of undocumented symbol "+symbol.memberOf+".");
 				}
 			}
 			

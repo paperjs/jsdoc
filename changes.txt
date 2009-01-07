@@ -9,6 +9,8 @@
   * Modified classDesc so that it no longer is appended with the constructor desc.
   * Fixed call to plugin onDocCommentSrc.
   * Added missing support for inline doc comments for function return types. ( issue #189 )
+  * Added command line option -q, --quiet.
+  * Added command line option -E, --exclude.
   * Minor optimizations.
 
 == 2.0.2 ==

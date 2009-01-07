@@ -416,7 +416,7 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 				if (JSDOC.Lang.isBuiltin(parentName)) parent = JSDOC.Parser.addBuiltin(parentName);
 				else {
 					if (symbol.alias.indexOf("$anonymous") < 0) // these will be ignored eventually
-						LOG.warn("Can't document "+symbol.alias+" without first documenting "+parentName+".");
+						LOG.warn("Trying to document "+symbol.alias+" without first documenting "+parentName+".");
 				}
 			}
 			if (parent) name = parentName+(parent.is("CONSTRUCTOR")?"#":".")+nameFragment;

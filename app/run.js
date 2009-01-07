@@ -11,6 +11,7 @@
  */
 LOG = {
 	warn: function(msg, e) {
+		if (JSDOC.opt.q) return;
 		if (e) msg = e.fileName+", line "+e.lineNumber+": "+msg;
 		
 		msg = ">> WARNING: "+msg;
@@ -20,6 +21,7 @@ LOG = {
 	},
 
 	inform: function(msg) {
+		if (JSDOC.opt.q) return;
 		msg = " > "+msg;
 		if (LOG.out) LOG.out.write(msg+"\n");
 		else if (typeof LOG.verbose != "undefined" && LOG.verbose) print(msg);
