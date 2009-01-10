@@ -14,6 +14,8 @@
   * Added 2 more hooks for plugins. ( issue #163 )
   * Added support for extending built-ins. ( issue #160 )
   * Added "compact" option to JSDOC.JsPlate.prototype.process. ( issue #159 )
+  * @augments no longer documents static members as inherited. ( issue #138 )
+  * @link to a class now goes to the page for that class, not the constructor. ( issue #178 )
   * Minor optimizations.
 
 == 2.0.2 ==

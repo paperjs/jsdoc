@@ -109,7 +109,7 @@ Link.prototype._makeSymbolLink = function(alias) {
 		}
 		else {
 			linkPath = escape(linkTo.alias);
-			linkPath += publish.conf.ext + (this.classLink? "":"#" + Link.hashPrefix + "constructor");
+			linkPath += publish.conf.ext;// + (this.classLink? "":"#" + Link.hashPrefix + "constructor");
 		}
 		linkPath = linkBase + linkPath
 	}
