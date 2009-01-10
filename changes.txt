@@ -12,6 +12,8 @@
   * Added command line option -q, --quiet.
   * Added command line option -E, --exclude. ( issue #143 )
   * Added 2 more hooks for plugins. ( issue #163 )
+  * Added support for extending built-ins. ( issue #160 )
+  * Added "compact" option to JSDOC.JsPlate.prototype.process. ( issue #159 )
   * Minor optimizations.
 
 == 2.0.2 ==

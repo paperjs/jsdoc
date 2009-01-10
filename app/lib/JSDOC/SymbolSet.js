@@ -203,7 +203,7 @@ JSDOC.SymbolSet.prototype.walk = function(symbol) {
 			JSDOC.Parser.addSymbol(contributer);
 		}
 		
-		if (contributer) {
+		if (contributer) {			
 			if (contributer.augments.length) {
 				JSDOC.SymbolSet.prototype.walk.apply(this, [contributer]);
 			}
@@ -216,10 +216,12 @@ JSDOC.SymbolSet.prototype.walk = function(symbol) {
 				var cmethods = contributer.methods;
 				var cproperties = contributer.properties;
 				
-				for (var ci = 0, cl = cmethods.length; ci < cl; ci++)
-					symbol.inherit(cmethods[ci]);
-				for (var ci = 0, cl = cproperties.length; ci < cl; ci++)
-					symbol.inherit(cproperties[ci]);
+				for (var ci = 0, cl = cmethods.length; ci < cl; ci++) {
+					if (!cmethods[ci].isStatic) symbol.inherit(cmethods[ci]);
+				}
+				for (var ci = 0, cl = cproperties.length; ci < cl; ci++) {
+					if (!cproperties[ci].isStatic) symbol.inherit(cproperties[ci]);
+				}	
 			//}
 		}
 		else LOG.warn("Can't augment contributer: "+augments[i]+", not found.");
