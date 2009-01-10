@@ -80,7 +80,7 @@ JSDOC.JsPlate.values = function(obj) {
 	return values;
 };
 
-JSDOC.JsPlate.prototype.process = function(data) {
+JSDOC.JsPlate.prototype.process = function(data, compact) {
 	var keys = JSDOC.JsPlate.keys;
 	var values = JSDOC.JsPlate.values;
 	
@@ -95,6 +95,15 @@ JSDOC.JsPlate.prototype.process = function(data) {
 		print("line "+e.lineNumber+": "+lines[e.lineNumber-1]);
 		print("");
 	}
+	
+	if (compact) { // patch by mcbain.asm
+ 		// Remove lines that contain only space-characters, usually left by lines in the template
+ 		// which originally only contained JSPlate tags or code. This makes it easier to write
+ 		// non-tricky templates which still put out nice code (not bloated with extra lines).
+ 		// Lines purposely left blank (just a line ending) are left alone.
+ 		output = output.replace(/\s+?(\r?)\n/g, "$1\n");
+ 	}
+ 	
 	/*debug*///print(this.code);
 	return output;
 }

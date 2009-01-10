@@ -195,16 +195,24 @@ JSDOC.SymbolSet.prototype.walk = function(symbol) {
 	var augments = symbol.augments;
 	for(var i = 0; i < augments.length; i++) {
 		var contributer = this.getSymbol(augments[i]);
+		if (!contributer && JSDOC.Lang.isBuiltin(''+augments[i])) {
+			contributer = new JSDOC.Symbol("_global_."+augments[i], [], augments[i], new JSDOC.DocComment("Built in."));
+			contributer.isNamespace = true;
+			contributer.srcFile = "";
+			contributer.isPrivate = false;
+			JSDOC.Parser.addSymbol(contributer);
+		}
+		
 		if (contributer) {
 			if (contributer.augments.length) {
 				JSDOC.SymbolSet.prototype.walk.apply(this, [contributer]);
 			}
 			
 			symbol.inheritsFrom.push(contributer.alias);
-			if (!isUnique(symbol.inheritsFrom)) {
-				//LOG.warn("Can't resolve augments: Circular reference: "+symbol.alias+" inherits from "+contributer.alias+" more than once.");
-			}
-			else {
+			//if (!isUnique(symbol.inheritsFrom)) {
+			//	LOG.warn("Can't resolve augments: Circular reference: "+symbol.alias+" inherits from "+contributer.alias+" more than once.");
+			//}
+			//else {
 				var cmethods = contributer.methods;
 				var cproperties = contributer.properties;
 				
@@ -212,7 +220,7 @@ JSDOC.SymbolSet.prototype.walk = function(symbol) {
 					symbol.inherit(cmethods[ci]);
 				for (var ci = 0, cl = cproperties.length; ci < cl; ci++)
 					symbol.inherit(cproperties[ci]);
-			}
+			//}
 		}
 		else LOG.warn("Can't augment contributer: "+augments[i]+", not found.");
 	}
