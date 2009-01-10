@@ -16,6 +16,7 @@
   * Added "compact" option to JSDOC.JsPlate.prototype.process. ( issue #159 )
   * @augments no longer documents static members as inherited. ( issue #138 )
   * @link to a class now goes to the page for that class, not the constructor. ( issue #178 )
+  * Warnings of mismatched curly brace now include filename. ( issue #166 )
   * Minor optimizations.
 
 == 2.0.2 ==
