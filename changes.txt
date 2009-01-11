@@ -17,6 +17,7 @@
   * @augments no longer documents static members as inherited. ( issue #138 )
   * @link to a class now goes to the page for that class, not the constructor. ( issue #178 )
   * Warnings of mismatched curly brace now include filename. ( issue #166 )
+  * Fixed bug affecting template paths loaded via a configuration file when the trailing slash is missing. ( issue #191 )
   * Minor optimizations.
 
 == 2.0.2 ==

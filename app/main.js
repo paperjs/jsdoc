@@ -6,6 +6,30 @@ function main() {
 	IO.include("lib/JSDOC.js");
 	IO.includeDir("plugins/");
 	
+	// process the options
+	
+	// the -c option: options are defined in a configuration file
+	if (JSDOC.opt.c) {
+		eval("JSDOC.conf = " + IO.readFile(JSDOC.opt.c));
+		
+		LOG.inform("Using configuration file at '"+JSDOC.opt.c+"'.");
+		
+		for (var c in JSDOC.conf) {
+			if (c !== "D" && !defined(JSDOC.opt[c])) { // commandline overrules config file
+				JSDOC.opt[c] = JSDOC.conf[c];
+			}
+		}
+		
+		if (typeof JSDOC.conf["_"] != "undefined") {
+			JSDOC.opt["_"] = JSDOC.opt["_"].concat(JSDOC.conf["_"]);
+		}
+		
+		LOG.inform("With configuration: ");
+		for (var o in JSDOC.opt) {
+			LOG.inform("    "+o+": "+JSDOC.opt[o]);
+		}
+	}
+	
 	// be verbose
 	if (JSDOC.opt.v) LOG.verbose = true;
 	

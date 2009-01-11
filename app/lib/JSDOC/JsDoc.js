@@ -8,28 +8,6 @@ JSDOC.JsDoc = function(/**object*/ opt) {
 		JSDOC.opt = opt;
 	}
 	
-	// the -c option: use a configuration file
-	if (JSDOC.opt.c) {
-		eval("JSDOC.conf = " + IO.readFile(JSDOC.opt.c));
-		
-		LOG.inform("Using configuration file at '"+JSDOC.opt.c+"'.");
-		
-		for (var c in JSDOC.conf) {
-			if (c !== "D" && !defined(JSDOC.opt[c])) { // commandline overrules config file
-				JSDOC.opt[c] = JSDOC.conf[c];
-			}
-		}
-		
-		if (typeof JSDOC.conf["_"] != "undefined") {
-			JSDOC.opt["_"] = JSDOC.opt["_"].concat(JSDOC.conf["_"]);
-		}
-		
-		LOG.inform("With configuration: ");
-		for (var o in JSDOC.opt) {
-			LOG.inform("    "+o+": "+JSDOC.opt[o]);
-		}
-	}
-	
 	if (JSDOC.opt.h) {
 		JSDOC.usage();
 		quit();
