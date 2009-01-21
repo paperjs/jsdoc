@@ -42,7 +42,7 @@ JSDOC.opt = Opt.get(
 );
 
 /** The current version string of this application. */
-JSDOC.VERSION = "2.2.0";
+JSDOC.VERSION = "2.1.0";
 
 /** Print out usage information and quit. */
 JSDOC.usage = function() {
@@ -56,7 +56,6 @@ JSDOC.usage = function() {
 	print("  -e=<ENCODING> or --encoding=<ENCODING>\n          Use this encoding to read and write files.\n");
 	print("  -E=\"REGEX\" or --exclude=\"REGEX\"\n          Multiple. Exclude files based on the supplied regex.\n");
 	print("  -h or --help\n          Show this message and exit.\n");
-	//print("  -H=ext:handler or --handler=ext:handler\n          Multiple. Load handlers/handler.js to handle files with .ext names.\n");
 	print("  -n or --nocode\n          Ignore all code, only document comments with @name tags.\n");
 	print("  -o=<PATH> or --out=<PATH>\n          Print log messages to a file (defaults to stdout).\n");
 	print("  -p or --private\n          Include symbols tagged as private, underscored and inner symbols.\n");
