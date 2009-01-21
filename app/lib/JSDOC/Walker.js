@@ -274,23 +274,19 @@ JSDOC.Walker.prototype.step = function() {
 			}
 			// var foo;
 			else if (this.ts.look(1).is("SEMICOLON")) {
-				
 				var isInner;
 				if (this.ts.look(-1).is("VAR") || this.isInner) {
 					name = this.namescope.last().alias+"-"+name
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
+					
+					if (this.lastDoc) doc = this.lastDoc;
+				
+					symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
+					if (isInner) symbol.isInner = true;
+					
+				
+					if (doc) JSDOC.Parser.addSymbol(symbol);
 				}
-				else if (name.indexOf("this.") == 0) {
-					name = this.resolveThis(name);
-				}
-				
-				if (this.lastDoc) doc = this.lastDoc;
-				
-				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
-				if (isInner) symbol.isInner = true;
-				
-			
-				if (doc) JSDOC.Parser.addSymbol(symbol);
 			}
 			// foo = x
 			else if (this.ts.look(1).is("ASSIGN")) {
@@ -342,10 +338,16 @@ JSDOC.Walker.prototype.step = function() {
 			}
 			// foo(...)
 			else if (this.ts.look(1).is("LEFT_PAREN")) {
-				var functionCall = {name: name};
-				if (!this.ts.look(2).is("RIGHT_PAREN")) functionCall.arg1 = this.ts.look(2).data;
-				
 				if (typeof JSDOC.PluginManager != "undefined") {
+					var functionCall = {name: name};
+				
+					var cursor = this.ts.cursor;
+					params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
+					this.ts.cursor = cursor;
+					
+					for (var i = 0; i < params.length; i++)
+						functionCall["arg" + (i + 1)] = params[i].name;
+				
 					JSDOC.PluginManager.run("onFunctionCall", functionCall);
 					if (functionCall.doc) {
 						this.ts.insertAhead(new JSDOC.Token(functionCall.doc, "COMM", "JSDOC"));
