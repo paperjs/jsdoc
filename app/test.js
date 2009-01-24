@@ -301,6 +301,11 @@ var testCases = [
 		is('symbols.getSymbol("Kitchen#event:cakeEaten").isEvent', true, 'Function with event prefix is an event.');
 		is('symbols.getSymbol("Kitchen#cakeEaten").isa', "FUNCTION", 'Function with same name as event isa function.');
 	}
+	,
+	function() {
+		symbolize({x:"js", a:true, _: [SYS.pwd+"test/scripts/"]});
+		is('JSDOC.JsDoc.srcFiles.length', 1, 'Only js files are scanned when -x=js.');
+	}
 ];
 
 //// run and print results

@@ -3,7 +3,7 @@
 	@date $Date$
 	@version $Revision$ 
 	@location $HeadURL$
-	@name whateverFilename.js
+	@name JSDOC.js
  */
 
 /**
@@ -42,7 +42,7 @@ JSDOC.opt = Opt.get(
 );
 
 /** The current version string of this application. */
-JSDOC.VERSION = "2.1.0";
+JSDOC.VERSION = "2.1.1";
 
 /** Print out usage information and quit. */
 JSDOC.usage = function() {

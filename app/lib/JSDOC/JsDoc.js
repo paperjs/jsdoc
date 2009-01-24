@@ -89,7 +89,7 @@ JSDOC.JsDoc._getSrcFiles = function() {
 						}
 					}
 					
-					return (ext.indexOf(thisExt) > -1 || thisExt in JSDOC.handlers); // we're only interested in files with certain extensions
+					return (ext.indexOf(thisExt) > -1); // we're only interested in files with certain extensions
 				}
 			)
 		);
