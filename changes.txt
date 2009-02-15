@@ -1,6 +1,7 @@
 == 2.1.1 ==
   * Fixed bug that caused exception when given a folder containing non-js files, even with the x commandline option set to "js". ( issue #193 )
-
+  * Fixed typo in index template [patch submitted by olle]. ( issue #198 )
+  
 == 2.1.0 ==
 
   * Added support for the @event tag.
