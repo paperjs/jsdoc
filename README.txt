@@ -70,6 +70,46 @@ Toolkit are available on the project wiki.
 
 ======================================================================
 
+RUNNING VIA SHELL SCRIPT
+
+Avi Deitcher has contributed the file jsrun.sh with the following usage notes:
+
+A script to simplify running jsdoc from the command-line, especially when
+running from within a development or build environment such as ant.
+
+Normally, to run jsdoc, you need a command-line as the following:
+java -Djsdoc.dir=/some/long/dir/path/to/jsdoc -jar
+/some/long/dir/path/to/jsdoc/jsrun.jar /some/long/dir/path/to/jsdoc/app/run.js
+-t=template -r=4 /some/long/dir/path/to/my/src/code
+
+This can get tedious to redo time and again, and difficult to use from within a
+build environment.
+
+To simplify the process, jsrun.sh will automatically run this path, as well as
+passing through any arguments.
+
+Usage: jsrun.sh <run.js arguments>
+
+All <run.js arguments> will be passed through.
+Additionally, jsrun.sh will take the following actions:
+1) If the environment variable JSDOCDIR is set, it will add
+"-Djsdoc.dir=$JSDOCDIR" to the command-line
+2) If the environment variable JSDOCTEMPLATEDIR is set, it will add
+"-Djsdoc.template.dir=$JSDOCTEMPLATEDIR" to the command-line
+3) java with the appropriate path to jsrun.jar and run.js will be instantiated
+
+If not variables are set, it is assumed that the path to jsrun.jar and app/ is
+in the current working directory.
+
+Example:
+# jsrun.sh ./src/
+Assuming JSDOCDIR=/some/path/to/my/jsdoc will cause the following command to
+execute:
+java -Djsdoc.dir=/some/path/to/my/jsdoc -jar /some/path/to/my/jsdoc/jsrun.jar
+/some/path/to/my/jsdoc/app/run.js ./src/
+
+======================================================================
+
 TESTING:
 
 To run the suite of unit tests included with JsDoc Toolkit enter this
