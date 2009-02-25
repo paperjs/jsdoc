@@ -62,10 +62,22 @@ JSDOC.SymbolSet.prototype.resolveBorrows = function() {
 		
 		var borrows = symbol.inherits;
 		for (var i = 0; i < borrows.length; i++) {
+		
+if (/#$/.test(borrows[i].alias)) {
+	LOG.warn("Attempted to borrow entire instance of "+borrows[i].alias+" but that feature is not yet implemented.");
+	return;
+}
 			var borrowed = this.getSymbol(borrows[i].alias);
+			
 			if (!borrowed) {
 				LOG.warn("Can't borrow undocumented "+borrows[i].alias+".");
 				continue;
+			}
+
+			if (borrows[i].as == borrowed.alias) {
+				var assumedName = borrowed.name.split(/([#.-])/).pop();
+				borrows[i].as = symbol.name+RegExp.$1+assumedName;
+				LOG.inform("Assuming borrowed as name is "+borrows[i].as+" but that feature is experimental.");
 			}
 			
 			var borrowAsName = borrows[i].as;

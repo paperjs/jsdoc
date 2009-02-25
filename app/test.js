@@ -152,8 +152,9 @@ var testCases = [
 		is('symbols.getSymbol("Page").hasMethod("reset")', true, 'Second constructor method name can be found.');
 		is('symbols.getSymbol("Page").hasMember("orientation")', true, 'Second constructor borrowed property name can be found in properties.');
 		is('symbols.getSymbol("Page#orientation").memberOf', "Page", 'Second constructor borrowed property memberOf can be found.');
-		is('symbols.getSymbol("Page").hasMethod("myGetInnerElements")', true, 'Can borrow an inner function, add it as a static function.');
-
+		is('symbols.getSymbol("Page-getInnerElements").alias', "Page-getInnerElements", 'Can borrow an inner function and it is still inner.');
+		is('symbols.getSymbol("Page.units").alias', "Page.units", 'Can borrow a static function and it is still static.');
+		
 		is('symbols.getSymbol("ThreeColumnPage#init").alias', "ThreeColumnPage#init", 'Third constructor method can be found even though method with same name is borrowed.');
 		is('symbols.getSymbol("ThreeColumnPage#reset").alias', "ThreeColumnPage#reset", 'Borrowed method can be found.');
 		is('symbols.getSymbol("ThreeColumnPage#orientation").alias', "ThreeColumnPage#orientation", 'Twice borrowed method can be found.');
