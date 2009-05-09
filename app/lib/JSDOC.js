@@ -31,6 +31,7 @@ JSDOC.opt = Opt.get(
 		n: "nocode",
 		o: "out",
 		s: "suppress",
+		S: "securemodules",
 		q: "quiet",
 		T: "testmode",
 		h: "help",
@@ -62,6 +63,7 @@ JSDOC.usage = function() {
 	print("  -q or --quiet\n          Do not output any messages, not even warnings.\n");
 	print("  -r=<DEPTH> or --recurse=<DEPTH>\n          Descend into src directories.\n");
 	print("  -s or --suppress\n          Suppress source code output.\n");
+	print("  -S or --securemodules\n          Use Secure Modules mode to parse source code.\n");
 	print("  -t=<PATH> or --template=<PATH>\n          Required. Use this template to format the output.\n");
 	print("  -T or --test\n          Run all unit tests and exit.\n");
 	print("  -v or --verbose\n          Provide verbose feedback about what is happening.\n");
