@@ -16,6 +16,17 @@ JSDOC.Parser = {
 	
 	addSymbol: function(symbol) {
 
+if (JSDOC.Parser.rename) {
+	for (var n in JSDOC.Parser.rename) {
+		if (symbol.alias.indexOf(n) == 0) {
+			if (symbol.name == symbol.alias) {
+				symbol.name = symbol.name.replace(n, JSDOC.Parser.rename[n]);
+			}
+			symbol.alias = symbol.alias.replace(n, JSDOC.Parser.rename[n]);
+		}
+	}
+}
+
 if (JSDOC.opt.S) {
 	if (typeof JSDOC.Parser.secureModules == "undefined") JSDOC.Parser.secureModules = {};
 	if (/^exports\./.test(symbol.alias)) {

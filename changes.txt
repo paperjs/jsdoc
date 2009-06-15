@@ -3,6 +3,7 @@
   * Fixed bug that caused exception when given a folder containing non-js files, even with the x commandline option set to "js". ( issue #193 )
   * Fixed typo in index template [patch submitted by olle]. ( issue #198 )
   * Modified @borrows tag experimentally to allow for missing "as ..." clause.
+  * Added support for the @exports tag, to allow one symbol to be documented as another.
   * Added support for the -S option to document code following the Secure Modules pattern.
   
 == 2.1.0 ==

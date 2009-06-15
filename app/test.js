@@ -307,6 +307,11 @@ var testCases = [
 		symbolize({x:"js", a:true, _: [SYS.pwd+"test/scripts/"]});
 		is('JSDOC.JsDoc.srcFiles.length', 1, 'Only js files are scanned when -x=js.');
 	}
+	,
+	function() {
+		symbolize({x:"js", a:true, _: [SYS.pwd+"test/exports.js"]});
+		is('symbols.getSymbol("mxn.Map#doThings").name', 'doThings', 'Exports creates a documentation alias that can have methods.');
+	}
 ];
 
 //// run and print results

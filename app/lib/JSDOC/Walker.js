@@ -49,6 +49,20 @@ JSDOC.Walker.prototype.step = function() {
 	
 		var doc = new JSDOC.DocComment(this.token.data);
 		
+				
+		if (doc.getTag("exports").length > 0) {
+			var exports = doc.getTag("exports")[0];
+
+			exports.desc.match(/(\S+) as (\S+)/i);
+			var n1 = RegExp.$1;
+			var n2 = RegExp.$2;
+			
+			if (!n1 && n2) throw "@exports tag requires a value like: 'name as ns.name'";
+			
+			JSDOC.Parser.rename = (JSDOC.Parser.rename || {});	
+			JSDOC.Parser.rename[n1] = n2
+		}
+		
 		if (doc.getTag("lends").length > 0) {
 			var lends = doc.getTag("lends")[0];
 
