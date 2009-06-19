@@ -92,7 +92,7 @@ function main() {
 				}
 			}
 			else {
-				LOG.warn("No template or handlers given. Might as well read the usage notes.");
+				LOG.warn("No template given. Might as well read the usage notes.");
 				JSDOC.usage();
 			}
 		}
