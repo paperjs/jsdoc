@@ -1,6 +1,7 @@
 == 2.2.2 ==
 
   * Fixed bug where {@links} in @deprecated tags did not resolve. ( issue #220 )
+  * Fixed bug that caused parens around a function to make it to be unrecognized. ( issue #213 )
 
 == 2.2.1 ==
 
