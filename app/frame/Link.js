@@ -116,13 +116,13 @@ Link.prototype._makeSymbolLink = function(alias) {
 	
 	var linkText = this.text || alias;
 	
-	var link = {linkPath: linkPath, linkText: linkText};
+	var link = {linkPath: linkPath, linkText: linkText, linkInner: (this.innerName? "#"+this.innerName : "")};
 	
 	if (typeof JSDOC.PluginManager != "undefined") {
 		JSDOC.PluginManager.run("onSymbolLink", link);
 	}
 	
-	return "<a href=\""+link.linkPath+"\""+target+">"+link.linkText+"</a>";
+	return "<a href=\""+link.linkPath+link.linkInner+"\""+target+">"+link.linkText+"</a>";
 }
 
 /** Create a link to a source file. */
