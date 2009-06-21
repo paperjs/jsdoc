@@ -1,5 +1,6 @@
-== 2.2.2 ==
+== 2.3.0 ==
 
+  * Added option -u, --unique to avoid bug that causes multiple symbols with names that differ only by case to overwrite each others output on case-insensitive filesystems. ( issue #162 )
   * Fixed bug where {@links} in @deprecated tags did not resolve. ( issue #220 )
   * Fixed bug that caused parens around a function to make it to be unrecognized. ( issue #213 )
   * Fixed bug prevented explicit links to named anchors from working (thanks katgao.pku). ( issue #215 )

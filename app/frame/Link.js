@@ -81,7 +81,7 @@ Link.symbolNameToLinkName = function(symbol) {
 	return Link.hashPrefix+linker+symbol.name;
 }
 
-/** Create a link to a snother symbol. */
+/** Create a link to another symbol. */
 Link.prototype._makeSymbolLink = function(alias) {
 	var linkBase = Link.base+publish.conf.symbolsDir;
 	var linkTo = Link.symbolSet.getSymbol(alias);
@@ -96,19 +96,24 @@ Link.prototype._makeSymbolLink = function(alias) {
 	
 	// it's a symbol in another file
 	else {
-
 		if (!linkTo.is("CONSTRUCTOR") && !linkTo.isNamespace) { // it's a method or property
 			if (linkTo.isEvent) {
-				linkPath = escape(linkTo.memberOf) || "_global_";
+				linkPath = 
+					(Link.filemap)? Link.filemap[linkTo.memberOf] 
+					:
+					escape(linkTo.memberOf) || "_global_";
 				linkPath += publish.conf.ext + "#event:" + Link.symbolNameToLinkName(linkTo);
 			}
 			else {
-				linkPath = escape(linkTo.memberOf) || "_global_";
+				linkPath = 
+					(Link.filemap)? Link.filemap[linkTo.memberOf] 
+					:
+					escape(linkTo.memberOf) || "_global_";
 				linkPath += publish.conf.ext + "#" + Link.symbolNameToLinkName(linkTo);
 			}
 		}
 		else {
-			linkPath = escape(linkTo.alias);
+			linkPath = (Link.filemap)? Link.filemap[linkTo.alias] : escape(linkTo.alias);
 			linkPath += publish.conf.ext;// + (this.classLink? "":"#" + Link.hashPrefix + "constructor");
 		}
 		linkPath = linkBase + linkPath

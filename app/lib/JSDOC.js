@@ -20,30 +20,30 @@ if (typeof arguments == "undefined") arguments = [];
 JSDOC.opt = Opt.get(
 	arguments, 
 	{
-		d: "directory",
-		c: "conf",
-		t: "template",
-		r: "recurse",
-		x: "ext",
-		p: "private",
 		a: "allfunctions", 
+		c: "conf",
+		d: "directory",
+		"D[]": "define",
 		e: "encoding",
+		"E[]": "exclude",
+		h: "help",
 		n: "nocode",
 		o: "out",
-		s: "suppress",
-		S: "securemodules",
+		p: "private",
 		q: "quiet",
+		r: "recurse",
+		S: "securemodules",
+		s: "suppress",
+		t: "template",
 		T: "testmode",
-		h: "help",
+		u: "unique",
 		v: "verbose",
-		"D[]": "define",
-		"E[]": "exclude",
-		"H[]": "handler"
+		x: "ext"
 	}
 );
 
 /** The current version string of this application. */
-JSDOC.VERSION = "2.1.1";
+JSDOC.VERSION = "2.3.0";
 
 /** Print out usage information and quit. */
 JSDOC.usage = function() {
@@ -66,6 +66,7 @@ JSDOC.usage = function() {
 	print("  -S or --securemodules\n          Use Secure Modules mode to parse source code.\n");
 	print("  -t=<PATH> or --template=<PATH>\n          Required. Use this template to format the output.\n");
 	print("  -T or --test\n          Run all unit tests and exit.\n");
+	print("  -u or --unique\n          Force file names to be unique, but not based on symbol names.\n");
 	print("  -v or --verbose\n          Provide verbose feedback about what is happening.\n");
 	print("  -x=<EXT>[,EXT]... or --ext=<EXT>[,EXT]...\n          Scan source files with the given extension/s (defaults to js).\n");
 	

@@ -9,6 +9,8 @@ JSDOC.Symbol = function() {
 	if (arguments.length) this.populate.apply(this, arguments);
 }
 
+JSDOC.Symbol.count = 0;
+
 JSDOC.Symbol.prototype.init = function() {
 	this._name = "";
 	this._params = [];
@@ -25,6 +27,7 @@ JSDOC.Symbol.prototype.init = function() {
 	this.example = [];
 	this.exceptions = [];
 	this.fires = [];
+	this.id = JSDOC.Symbol.count++;
 	this.inherits = [];
 	this.inheritsFrom = [];
 	this.isa = "OBJECT";
