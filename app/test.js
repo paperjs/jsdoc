@@ -312,6 +312,13 @@ var testCases = [
 		symbolize({x:"js", a:true, _: [SYS.pwd+"test/exports.js"]});
 		is('symbols.getSymbol("mxn.Map#doThings").name', 'doThings', 'Exports creates a documentation alias that can have methods.');
 	}
+	,
+	function() {
+		symbolize({p:true, a:true, _: [SYS.pwd+"test/module.js"]});
+		is('symbols.getSymbol("myProject.myModule.myPublicMethod").name', 'myPublicMethod', 'A function wrapped in parens can be recognized.');
+		is('symbols.getSymbol("myProject.myModule-myPrivateMethod").name', 'myPrivateMethod', 'A private method in the scope of a function wrapped in parens can be recognized.');
+		is('symbols.getSymbol("myProject.myModule-myPrivateVar").name', 'myPrivateVar', 'A private member in the scope of a function wrapped in parens can be recognized.');
+	}
 ];
 
 //// run and print results
