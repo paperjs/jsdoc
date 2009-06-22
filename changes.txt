@@ -4,7 +4,8 @@
   * Fixed bug where {@links} in @deprecated tags did not resolve. ( issue #220 )
   * Fixed bug that caused parens around a function to make it to be unrecognized. ( issue #213 )
   * Fixed bug prevented explicit links to named anchors from working (thanks katgao.pku). ( issue #215 )
-
+  * Fixed bug that prevented full description from appearing in file overview. ( issue #224 )
+  
 == 2.2.1 ==
 
   * Fixed bug with class template, where sorting of methods was accidentally removed (thanks dezfowler).
