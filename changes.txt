@@ -1,3 +1,7 @@
+== 2.3.1 ==
+
+ * Fixed HTML typo in allfiles template. (issue #228)
+
 == 2.3.0 ==
 
   * Added option -u, --unique to avoid bug that causes multiple symbols with names that differ only by case to overwrite each others output on case-insensitive filesystems. ( issue #162 )
