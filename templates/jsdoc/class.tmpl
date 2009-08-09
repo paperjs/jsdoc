@@ -50,6 +50,9 @@
 
 <!-- ============================== class summary ========================== -->			
 			<p class="description">
+				<if test="data.version"><br />Version
+					{+ data.version +}.<br />
+				</if>
 				<if test="data.augments.length"><br />Extends
 					{+
 						data.augments
