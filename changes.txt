@@ -1,6 +1,9 @@
 == 2.3.1 ==
 
  * Fixed HTML typo in allfiles template. (issue #228)
+ * Modified template to display version information for classes.
+ * Modified template to better support multiple methods with the same name.
+ * Fixed bug that caused template to error when backtick characters appeared around class names.
 
 == 2.3.0 ==
 
