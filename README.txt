@@ -4,7 +4,7 @@ DESCRIPTION:
 
 This is the source code for JsDoc Toolkit, an automatic documentation
 generation tool for JavaScript. It is written in JavaScript and is run
-from a command line (or terminal) using the Java and Mozilla's Rhino
+from a command line (or terminal) using Java and Mozilla's Rhino
 JavaScript runtime engine.
 
 Using this tool you can automatically turn JavaDoc-like comments in
@@ -26,9 +26,9 @@ JsDoc Toolkit is known to work with:
 java version "1.6.0_03"
 Java(TM) SE Runtime Environment (build 1.6.0_03-b05)
 on Windows XP,
-and java version "1.5.0_13"
-Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_13-b05-241)
-on Mac OS X 10.4.
+and java version "1.5.0_19"
+Java(TM) 2 Runtime Environment, Standard Edition (build 1.5.0_19-b02-304)
+on Mac OS X 10.5.
 
 Other versions of java may or may not work with JsDoc Toolkit.
 
@@ -82,11 +82,9 @@ java -Djsdoc.dir=/some/long/dir/path/to/jsdoc -jar
 /some/long/dir/path/to/jsdoc/jsrun.jar /some/long/dir/path/to/jsdoc/app/run.js
 -t=template -r=4 /some/long/dir/path/to/my/src/code
 
-This can get tedious to redo time and again, and difficult to use from within a
-build environment.
+This can get tedious to redo time and again, and difficult to use from within a build environment.
 
-To simplify the process, jsrun.sh will automatically run this path, as well as
-passing through any arguments.
+To simplify the process, jsrun.sh will automatically run this path, as well as passing through any arguments.
 
 Usage: jsrun.sh <run.js arguments>
 
@@ -98,8 +96,7 @@ Additionally, jsrun.sh will take the following actions:
 "-Djsdoc.template.dir=$JSDOCTEMPLATEDIR" to the command-line
 3) java with the appropriate path to jsrun.jar and run.js will be instantiated
 
-If not variables are set, it is assumed that the path to jsrun.jar and app/ is
-in the current working directory.
+If not variables are set, it is assumed that the path to jsrun.jar and app/ is in the current working directory.
 
 Example:
 # jsrun.sh ./src/
