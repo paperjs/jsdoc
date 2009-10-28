@@ -1,3 +1,7 @@
+== 2.3.3 ==
+
+  * Fixed bug that made all fields declared with the @property tag static. ( issue #262 )
+
 == 2.3.2 ==
 
  * Minor update to the usage notes and corrected the version number displayed in the output.
