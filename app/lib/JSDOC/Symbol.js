@@ -433,8 +433,7 @@ JSDOC.Symbol.prototype.setTags = function() {
 			// TODO: shouldn't the following happen in the addProperty method of Symbol?
 			if (properties[i].type) property.type = properties[i].type;
 			if (properties[i].defaultValue) property.defaultValue = properties[i].defaultValue;
-			if (!JSDOC.Parser.symbols.getSymbolByName(property.name))
-				this.addProperty(property);
+			this.addProperty(property);
 			JSDOC.Parser.addSymbol(property);
 		}
 	}

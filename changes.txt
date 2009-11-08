@@ -2,6 +2,7 @@
 
   * Fixed bug that made all fields declared with the @property tag static. ( issue #262 )
   * Minor fix to better handle trailing slash on path to template (from jwmetrocat). (issue #237 )
+  * Fix for @memberOf when applied to inner members. ( issue #264 )
 
 == 2.3.2 ==
 

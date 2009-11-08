@@ -143,7 +143,16 @@ JSDOC.Walker.prototype.step = function() {
 				var isInner;
 				
 				if (this.lastDoc) doc = this.lastDoc;
-				name = this.namescope.last().alias+"-"+name;
+				
+				if (doc && doc.getTag("memberOf").length > 0) {
+					name = (doc.getTag("memberOf")[0]+"."+name).replace("#.", "#");
+					doc.deleteTag("memberOf");
+				}
+				else {
+					name = this.namescope.last().alias+"-"+name;
+					if (!this.namescope.last().is("GLOBAL")) isInner = true;
+				}
+				
 				if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
@@ -169,7 +178,14 @@ JSDOC.Walker.prototype.step = function() {
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("FUNCTION")) {
 				var isInner;
 				if (this.ts.look(-1).is("VAR") || this.isInner) {
-					name = this.namescope.last().alias+"-"+name
+					if (doc && doc.getTag("memberOf").length > 0) {
+						name = (doc.getTag("memberOf")[0]+"."+name).replace("#.", "#");
+						doc.deleteTag("memberOf");
+					}
+					else {
+						name = this.namescope.last().alias+"-"+name;
+						if (!this.namescope.last().is("GLOBAL")) isInner = true;
+					}
 					if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				}
 				else if (name.indexOf("this.") == 0) {
