@@ -47,7 +47,7 @@ function main() {
 		if (!JSDOC.opt.t && System.getProperty("jsdoc.template.dir")) {
 			JSDOC.opt.t = System.getProperty("jsdoc.template.dir");
 		}
-		if (JSDOC.opt.t && !JSDOC.opt.t.charAt(JSDOC.opt.t.length-1).match(/[\\\/]/)) {
+		if (JSDOC.opt.t && SYS.slash != JSDOC.opt.t.slice(-1)) {
 			JSDOC.opt.t += SYS.slash;
 		}
 		
