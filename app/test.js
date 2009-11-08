@@ -150,7 +150,13 @@ var testCases = [
 		is('symbols.getSymbol("Foo.Fiz").alias', "Foo.Fiz", 'An inner function can be documented as a static constructor.');
 		is('symbols.getSymbol("Foo.Fiz#fipple").alias', "Foo.Fiz#fipple", 'An inner function can be documented as a static constructor with a method.');
 		is('symbols.getSymbol("Foo#blat").alias', "Foo#blat", 'An global function can be documented as an instance method.');
-
+	}
+	,
+	function() {
+		symbolize({a:true, p: true,  _: [SYS.pwd+"test/memberof3.js"]});
+		
+		is('symbols.getSymbol("Foo#bar").alias', "Foo#bar", 'A virtual field can be documented as an instance method.');
+		is('symbols.getSymbol("Foo2#bar").alias', "Foo2#bar", 'A virtual field with the same name can be documented as an instance method.');
 	}
 	,
 	function() {

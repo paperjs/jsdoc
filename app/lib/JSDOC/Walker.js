@@ -84,6 +84,12 @@ JSDOC.Walker.prototype.step = function() {
 			var virtualName = doc.getTag("name")[0].desc;
 			if (!virtualName) throw "@name tag requires a value.";
 			
+			if (doc.getTag("memberOf").length > 0) {
+				virtualName = (doc.getTag("memberOf")[0] + "." + virtualName)
+					.replace(/([#.])\./, "$1");
+				doc.deleteTag("memberOf");
+			}
+
 			var symbol = new JSDOC.Symbol(virtualName, [], "VIRTUAL", doc);
 			
 			JSDOC.Parser.addSymbol(symbol);
