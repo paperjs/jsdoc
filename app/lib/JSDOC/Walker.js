@@ -202,6 +202,7 @@ JSDOC.Walker.prototype.step = function() {
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
 				
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
+
 				if (isInner) symbol.isInner = true;
 				
 				if (this.ts.look(1).is("JSDOC")) {
@@ -209,7 +210,7 @@ JSDOC.Walker.prototype.step = function() {
 					inlineReturn = inlineReturn.replace(/(^\/\*\* *| *\*\/$)/g, "");
 					symbol.type = inlineReturn;
 				}
-				
+
 				JSDOC.Parser.addSymbol(symbol);
 				
 				this.namescope.push(symbol);
