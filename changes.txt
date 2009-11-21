@@ -4,6 +4,7 @@
   * Minor fix to better handle trailing slash on path to template (from jwmetrocat). (issue #237 )
   * Fix for @memberOf when applied to inner members. ( issue #264 )
   * Fix for @memberOf when applied to symbols documented with @name. ( issue #260 )
+  * Applied patch from kunhualqk, fix for bug where @link to borrowed member did not resolve to parent class. ( issue #218 )
 
 == 2.3.2 ==
 
