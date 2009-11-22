@@ -434,7 +434,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 			if (properties[i].type) property.type = properties[i].type;
 			if (properties[i].defaultValue) property.defaultValue = properties[i].defaultValue;
 			this.addProperty(property);
-			JSDOC.Parser.addSymbol(property);
+			if (!JSDOC.Parser.symbols.getSymbolByName(property.name))
+				JSDOC.Parser.addSymbol(property);
 		}
 	}
 	
