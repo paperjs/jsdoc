@@ -260,6 +260,8 @@ JSDOC.Walker.prototype.step = function() {
 				if (this.lastDoc) doc = this.lastDoc;
 				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
 				
+				if (/(^|#)constructor$/.test(name)) JSDOC.PluginManager.run("onConstructorDefined", doc);
+				
 				if (doc && doc.getTag("constructs").length) {
 					name = name.replace(/\.prototype(\.|$)/, "#");
 					

@@ -5,6 +5,7 @@
   * Fix for @memberOf when applied to inner members. ( issue #264 )
   * Fix for @memberOf when applied to symbols documented with @name. ( issue #260 )
   * Applied patch from kunhualqk, fix for bug where @link to borrowed member did not resolve to parent class. ( issue #218 )
+  * Added new plugin hook named "onConstructorDefined" for functions in object literals named "constructor". ( issue #237 )
 
 == 2.3.2 ==
 
