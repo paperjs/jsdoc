@@ -183,9 +183,11 @@ JSDOC.Walker.prototype.step = function() {
 			// foo = function() {}
 			else if (this.ts.look(1).is("ASSIGN") && this.ts.look(2).is("FUNCTION")) {
 				var constructs;
+				var isConstructor = false;
 				if (doc && (constructs = doc.getTag("constructs")) && constructs.length) {
 					if (constructs[0].desc) {
 						name = constructs[0].desc;
+						isConstructor = true;
 					}
 				}
 					
@@ -211,7 +213,7 @@ JSDOC.Walker.prototype.step = function() {
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 
 				if (isInner) symbol.isInner = true;
-				if (constructs.length) symbol.isa = "CONSTRUCTOR";
+				if (isConstructor) symbol.isa = "CONSTRUCTOR";
 				
 				if (this.ts.look(1).is("JSDOC")) {
 					var inlineReturn = ""+this.ts.look(1).data;
