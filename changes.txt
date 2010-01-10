@@ -1,3 +1,8 @@
+== 2.4.0 ==
+
+  * Fixed bug that added mutiple symbols with the same name to docs.
+  * Added support for the -m option to suppress warnings for multiple docs.
+
 == 2.3.3 ==
 
   * Fixed bug that made all fields declared with the @property tag static. ( issue #262 )
@@ -7,7 +12,7 @@
   * Applied patch from kunhualqk, fix for bug where @link to borrowed member did not resolve to parent class. ( issue #218 )
   * Fix for @requires not linking back to the required class
   * Added experimental support for @constructs to have an argument, the class name, when applied to a function assignment.
-
+  
 == 2.3.2 ==
 
  * Minor update to the usage notes and corrected the version number displayed in the output.

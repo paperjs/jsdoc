@@ -27,6 +27,7 @@ JSDOC.opt = Opt.get(
 		e: "encoding",
 		"E[]": "exclude",
 		h: "help",
+		m: "multiple",
 		n: "nocode",
 		o: "out",
 		p: "private",
@@ -57,6 +58,7 @@ JSDOC.usage = function() {
 	print("  -e=<ENCODING> or --encoding=<ENCODING>\n          Use this encoding to read and write files.\n");
 	print("  -E=\"REGEX\" or --exclude=\"REGEX\"\n          Multiple. Exclude files based on the supplied regex.\n");
 	print("  -h or --help\n          Show this message and exit.\n");
+	print("  -m or --multiples\n          Don't warn about symbols being documented more than once.\n");
 	print("  -n or --nocode\n          Ignore all code, only document comments with @name tags.\n");
 	print("  -o=<PATH> or --out=<PATH>\n          Print log messages to a file (defaults to stdout).\n");
 	print("  -p or --private\n          Include symbols tagged as private, underscored and inner symbols.\n");
