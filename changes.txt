@@ -2,6 +2,7 @@
 
   * Fixed bug that added mutiple symbols with the same name to docs.
   * Added support for the -m option to suppress warnings for multiple docs.
+  * Added patch by brownsea42 to support quoted user variables on the command line. (issue #281 )
 
 == 2.3.3 ==
 
