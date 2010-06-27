@@ -1,6 +1,7 @@
 == 2.4.1 (unreleased) ==
 
   * Applied patch from allan.jardine to support quoted names in object literals. ( issue #293 )
+  * Added support for a dash to separate a param name and description. ( issue #270 )
 
 == 2.4.0 ==
 
