@@ -336,6 +336,12 @@ var testCases = [
 		is('symbols.getSymbol("myProject.myModule-myPrivateMethod").name', 'myPrivateMethod', 'A private method in the scope of a function wrapped in parens can be recognized.');
 		is('symbols.getSymbol("myProject.myModule-myPrivateVar").name', 'myPrivateVar', 'A private member in the scope of a function wrapped in parens can be recognized.');
 	}
+	,
+	function() {
+		symbolize({p:true, a:true, _: [SYS.pwd+"test/quoted_name.js"]});
+		is('symbols.getSymbol("ns.name1").name', 'name1', 'A quoted name can be used.');
+		is('symbols.getSymbol("ns.name2").name', 'name2', 'A non-quoted name can be used.');
+	}
 ];
 
 //// run and print results

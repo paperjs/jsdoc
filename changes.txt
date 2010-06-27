@@ -1,3 +1,7 @@
+== 2.4.1 (unreleased) ==
+
+  * Applied patch from allan.jardine to support quoted names in object literals. ( issue #293 )
+
 == 2.4.0 ==
 
   * Fixed bug that added mutiple symbols with the same name to docs.

@@ -182,7 +182,15 @@ JSDOC.TokenReader.prototype.read_dbquote = function(/**JSDOC.TokenStream*/stream
 			}
 			else if (stream.look() == "\"") {
 				string += stream.next();
-				tokens.push(new JSDOC.Token(string, "STRN", "DOUBLE_QUOTE"));
+ 				if ( stream.look(0, false) == ":" ) {
+ 					if ( string.indexOf('.') != -1 ) {
+ 						LOG.warn( "The symbol '"+string+"' uses dot notation, but is written as a string literal." );
+ 					}
+ 					tokens.push(new JSDOC.Token(string.substr(1, string.length-2), "NAME", "NAME"));
+ 				}
+ 				else {
+ 					tokens.push(new JSDOC.Token(string, "STRN", "DOUBLE_QUOTE"));
+ 				}
 				return true;
 			}
 			else {
