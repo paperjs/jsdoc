@@ -48,7 +48,7 @@ JSDOC.DocComment.prototype.parse = function(/**String*/comment) {
 	
 	this.tagTexts = 
 		this.src
-		.split(/(^|[\r\n])\s*@/)
+		.split(/(?:^|[\r\n])\s*@/) // hat tip: trev.moz
 		.filter(function($){return $.match(/\S/)});
 	
 	/**
