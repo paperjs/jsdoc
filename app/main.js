@@ -58,6 +58,13 @@ function main() {
 		IO.include("test.js");
 	}
 	else {
+		// a common error, caused by -t mytemplate, instead of -t=mytemplate
+		if (typeof JSDOC.opt.t !== 'string') {
+			LOG.warn("No template given. Might as well read the usage notes.");
+			JSDOC.usage();
+			quit();
+		}
+		
 		// a template must be defined and must be a directory path
 		if (!JSDOC.opt.t && System.getProperty("jsdoc.template.dir")) {
 			JSDOC.opt.t = System.getProperty("jsdoc.template.dir");
