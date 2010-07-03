@@ -131,3 +131,11 @@ JSDOC.TokenStream.prototype.getMatchingToken = function(/**String*/start, /**Str
 JSDOC.TokenStream.prototype.insertAhead = function(/**JSDOC.Token*/token) {
 	this.tokens.splice(this.cursor+1, 0, token);
 }
+
+JSDOC.TokenStream.tokensToString = function(tokens) {
+	var str = [];
+	for (var i = 0, leni = tokens.length; i < leni; i++) {
+		str.push(tokens[i].data);
+	}
+	return str.join('');
+}

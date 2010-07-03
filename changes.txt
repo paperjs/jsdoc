@@ -2,6 +2,7 @@
 
   * Applied patch from allan.jardine to support quoted names in object literals. ( issue #293 )
   * Added support for a dash to separate a param name and description. ( issue #270 )
+  * Fix for bug that sometmes caused warning to be emitted when using subscripted variable names. ( issue #278 )
 
 == 2.4.0 ==
 
