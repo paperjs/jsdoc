@@ -31,6 +31,7 @@ JSDOC.opt = Opt.get(
 		n: "nocode",
 		o: "out",
 		p: "private",
+		P: "plugins",
 		q: "quiet",
 		r: "recurse",
 		S: "securemodules",
@@ -62,6 +63,7 @@ JSDOC.usage = function() {
 	print("  -n or --nocode\n          Ignore all code, only document comments with @name tags.\n");
 	print("  -o=<PATH> or --out=<PATH>\n          Print log messages to a file (defaults to stdout).\n");
 	print("  -p or --private\n          Include symbols tagged as private, underscored and inner symbols.\n");
+	print("  -P or --plugins\n          Load additional plugins from the specified folder.\n");
 	print("  -q or --quiet\n          Do not output any messages, not even warnings.\n");
 	print("  -r=<DEPTH> or --recurse=<DEPTH>\n          Descend into src directories.\n");
 	print("  -s or --suppress\n          Suppress source code output.\n");
