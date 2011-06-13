@@ -138,7 +138,8 @@ var Render = new function() {
 				showConstructors: (!(/(Event|Style)/).test(symbol.alias)
 						&& !symbol.isNamespace && !symbol.ignore
 						&& symbol.desc.length),
-				inheritedClasses: symbol.getInheritedClasses()
+				inheritedClasses: symbol.getInheritedClasses(),
+				classExamples: Render.examples(symbol.classExample)
 			};
 			param.inheritedLinks = [];
 			for (var i in param.inheritedClasses) {
@@ -180,7 +181,7 @@ var Render = new function() {
 				signature: makeSignature(symbol.params),
 				parameters: Render.parameters(symbol),
 				returns: Render.returns(symbol),
-				examples: Render.examples(symbol),
+				examples: Render.examples(symbol.example),
 				seeAlsos: Render.seeAlsos(symbol)
 			};
 			if (symbol.returns.length == 0) {
@@ -278,9 +279,8 @@ var Render = new function() {
 		seeAlsos: function(symbol) {
 			return templates.seeAlsos.process(symbol);
 		},
-		examples: function(symbol) {
-			var out = [],
-				examples = symbol.example;
+		examples: function(examples) {
+			var out = [];
 			for (var i = 0, l = examples.length; i < l; i++) {
 				var example = examples[i].toString();
 				
