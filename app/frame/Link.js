@@ -138,7 +138,8 @@ Link.prototype._makeSymbolLink = function(alias, parameters) {
 	
 	// if there is no symbol by that name just return the name unaltered
 	if (!linkTo) {
-	    return linkText;
+		// TODO: See below about asCode
+	    return this.asCode ? "<tt>" + linkText + "</tt>" : linkText;
 	} else {
 		// it's a symbol in another file
 		if (!linkTo.is("CONSTRUCTOR") && !linkTo.isNamespace) { // it's a method or property
