@@ -34,14 +34,14 @@
 
 <if test="defined(data.methods) && data.methods.length">
 <!-- ============================== methods ================================ -->
-	<div class="reference-members"><h2>Functions</h2>
+	<div class="reference-members"><h2>Methods</h2>
 		<for each="member" in="data.methods">
 			{+ Render.method(member) +}
 		</for>
 	</div>
 </if>
 <if test="defined(data.staticMethods) && data.staticMethods.length">
-	<div class="reference-members"><h2>Static Functions</h2>
+	<div class="reference-members"><h2>Static Methods</h2>
 		<for each="member" in="data.staticMethods">
 			{+ Render.method(member) +}
 		</for>
@@ -58,7 +58,7 @@
 </if>
 <if test="inheritedClass.methods.length">
 <!-- =========================== inherited methods ========================= -->
-<div class="reference-members"><h2>Functions inherited from {+ new Link(true).toSymbol(inheritedClass.className) +}</h2>
+<div class="reference-members"><h2>Methods inherited from {+ new Link(true).toSymbol(inheritedClass.className) +}</h2>
 <for each="member" in="inheritedClass.methods">
 	{+ Render.method(member, true) +}
 </for>
