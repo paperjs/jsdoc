@@ -126,6 +126,19 @@ var Render = new function() {
 	var paperScriptId = 0;
 	return {
 		_class: function(symbol) {
+			// Reverse the inherited classes hash, so inheritance appears in the
+			// right order, from closest to furthest away (base)
+			var inherited = symbol.getInheritedClasses();
+			var list = [];
+			for (var i in inherited)
+				list.push([i, inherited[i]]);
+			inherited = {};
+			for (var i = list.length - 1; i >= 0; i--) {
+				var entry = list[i];
+				inherited[entry[0]] = entry[1];
+			}
+			
+			var inheritedClasses = {};
 			var param = {
 				name: symbol.alias,
 				description: processInlineTags(symbol.classDesc),
@@ -138,7 +151,7 @@ var Render = new function() {
 				showConstructors: (!(/(Event|Style)/).test(symbol.alias)
 						&& !symbol.isNamespace && !symbol.ignore
 						&& symbol.desc.length),
-				inheritedClasses: symbol.getInheritedClasses(),
+				inheritedClasses: inherited,
 				classExamples: Render.examples(symbol.classExample)
 			};
 			param.inheritedLinks = [];
