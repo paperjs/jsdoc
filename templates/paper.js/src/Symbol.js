@@ -20,7 +20,8 @@ JSDOC.Symbol.prototype.getOwnMethods = function(param) {
 		return $.memberOf == this.alias  && !$.isNamespace
 				&& (param.operators ? $.isOperator : !$.isOperator)
 				&& (param.constructors ? $.isConstructor : !$.isConstructor)
-				&& (param.statics ? $.isStatic : !$.isStatic);
+				&& (param.statics ? $.isStatic : !$.isStatic)
+				&& !$.isDeprecated;
 	}, this);
 };
 
@@ -47,7 +48,8 @@ JSDOC.Symbol.prototype.getProperties = function(param) {
 		param = {};
 	return this.properties.filter(function($) {
 		return $.memberOf == this.alias && !$.isNamespace && !$.isConstructor
-				&& (param.statics ? $.isStatic : !$.isStatic);
+				&& (param.statics ? $.isStatic : !$.isStatic)
+				&& !$.isDeprecated;
 	}, this);
 };
 
