@@ -253,7 +253,11 @@ var Render = new function() {
 				description: processInlineTags(symbol.desc,
 						{stripParagraphs: true}),
 				typeLink: new Link(true).toSymbol(symbol.type),
-				symbol: symbol
+				symbol: symbol,
+				defaultValue: symbol.defaultValue ?
+						processInlineTags(symbol.defaultValue, {
+							stripParagraphs: true
+						}) : null
 			});
 		},
 		operators: function(symbols) {
