@@ -126,6 +126,10 @@ var Render = new function() {
 	var paperScriptId = 0;
 	return {
 		_class: function(symbol) {
+			// Reset PaperScript id to 0 for each class, so they count up on a
+			// per file basis, and changes won't affect the whole docs files.
+			// Useful when checking into version control systems.
+			paperScriptId = 0;
 			// Reverse the inherited classes hash, so inheritance appears in the
 			// right order, from closest to furthest away (base)
 			var inherited = symbol.getInheritedClasses();
