@@ -5,10 +5,14 @@ JSDOC.PluginManager.registerPlugin(
 		onSymbol: function(symbol) {
 			if (symbol.comment.getTag('bean').length) {
 				var bean = symbol.name.match(/([^#]+#)(get|is)(([A-Z])(.*))$/);
-				symbol.alias  = bean[1] + bean[4].toLowerCase() + bean[5];
-				symbol.isa = "OBJECT";
-				symbol.readOnly = true;
-				this.beanSymbols[symbol.alias] = symbol;
+				if (bean) {
+					symbol.alias  = bean[1] + bean[4].toLowerCase() + bean[5];
+					symbol.isa = "OBJECT";
+					symbol.readOnly = true;
+					this.beanSymbols[symbol.alias] = symbol;
+				} else {
+					LOG.warn('@bean error: ' + symbol.name);
+				}
 			}
 			var setter = symbol.name.match(/([^#]+#)(set)(([A-Z])(.*))$/);
 			if (setter) {
