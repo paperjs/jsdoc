@@ -574,6 +574,12 @@ JSDOC.Symbol.prototype.isBuiltin = function() {
 	return JSDOC.Lang.isBuiltin(this.alias);
 }
 
+JSDOC.Symbol.prototype.isVisible = function() {
+	// -p flag is required to document private things
+	// ignored things are not documented, this doesn't cascade
+	return !this.isIgnored && (!this.isPrivate || JSDOC.opt.p);
+}
+
 JSDOC.Symbol.prototype.setType = function(/**String*/comment, /**Boolean*/overwrite) {
 	if (!overwrite && this.type) return;
 	var typeComment = JSDOC.DocComment.unwrapComment(comment);

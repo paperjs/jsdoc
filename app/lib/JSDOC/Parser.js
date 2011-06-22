@@ -54,7 +54,7 @@ JSDOC.Parser = {
 
 		// if a symbol alias is documented more than once:
 		if (JSDOC.Parser.symbols.hasSymbol(symbol.alias)) {
-			if (symbol.isa == 'FUNCTION') {
+			if (symbol.is("FUNCTION")) {
 				// ...add ^n to its alias if it is a function:
 				var num = 0;
 				while (JSDOC.Parser.symbols.hasSymbol(symbol.alias + '^' + num)) {
@@ -85,11 +85,11 @@ JSDOC.Parser = {
 			if (!symbol.comment.getTag("public").length > 0) symbol.isPrivate = true;
 		}
 		
-		// -p flag is required to document private things
-		if (!JSDOC.opt.p && symbol.isPrivate) return; // issue #161 fixed by mcbain.asm
+		// Paper.js: We keep private / ignored classes around but filter them
+		// out later, to avoid warnings.
+		if (!symbol.isVisible() && !symbol.is("CONSTRUCTOR"))
+			return;
 		
-		// ignored things are not documented, this doesn't cascade
-		if (symbol.isIgnored) return;
 		JSDOC.Parser.symbols.addSymbol(symbol);
 	},
 	

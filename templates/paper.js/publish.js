@@ -52,7 +52,10 @@ function publish(symbolSet) {
 	var filemapCounts = {};
 	Link.filemap = {};
 	for (var i = 0, l = classes.length; i < l; i++) {
-		var alias = classes[i].alias,
+		var symbol = classes[i];
+		if (!symbol.isVisible())
+			continue;
+		var alias = symbol.alias,
 			lcAlias = alias.toLowerCase();
 		
 		if (!filemapCounts[lcAlias]) {
@@ -72,7 +75,8 @@ function publish(symbolSet) {
 	// create each of the class pages
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
-		
+		if (!symbol.isVisible())
+			continue;
 		symbol.events = symbol.getEvents();   // 1 order matters
 		symbol.methods = symbol.getMethods(); // 2
 		for (var j = 0; j < symbol.methods.length; j++) {
