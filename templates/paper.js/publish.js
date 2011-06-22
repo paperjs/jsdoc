@@ -6,25 +6,25 @@ load(JSDOC.opt.t + 'src/Render.js');
 
 function publish(symbolSet) {
 	var renderMode = JSDOC.opt.D.renderMode;
-	var templates = renderMode == 'templates';
+	var serverdocs = renderMode == 'serverdocs';
 	var extension = '.html';
 	var templateDir = JSDOC.opt.t || SYS.pwd + '../templates/jsdoc/';
 	var outDir = JSDOC.opt.d || SYS.pwd + '../dist/docs/';
 
 	publish.conf = {  // trailing slash expected for dirs
-		// Use no extensions in links for templates
-		ext: templates ? '' : extension,
+		// Use no extensions in links for serverdocs
+		ext: serverdocs ? '' : extension,
 		outDir: outDir,
 		templateDir: templateDir,
 		staticDir: templateDir + 'static/',
 		classesDir: outDir + 'classes/',
-		symbolsDir: templates ? 'reference/' : 'classes/',
+		symbolsDir: serverdocs ? 'reference/' : 'classes/',
 		srcDir: 'symbols/src/',
 		renderMode: renderMode,
 		globalName: 'Global Scope'
 	};
 	
-	Link.base = templates ? '/' : '../';
+	Link.base = serverdocs ? '/' : '../';
 
 	if (renderMode == 'docs') {
 		// Copy over the static files
@@ -47,8 +47,8 @@ function publish(symbolSet) {
 		aliasSort = Utils.makeSortby('alias'),
  		classes = symbols.filter(Utils.isaClass).sort(aliasSort);
 	
-	// create a filemap in which outfiles must be to be named uniquely, ignoring case
-	// Since we want lowercase links in templates, we always use this
+	// Create a filemap in which outfiles must be to be named uniquely, ignoring
+	// case since we want lowercase links for serverdocs, we always use this
 	var filemapCounts = {};
 	Link.filemap = {};
 	for (var i = 0, l = classes.length; i < l; i++) {
@@ -60,8 +60,8 @@ function publish(symbolSet) {
 		} else {
 			filemapCounts[lcAlias]++;
 		}
-		// Use lowercase links for templates
-		var linkAlias = templates ? lcAlias : alias;
+		// Use lowercase links for serverdocs
+		var linkAlias = serverdocs ? lcAlias : alias;
 		// Rename _global_.html to global.html
 		if (linkAlias == '_global_')
 			linkAlias = 'global';
@@ -91,7 +91,7 @@ function publish(symbolSet) {
 		}
 		IO.saveFile(publish.conf.classesDir, name, html);
 	}
-	if (templates) {
+	if (serverdocs) {
 		IO.saveFile(publish.conf.outDir, 'packages.js', Render.packages());
 	} else {
 		IO.saveFile(publish.conf.classesDir, 'index.html', Render.index());
