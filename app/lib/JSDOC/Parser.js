@@ -52,13 +52,29 @@ JSDOC.Parser = {
 			}
 		}
 
-		// if a symbol alias is documented more than once, add ^n to its alias:
+		// if a symbol alias is documented more than once:
 		if (JSDOC.Parser.symbols.hasSymbol(symbol.alias)) {
-			var num = 0;
-			while (JSDOC.Parser.symbols.hasSymbol(symbol.alias + '^' + num)) {
-				num++;
+			if (symbol.isa == 'FUNCTION') {
+				// ...add ^n to its alias if it is a function:
+				var num = 0;
+				while (JSDOC.Parser.symbols.hasSymbol(symbol.alias + '^' + num)) {
+					num++;
+				}
+				symbol.alias = symbol.alias + '^' + num;
+			} else {
+				// ...the first one with the user docs wins for all else:
+	 			var oldSymbol = JSDOC.Parser.symbols.getSymbol(symbol.alias);
+				if (oldSymbol.comment.isUserComment) {
+					if (JSDOC.opt.m) return;
+					if (symbol.comment.isUserComment) { // old and new are both documented
+						LOG.warn("The symbol '"+symbol.alias+"' is documented more than once.");
+						return;
+					}
+					else { // old is documented but new isn't
+						return;
+					}
+				}
 			}
-			symbol.alias = symbol.alias + '^' + num;
 		}
 		
 		// we don't document anonymous things
