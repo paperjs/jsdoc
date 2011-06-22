@@ -17,11 +17,10 @@ JSDOC.Symbol.prototype.getOwnMethods = function(param) {
 	if (!param)
 		param = {};
 	return this.methods.filter(function($) {
-		return $.memberOf == this.alias  && !$.isNamespace
+		return $.memberOf == this.alias  && !$.isNamespace && !$.isDeprecated
 				&& (param.operators ? $.isOperator : !$.isOperator)
 				&& (param.constructors ? $.isConstructor : !$.isConstructor)
-				&& (param.statics ? $.isStatic : !$.isStatic)
-				&& !$.isDeprecated;
+				&& (param.statics ? $.isStatic : !$.isStatic);
 	}, this);
 };
 
@@ -38,9 +37,16 @@ JSDOC.Symbol.prototype.getStaticMethods = function() {
 };
 
 JSDOC.Symbol.prototype.getConstructors = function() {
-	return [this].concat(this.getOwnMethods({
+	// Filter the construktor-like methods
+	var ctors = this.getOwnMethods({
 		constructors: true
-	}));
+	});
+	// Now add the main constructor which is also the class, but only if it is
+	// documented. It can also be used to only host the class that then has
+	// constructor-like methods, as returned above.
+	if (this.desc.length)
+		ctors.unshift(this);
+	return ctors;
 };
 
 JSDOC.Symbol.prototype.getProperties = function(param) {

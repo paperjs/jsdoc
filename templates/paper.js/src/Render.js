@@ -143,18 +143,19 @@ var Render = new function() {
 			}
 			
 			var inheritedClasses = {};
+			var constructors = symbol.getConstructors();
 			var param = {
 				name: symbol.alias,
 				description: processInlineTags(symbol.classDesc),
 				symbol: symbol,
-				constructors: symbol.getConstructors(),
+				constructors: constructors,
 				properties: symbol.getProperties(),
 				staticProperties: symbol.getStaticProperties(),
 				methods: symbol.getOwnMethods(),
 				staticMethods: symbol.getStaticMethods(),
 				showConstructors: (!(/(Event|Style)/).test(symbol.alias)
 						&& !symbol.isNamespace && !symbol.ignore
-						&& symbol.desc.length),
+						&& constructors.length),
 				inheritedClasses: inherited,
 				classExamples: Render.examples(symbol.classExample)
 			};
@@ -351,7 +352,6 @@ var Render = new function() {
 		},
 		classes: function() {
 			// TODO: Use a template instead?
-			var renderMode = publish.conf.renderMode;
 			var out = '<ul class="package-classes">';
 
 			load(JSDOC.opt.t + 'classLayout.js');
