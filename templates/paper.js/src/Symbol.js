@@ -41,6 +41,11 @@ JSDOC.Symbol.prototype.getConstructors = function() {
 	var ctors = this.getOwnMethods({
 		constructors: true
 	});
+	// Add 'static'-constructors, such as Path.Line
+	ctors = ctors.concat(this.getOwnMethods({
+		constructors: true,
+		statics: true
+	}));
 	// Now add the main constructor which is also the class, but only if it is
 	// documented. It can also be used to only host the class that then has
 	// constructor-like methods, as returned above.
