@@ -4,10 +4,10 @@ var classLayout = {
 	'Items': ['Item', 'Layer', 'Group', 'Raster', 'PlacedSymbol'],
 	'Paths': ['PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve', 'PathStyle', 'ruler',
 		'CurveLocation'],
-	'Tools': ['Tool', 'ToolEvent', 'Key', 'KeyEvent'],
-	'Projects': ['Project', 'View', 'Symbol'],
+	'Projects': ['Project', 'Symbol'],
 	'Colors': ['Color', 'RGBColor', 'GrayColor', 'HSBColor'],
 	'Gradients': ['GradientColor', 'Gradient', 'GradientStop'],
+	'Interface': ['View', 'Tool', 'ToolEvent', 'Key', 'KeyEvent'],
 	'Typography': ['TextItem', 'PointText', {
 		'Style': ['CharacterStyle', 'ParagraphStyle']
 	}]
