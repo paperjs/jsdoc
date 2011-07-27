@@ -10,5 +10,6 @@ var classLayout = {
 	'Interface': ['View', 'Tool', 'ToolEvent', 'Key', 'KeyEvent'],
 	'Typography': ['TextItem', 'PointText', {
 		'Style': ['CharacterStyle', 'ParagraphStyle']
-	}]
+	}],
+	'JavaScript': ['PaperScope', 'PaperScript']
 };
