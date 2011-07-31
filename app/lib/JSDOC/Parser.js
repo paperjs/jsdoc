@@ -85,9 +85,9 @@ JSDOC.Parser = {
 			if (!symbol.comment.getTag("public").length > 0) symbol.isPrivate = true;
 		}
 		
-		// Paper.js: We keep private / ignored classes around but filter them
-		// out later, to avoid warnings.
-		if (!symbol.isVisible() && !symbol.is("CONSTRUCTOR"))
+		// Paper.js: We keep private / ignored classes and namespacesaround but
+		// filter them out later, to avoid warnings.
+		if (!symbol.isVisible() && !symbol.is("CONSTRUCTOR") && !symbol.isNamespace)
 			return;
 		
 		JSDOC.Parser.symbols.addSymbol(symbol);
