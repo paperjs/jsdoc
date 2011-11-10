@@ -6,7 +6,7 @@ var classLayout = {
 	'Paths': ['PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve',
 		'PathStyle', 'ruler', 'CurveLocation'],
 	'Projects': ['Project', 'Symbol'],
-	'Colors': ['Color', 'RGBColor', 'GrayColor', 'HSBColor', 'HSLColor'],
+	'Colors': ['Color', 'RgbColor', 'GrayColor', 'HsbColor', 'HslColor'],
 	'Gradients': ['GradientColor', 'Gradient', 'GradientStop'],
 	'Interface': ['View', 'Tool', 'ToolEvent', 'Key', 'KeyEvent'],
 	'Typography': ['TextItem', 'PointText', {
