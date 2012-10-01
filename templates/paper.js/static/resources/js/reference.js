@@ -123,10 +123,11 @@ PaperScript = HtmlElement.extend({
 				script.setText(code);
 				// Keep a reference to the used canvas, since we're going to
 				// fully clear the scope and initialize again with this canvas.
-				var canvas = scope.view.canvas;
+				var element = scope.view.element;
 				// Clear scope first, then evaluate a new script.
 				scope.clear();
-				scope.initialize(canvas);
+				scope.initialize(script.$);
+				scope.setup(element);
 				scope.evaluate(code);
 			}
 		}
