@@ -8,7 +8,7 @@ var classLayout = {
 	'Projects': ['Project', 'Symbol'],
 	'Colors': ['Color', 'RgbColor', 'GrayColor', 'HsbColor', 'HslColor'],
 	'Gradients': ['GradientColor', 'Gradient', 'GradientStop'],
-	'Interface': ['View', 'Tool', 'ToolEvent', 'Key', 'KeyEvent'],
+	'User Interface': ['View', 'Tool', 'ToolEvent', 'Palette', 'Component', 'Key', 'KeyEvent'],
 	'Typography': ['TextItem', 'PointText', {
 		'Style': ['CharacterStyle', 'ParagraphStyle']
 	}],
