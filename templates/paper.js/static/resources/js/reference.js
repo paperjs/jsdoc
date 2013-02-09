@@ -255,5 +255,5 @@ $document.addEvent('domready', function() {
 	var h = unescape(window.location.hash);
 	if (h) scrollToElement(h.substring(1));
 	if (window.paper)
-		paper.load();
+		paper.PaperScript.load();
 });
