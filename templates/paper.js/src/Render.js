@@ -106,7 +106,8 @@ var Render = new function() {
 		var first = true;
 		params = params.filter(
 			function($) {
-				return $.name.indexOf('.') == -1; // don't show config params in signature
+				return $.name.indexOf('.') == -1 // hide config params in signature
+						&& $.name.indexOf('_') != 0 // hide params that start with an _
 			}
 		);
 		var signature = '';
@@ -246,7 +247,14 @@ var Render = new function() {
 			return templates.property.process(param);
 		},
 		parameters: function(symbol) {
-			return templates.parameters.process(symbol);
+			// Remove parameters that start with an underscore:
+			var params = symbol.params.filter(
+				function($) {
+					return $.name.indexOf('_') != 0
+				}
+			);
+
+			return templates.parameters.process({params: params});
 		},
 		parameter: function(symbol) {
 			return templates.parameter.process({
