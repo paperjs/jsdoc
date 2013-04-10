@@ -4,13 +4,11 @@ var classLayout = {
 	'Items': ['Item', 'Layer', 'Group', 'Raster', 'PlacedSymbol',
 		'ruler', 'HitResult'],
 	'Paths': ['PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve',
-		'PathStyle', 'ruler', 'CurveLocation'],
+		'ruler', 'CurveLocation'],
+	'Typography': ['TextItem', 'PointText' ],
+	'Styling': ['Style', 'Color', 'Gradient', 'GradientStop'],
 	'Projects': ['Project', 'Symbol'],
-	'Colors': ['Color', 'RgbColor', 'GrayColor', 'HsbColor', 'HslColor'],
-	'Gradients': ['GradientColor', 'Gradient', 'GradientStop'],
-	'User Interface': ['View', 'Tool', 'ToolEvent', 'Palette', 'Component', 'Key', 'KeyEvent'],
-	'Typography': ['TextItem', 'PointText', {
-		'Style': ['CharacterStyle', 'ParagraphStyle']
-	}],
+	'User Interfaces': ['View', 'Tool', 'ToolEvent', 'Palette', 'Component',
+		'Key', 'KeyEvent'],
 	'JavaScript': ['PaperScope', 'PaperScript']
 };
