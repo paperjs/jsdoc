@@ -3,7 +3,7 @@
 </p>
 <if test="data.paperScript">
 <div class="paperscript <if test="data.paperScript.mode">{+ data.paperScript.mode +}</if>">
-<if test="data.paperScript.source != 'false'"><div class="button">{+ data.paperScript.mode == 'source' ? 'Source' : 'Run' +}</div></if>
+<if test="data.paperScript.source != 'false'"><div class="button run">{+ data.paperScript.mode == 'source' ? 'Source' : 'Run' +}</div></if>
 <script type="text/paperscript" canvas="canvas-{+ data.paperScript.id +}">
 {+ data.code +}
 </script>
