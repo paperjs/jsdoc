@@ -2,7 +2,7 @@ var classLayout = {
 	'_global_': ['Global Scope:_global_'],
 	'Basic Types': ['Point', 'Size', 'Rectangle', 'Matrix'],
 	'Projects': ['Project', 'Symbol'],
-	'Items': ['Item', 'Layer', 'Group', 'Raster', 'PlacedSymbol',
+	'Items': ['Item', 'Layer', 'Group', 'Shape', 'Raster', 'PlacedSymbol',
 		'ruler', 'HitResult'],
 	'Paths': ['PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve',
 		'ruler', 'CurveLocation'],
