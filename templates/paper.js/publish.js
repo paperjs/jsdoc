@@ -79,10 +79,6 @@ function publish(symbolSet) {
 			continue;
 		symbol.events = symbol.getEvents();   // 1 order matters
 		symbol.methods = symbol.getMethods(); // 2
-		for (var j = 0; j < symbol.methods.length; j++) {
-			var method = symbol.methods[j];
-			method.isOperator = Operator.isOperator(method);
-		}
 		
 		Link.currentSymbol = symbol;
 		var html = Render._class(symbol);

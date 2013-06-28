@@ -2,10 +2,8 @@ JSDOC.PluginManager.registerPlugin(
 	"JSDOC.operator",
 	{
 		onSymbol: function(symbol) {
-			var operators = symbol.comment.getTag('operator');
-			if (operators.length) {
-				symbol.operator = operators[0].desc;
-			}
+			if (symbol.comment.getTag('operator').length)
+				symbol.isOperator = true;
 		}
 	}
 );
