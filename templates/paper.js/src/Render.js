@@ -360,7 +360,7 @@ var Render = new function() {
 		},
 		classes: function() {
 			// TODO: Use a template instead?
-			var out = '<ul class="package-classes">';
+			var out = '<ul class="reference-classes">';
 
 			load(JSDOC.opt.t + 'classLayout.js');
 			function parseClassNames(classNames) {
