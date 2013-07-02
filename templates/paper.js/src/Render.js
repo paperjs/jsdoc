@@ -15,7 +15,6 @@ var Render = new function() {
 		constructor: 'constructor.tmpl',
 		html: 'html.tmpl',
 		index: 'index.tmpl',
-		packages: 'packages.tmpl',
 		operator: 'operator.tmpl'
 	};
 	publish.classes = [];
@@ -415,9 +414,6 @@ var Render = new function() {
 		},
 		index: function(html) {
 			return templates.index.process(html);
-		},
-		packages: function() {
-			return templates.packages.process(publish.classes);
 		}
 	};
 };

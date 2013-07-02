@@ -7,7 +7,7 @@ load(JSDOC.opt.t + 'src/Render.js');
 function publish(symbolSet) {
 	var renderMode = JSDOC.opt.D.renderMode;
 	var serverdocs = renderMode == 'serverdocs';
-	var extension = '.html';
+	var extension = serverdocs ? '.txt' : '.html';
 	var templateDir = JSDOC.opt.t || SYS.pwd + '../templates/jsdoc/';
 	var outDir = JSDOC.opt.d || SYS.pwd + '../dist/docs/';
 
@@ -17,7 +17,7 @@ function publish(symbolSet) {
 		outDir: outDir,
 		templateDir: templateDir,
 		staticDir: templateDir + 'static/',
-		classesDir: outDir + 'classes/',
+		classesDir: outDir + (serverdocs ? '' : 'classes/'),
 		symbolsDir: serverdocs ? 'reference/' : 'classes/',
 		srcDir: 'symbols/src/',
 		renderMode: renderMode,
@@ -49,7 +49,6 @@ function publish(symbolSet) {
 	
 	// Create a filemap in which outfiles must be to be named uniquely, ignoring
 	// case since we want lowercase links for serverdocs, we always use this
-	var filemapCounts = {};
 	Link.filemap = {};
 	for (var i = 0, l = classes.length; i < l; i++) {
 		var symbol = classes[i];
@@ -57,19 +56,12 @@ function publish(symbolSet) {
 			continue;
 		var alias = symbol.alias,
 			lcAlias = alias.toLowerCase();
-		
-		if (!filemapCounts[lcAlias]) {
-			filemapCounts[lcAlias] = 1;
-		} else {
-			filemapCounts[lcAlias]++;
-		}
 		// Use lowercase links for serverdocs
 		var linkAlias = serverdocs ? lcAlias : alias;
 		// Rename _global_.html to global.html
 		if (linkAlias == '_global_')
 			linkAlias = 'global';
-		Link.filemap[alias] = filemapCounts[lcAlias] > 1
-				? linkAlias + '_' + filemapCounts[lcAlias] : linkAlias;
+		Link.filemap[alias] = linkAlias;
 	}
 
 	// create each of the class pages
@@ -82,17 +74,25 @@ function publish(symbolSet) {
 		
 		Link.currentSymbol = symbol;
 		var html = Render._class(symbol);
-		var name = Link.filemap[symbol.alias] + extension;
-		if (renderMode == 'docs') {
+		var classDir = publish.conf.classesDir;
+		var name = symbol.alias;
+		if (serverdocs) {
+			if (name == '_global_')
+				name = 'global';
+			classDir += name + '/';
+			new java.io.File(classDir).mkdirs();
+			name = 'class';
+		} else {
+			name = Link.filemap[name];
 			html = Render.html({
 				content: html,
 				title: symbol.alias
 			});
 		}
-		IO.saveFile(publish.conf.classesDir, name, html);
+		IO.saveFile(classDir, name + extension, html);
 	}
 	if (serverdocs) {
-		IO.saveFile(publish.conf.outDir, 'packages.js', Render.packages());
+		IO.saveFile(publish.conf.outDir, 'classes.txt', Render.classes());
 	} else {
 		IO.saveFile(publish.conf.classesDir, 'index.html', Render.index());
 	}
