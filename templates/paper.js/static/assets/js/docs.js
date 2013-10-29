@@ -10,6 +10,16 @@ $.extend($.fn, {
 	}
 });
 
+// Little Helpers
+
+function smoothScrollTo(el, callback) {
+	$('html, body').animate({
+		scrollTop: el.offset().top
+	}, 250, callback);
+}
+
+// Behaviors
+
 var behaviors = {};
 
 behaviors.contentEnd = function() {
@@ -28,6 +38,19 @@ behaviors.contentEnd = function() {
 			.load(resize)
 			.resize(resize);
 		resize();
+	}
+};
+
+behaviors.hash = function() {
+	var hash = unescape(window.location.hash);
+	if (hash) {
+		// First see if there's a class member to open
+		var target = $(hash);
+		if (target.length) {
+			if (target.hasClass('member'))
+				toggleMember(target);
+			smoothScrollTo(target);
+		}
 	}
 };
 
