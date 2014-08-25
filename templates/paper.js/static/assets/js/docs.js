@@ -127,7 +127,7 @@ function createPaperScript(element) {
 
 	// Now load / parse / execute the script
 	script.removeAttr('ignore');
-	paper.PaperScript.load(script[0]);
+	var scope = paper.PaperScript.load(script[0]);
 
 	var canvas = $('canvas', element),
 		hasResize = canvas.attr('resize'),
@@ -221,21 +221,18 @@ function createPaperScript(element) {
 	}
 
 	function runScript() {
-		var scope = paper.PaperScope.get(script[0]);
-		if (scope) {
-			// Update script to edited version
-			var code = editor.getValue();
-			script.text(code);
-			// Keep a reference to the used canvas, since we're going to
-			// fully clear the scope and initialize again with this canvas.
-			// Support both old and new versions of paper.js for now:
-			var element = scope.view.element;
-			// Clear scope first, then evaluate a new script.
-			scope.clear();
-			scope.initialize(script[0]);
-			scope.setup(element);
-			scope.evaluate(code);
-		}
+		// Update script to edited version
+		var code = editor.getValue();
+		script.text(code);
+		// Keep a reference to the used canvas, since we're going to
+		// fully clear the scope and initialize again with this canvas.
+		// Support both old and new versions of paper.js for now:
+		var element = scope.view.element;
+		// Clear scope first, then evaluate a new script.
+		scope.clear();
+		scope.initialize(script[0]);
+		scope.setup(element);
+		scope.evaluate(code);
 	}
 
 	function resize() {
