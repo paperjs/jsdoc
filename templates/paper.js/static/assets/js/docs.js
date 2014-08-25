@@ -61,6 +61,9 @@ behaviors.code = function() {
 };
 
 behaviors.paperscript = function() {
+	// Ignore all paperscripts in the automatic load event, and load them
+	// separately in createPaperScript() when needed.
+	$('script[type="text/paperscript"]').attr('ignore', 'true');
 	$('.paperscript:visible').each(function() {
 		createPaperScript($(this));
 	});
@@ -122,6 +125,10 @@ function createPaperScript(element) {
 	if (!script || !runButton)
 		return;
 
+	// Now load / parse / execute the script
+	script.removeAttr('ignore');
+	paper.PaperScript.load(script[0]);
+
 	var canvas = $('canvas', element),
 		hasResize = canvas.attr('resize'),
 		showSplit = element.hasClass('split'),
@@ -136,6 +143,9 @@ function createPaperScript(element) {
 
 	if (explain) {
 		explain.addClass('hidden');
+		var text = explain.html().replace(/http:\/\/([\w.]+)/g, function(url, domain) {
+			return '<a href="' + url + '">' + domain + '</a>';
+		}).trim();
 		// Add explanation bubbles to tickle the visitor's fancy
 		var explanations = [{
 			index: 0,
@@ -219,7 +229,7 @@ function createPaperScript(element) {
 			// Keep a reference to the used canvas, since we're going to
 			// fully clear the scope and initialize again with this canvas.
 			// Support both old and new versions of paper.js for now:
-			var element = scope.view.element || scope.view.canvas;
+			var element = scope.view.element;
 			// Clear scope first, then evaluate a new script.
 			scope.clear();
 			scope.initialize(script[0]);
@@ -236,8 +246,8 @@ function createPaperScript(element) {
 			// Can't get correct dimensions from hidden canvas,
 			// so calculate again.
 			var offset = source.offset();
-			width = $(document).width() - offset.left;
-			height = $(document).height() - offset.top;
+			width = $(window).width() - offset.left;
+			height = $(window).height() - offset.top;
 		}
 		// Resize the main element as well, so that the float:right button
 		// is always positioned correctly.
@@ -266,7 +276,10 @@ function createPaperScript(element) {
 		// which happens on the load event. This is needed because we rely
 		// on paper.js performing the actual resize magic.
 		$(window).load(function() {
-			$(window).resize(resize);
+			// We need to use the same event mechanism as paper.js to receive
+			// the resize event after the internal paper.js one.
+			// TODO: Use view.on('resize') instead?
+			paper.DomEvent.add(window, { resize: resize });
 		});
 		hasBorders = false;
 		source.css('border-width', '0 0 0 1px');
