@@ -57,15 +57,16 @@ var Render = new function() {
 
 		// {@option name:type text}
 		var first = true;
-		str = str.replace(/\{@option\s+([\w.]*)\:(\S*)\s+([\u0000-\uffff]*?)\}/g,
+		str = str.replace(/\{@option\s+([\w.]*)\:(\{\w*\}|\w*)\s*([\u0000-\uffff]*?)\}/g,
 			function(match, name, type, text, offset, all) {
 				// Look at content after this tag, to see if it's the last one
 				var last = !/\{@option\s+/.test(
 						all.substring(offset + match.length));
 				var part = first ? '</p><ul><b>Options:</b>' : '';
+				text = text.trim();
 				part += '<li><tt>' + name + ': '
 						+ new Link(true).toSymbol(type.replace(/[{}]/g, ''))
-						+ '</tt> — ' + text + '</li>';
+						+ '</tt>' + (text ? ' — ' + text : '') + '</li>';
 				if (last)
 					part += '</u>';
 				first = false;
