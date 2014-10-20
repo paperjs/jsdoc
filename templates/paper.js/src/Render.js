@@ -32,27 +32,44 @@ var Render = new function() {
 		str = str.replace(/<pre>/g, '<pre class="code">');
 
 		// {@link ...} -> html links
-		str = str.replace(/\{@link\s+([^}]+)?\}/gi,
+		str = str.replace(/\{@link\s+([^}]+)?\}/g,
 			function(match, symbolName) {
-				var name = symbolName
+				return new Link(true).toSymbol(symbolName
 					// Remove spaces in function call signature
 					.replace(/\s+/g, '')
 					// Handle aliases when there's more than one version
-					.replace(/[\^]/g, '-');
-				return new Link(true).toSymbol(name);
+					.replace(/[\^]/g, '-'));
 			}
 		);
 		// {@code ...} -> code blocks
-		str = str.replace(/\{@code[\s]([^}]+)\}/gi,
+		str = str.replace(/\{@code\s+([^}]+)\}/g,
 			function(match, code) {
 				return '<tt>' + code + '</tt>';
 			}
 		);
 
 		// {@true ...} -> true if.. false otherwise..
-		str = str.replace(/\{@true[\s]([^}]+)\}/gi,
+		str = str.replace(/\{@true\s+([^}]+)\}/g,
 			function(match, text) {
 				return '<tt>true</tt> ' + text + ', <tt>false</tt> otherwise';
+			}
+		);
+
+		// {@option name:type text}
+		var first = true;
+		str = str.replace(/\{@option\s+([\w.]*)\:(\S*)\s+([\u0000-\uffff]*?)\}/g,
+			function(match, name, type, text, offset, all) {
+				// Look at content after this tag, to see if it's the last one
+				var last = !/\{@option\s+/.test(
+						all.substring(offset + match.length));
+				var part = first ? '</p><ul><b>Options:</b>' : '';
+				part += '<li><tt>' + name + ': '
+						+ new Link(true).toSymbol(type.replace(/[{}]/g, ''))
+						+ '</tt> — ' + text + '</li>';
+				if (last)
+					part += '</u>';
+				first = false;
+				return part;
 			}
 		);
 
