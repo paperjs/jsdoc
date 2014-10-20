@@ -290,6 +290,7 @@ var Render = new function() {
 				list.push('</ul>');
 				return list.join('\n');
 			}
+			return '';
 		},
 		operators: function(symbols) {
 			var operatorCount = 0;
