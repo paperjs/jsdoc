@@ -5,11 +5,11 @@
 </div>
 <div class="member-description hidden">
 <div class="member-text">
-{+ data.description +}
-{+ data.parameters +}
-{+ data.returns +}
-{+ data.examples +}
-{+ data.seeAlsos +}
+    {+ data.description +}
+    {+ Render.parameters(data.symbol) +}
+    {+ Render.returns(data.symbol) +}
+    {+ Render.seeAlsos(data.symbol) +}
+    {+ Render.examples(data.symbol.example) +}
 </div>
 </div>
 </div>

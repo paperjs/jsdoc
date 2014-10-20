@@ -55,25 +55,6 @@ var Render = new function() {
 			}
 		);
 
-		// {@option name:type text}
-		var first = true;
-		str = str.replace(/\{@option\s+([\w.]*)\:(\{\w*\}|\w*)\s*([\u0000-\uffff]*?)\}/g,
-			function(match, name, type, text, offset, all) {
-				// Look at content after this tag, to see if it's the last one
-				var last = !/\{@option\s+/.test(
-						all.substring(offset + match.length));
-				var part = first ? '</p><ul><b>Options:</b>' : '';
-				text = text.trim();
-				part += '<li><tt>' + name + ': '
-						+ new Link(true).toSymbol(type.replace(/[{}]/g, ''))
-						+ '</tt>' + (text ? ' — ' + text : '') + '</li>';
-				if (last)
-					part += '</u>';
-				first = false;
-				return part;
-			}
-		);
-
 		var lineBreak = java.lang.System.getProperty('line.separator');
 
 		// Convert any type of lineBreak to the one we're using now:
@@ -218,12 +199,8 @@ var Render = new function() {
 				symbol: symbol,
 				id: symbol.getId(),
 				name: symbol.alias.replace(/(#|\^).+$/, ''),
-				description: processInlineTags(symbol.desc),
 				signature: makeSignature(symbol.params),
-				parameters: Render.parameters(symbol),
-				returns: Render.returns(symbol),
-				examples: Render.examples(symbol.example),
-				seeAlsos: Render.seeAlsos(symbol)
+				description: processInlineTags(symbol.desc)
 			};
 			if (symbol.returns.length == 0) {
 				var type = symbol.memberOf ? symbol.memberOf : symbol.alias;
@@ -240,11 +217,11 @@ var Render = new function() {
 			if (symbol.isStatic)
 				name = symbol.memberOf + '.' + name;
 			var param = {
-				name: name,
+				symbol: symbol,
 				id: symbol.getId(),
+				name: name,
 				signature: makeSignature(symbol.params),
-				description: processInlineTags(symbol.desc),
-				symbol: symbol
+				description: processInlineTags(symbol.desc)
 			};
 			publish.curClass.index[param.id] = {
 				title: param.name,
@@ -257,10 +234,10 @@ var Render = new function() {
 			if (symbol.isStatic)
 				name = symbol.memberOf + '.' + name;
 			var param = {
-				name: name,
+				symbol: symbol,
 				id: symbol.getId(),
-				description: processInlineTags(symbol.desc),
-				symbol: symbol
+				name: name,
+				description: processInlineTags(symbol.desc)
 			};
 			publish.curClass.index[param.id] = {
 				title: param.name,
@@ -281,8 +258,9 @@ var Render = new function() {
 		parameter: function(symbol) {
 			return templates.parameter.process({
 				name: symbol.name,
-				description: processInlineTags(symbol.desc,
-						{stripParagraphs: true}),
+				description: processInlineTags(symbol.desc, {
+					stripParagraphs: true
+				}),
 				typeLink: new Link(true).toSymbol(symbol.type),
 				symbol: symbol,
 				defaultValue: symbol.defaultValue ?
@@ -290,6 +268,28 @@ var Render = new function() {
 							stripParagraphs: true
 						}) : null
 			});
+		},
+		options: function(symbol) {
+			var options = symbol.comment.getTag('option');
+			if (options.length) {
+				var list = ['<ul>', '<b>Options:</b>'];
+				for (var i = 0, l = options.length; i < l; i++) {
+					list.push('<li>' + options[i].desc.replace(
+						/^([\w.]*)\s*(?:\{(\w*)\})?\s*([\u0000-\uffff]*)$/,
+						function(match, name, type, text) {
+							text = text && text.trim();
+							return '<tt>' + name + ': '
+									+ new Link(true).toSymbol(type)
+									+ '</tt>' + (text  ? ' — '
+										+ processInlineTags(text, {
+											stripParagraphs: true
+										}) : '');
+						}
+					) + '</li>');
+				}
+				list.push('</ul>');
+				return list.join('\n');
+			}
 		},
 		operators: function(symbols) {
 			var operatorCount = 0;
