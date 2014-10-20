@@ -6,7 +6,8 @@ JSDOC.Symbol.prototype.getId = function() {
 	if (this.params) {
 		for (var i = 0, l = this.params.length; i < l; i++) {
 			var param = this.params[i];
-			if (!param.isOptional)
+			// Filter out optional and hidden parameters
+			if (!param.isOptional && !/^_/.test(param.name))
 				id.push(param.name);
 		}
 	}
