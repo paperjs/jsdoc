@@ -169,18 +169,12 @@ Link.prototype._makeSymbolLink = function(alias, parameters) {
 		link.linkText = link.linkText.charAt(0).toLowerCase() + link.linkText.slice(1);
 		link.linkText = link.linkText.replace(/#/g, '.');
 	}
-	var onClick = '';
-	// If linking to a member of the same class, we also need to toggle it:
-	if (alias.charAt(0) == '#') {
-		var linkName = link.linkPath.replace(/^[^#]+#/, '');
-		onClick = " onclick=\"return toggleMember('" + linkName + "', true);\"";
-	}
 	var text = link.linkText;
 	// TODO: tt is gone in HTML5. Instead we should give these links and code 
 	// elements a special class so they can be styled through CSS.
 	if (this.asCode)
 		text = "<tt>" + text + "</tt>";
-	var html = "<a href=\""+link.linkPath+link.linkInner+"\""+target+onClick+">" + text + "</a>";
+	var html = "<a href=\""+link.linkPath+link.linkInner+"\""+target+">" + text + "</a>";
 	if (this.prefix || this.suffix)
 		html = (this.prefix || '') + html + (this.suffix || '');
 	return html;

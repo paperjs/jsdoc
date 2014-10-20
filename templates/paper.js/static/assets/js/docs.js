@@ -297,17 +297,17 @@ function createPaperScript(element) {
 	element.data('initialized', true);
 }
 
-// Referene (before behaviors)
+// Reference (before behaviors)
 
 var lastMember = null;
-function toggleMember(member, dontScroll) {
+function toggleMember(member, dontScroll, offsetElement) {
 	var link = $('.member-link:first', member);
 	if (!link.length)
 		return true;
 	var desc = $('.member-description', member);
 	var visible = !link.hasClass('hidden');
 	// Retrieve y-offset before any changes, so we can correct scrolling after
-	var offsetTop = member.offset().top;
+	var offset = (offsetElement || member).offset().top;
 	if (lastMember && !lastMember.is(member)) {
 		var prev = lastMember;
 		lastMember = null;
@@ -326,7 +326,7 @@ function toggleMember(member, dontScroll) {
 		// the element has shifted due to the above toggleMember call, and
 		// correcting by 11px offset, caused by 1px border and 10px padding.
 		// Update hash before scrolling
-		$(document).scrollTop(scrollTop + member.offset().top - offsetTop
+		$(document).scrollTop(scrollTop + member.offset().top - offset
 				+ 11 * (visible ? 1 : -1));
 	}
 	if (!member.data('initialized') && visible) {
@@ -349,9 +349,17 @@ $(function() {
 		header.append('<div class="member-close"><input type="button" value="Close"></div>');
 	});
 
-	$('.reference .member-link, .reference .member-close').click(function() {
-		return toggleMember($(this).parents('.member'));
-	});
+	// Give open / close buttons behavior
+	$('.reference')
+		.on('click', '.member-link, .member-close', function() {
+			return toggleMember($(this).parents('.member'));
+		})
+		.on('click', '.member-text a', function() {
+			if (this.href.match(/^([^#]*)/)[1] === document.location.href.match(/^([^#]*)/)[1]) {
+				toggleMember($(this.href.match(/(#.*)$/)[1]), false, $(this));
+				return false;
+			}
+		});
 });
 
 // DOM-Ready
