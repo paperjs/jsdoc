@@ -32,9 +32,14 @@ var Render = new function() {
 		str = str.replace(/<pre>/g, '<pre class="code">');
 
 		// {@link ...} -> html links
-		str = str.replace(/\{@link ([^} ]+) ?\}/gi,
+		str = str.replace(/\{@link\s+([^}]+)?\}/gi,
 			function(match, symbolName) {
-				return new Link(true).toSymbol(symbolName.replace(/[\^]/g, '-'));
+				var name = symbolName
+					// Remove spaces in function call signature
+					.replace(/\s+/g, '')
+					// Handle aliases when there's more than one version
+					.replace(/[\^]/g, '-');
+				return new Link(true).toSymbol(name);
 			}
 		);
 		// {@code ...} -> code blocks
@@ -105,8 +110,8 @@ var Render = new function() {
 		var first = true;
 		params = params.filter(
 			function($) {
-				return $.name.indexOf('.') == -1 // hide config params in signature
-						&& $.name.indexOf('_') != 0 // hide params that start with an _
+				return !/\./.test($.name) // hide config params in signature
+						&& !/^_/.test($.name); // hide params that start with an _
 			}
 		);
 		var signature = '';
