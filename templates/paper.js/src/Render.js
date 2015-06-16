@@ -145,7 +145,7 @@ var Render = new function() {
 				var entry = list[i];
 				inherited[entry[0]] = entry[1];
 			}
-			
+
 			var inheritedClasses = {};
 			var constructors = symbol.getConstructors();
 			var param = {
@@ -275,12 +275,21 @@ var Render = new function() {
 				var list = ['<ul>', '<b>Options:</b>'];
 				for (var i = 0, l = options.length; i < l; i++) {
 					list.push('<li>' + options[i].desc.replace(
-						/^([\w.]*)\s*(?:\{(\w*)\})?\s*([\u0000-\uffff]*)$/,
-						function(match, name, type, text) {
+						// Match `[optionalName=defaultValue]` as well as `name`
+						/^(?:\[([^=\]]+)\=([^\]]+)\]|([\w.]+))\s*(?:\{(\w*)\})?\s*([\u0000-\uffff]*)$/,
+						function(match, optionalName, defaultValue, name, type,
+								text) {
 							text = text && text.trim();
-							return '<tt>' + name + ': '
+							if (defaultValue) {
+								text += ' &mdash;&nbsp;default: <tt>'
+										+ processInlineTags(defaultValue, {
+											stripParagraphs: true
+										})
+										+ '</tt>';
+							}
+							return '<tt>' + (optionalName || name) + ': '
 									+ new Link(true).toSymbol(type)
-									+ '</tt>' + (text  ? ' — '
+									+ '</tt>' + (text  ? ' &mdash; '
 										+ processInlineTags(text, {
 											stripParagraphs: true
 										}) : '');
@@ -300,7 +309,7 @@ var Render = new function() {
 				type = type.charAt(0).toUpperCase() + type.slice(1);
 				title.push('<tt><b>' + Operator.getOperator(symbols[i]) + '</b> ' + type + '</tt>');
 			}
-			
+
 			return templates.operators.process({
 				id: symbols[0].name.toLowerCase().replace(/\^[0-9]$/, ''),
 				title: title.join(', '),
@@ -336,7 +345,7 @@ var Render = new function() {
 			var out = [];
 			for (var i = 0, l = examples.length; i < l; i++) {
 				var example = examples[i].toString();
-				
+
 				// Parse {@paperscript} inline tags
 				var paperScript = null;
 				example = example.replace(/\{@paperscript[\s]*([^}]+)*\}/,
@@ -366,7 +375,7 @@ var Render = new function() {
 				while (/^[\/]{2}/.test(lines[0])) {
 					description.push(lines.shift().replace('// ', ''));
 				}
-				
+
 				out.push(Render.example({
 					description: description.join(' ').trim(),
 					code: lines.join('\n').trim(),
@@ -426,7 +435,7 @@ var Render = new function() {
 					out += '<li' + (first ? ' class="first">' : '>\n');
 					out += '<h2>' + i + '</h2>\n';
 					out += '<ul>\n';
-				} 
+				}
 				out += parseClassNames(classLayout[i]);
 				if (i != '_global_') {
 					out += '</ul>\n';
