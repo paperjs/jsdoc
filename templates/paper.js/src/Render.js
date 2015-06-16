@@ -280,8 +280,13 @@ var Render = new function() {
 						function(match, optionalName, defaultValue, name, type,
 								text) {
 							text = text && text.trim();
+							if (text) {
+								text = ' &mdash; ' + processInlineTags(text, {
+											stripParagraphs: true
+										});
+							}
 							if (defaultValue) {
-								text += ' &mdash;&nbsp;default: <tt>'
+								defaultValue = ' &mdash;&nbsp;default: <tt>'
 										+ processInlineTags(defaultValue, {
 											stripParagraphs: true
 										})
@@ -289,10 +294,7 @@ var Render = new function() {
 							}
 							return '<tt>' + (optionalName || name) + ': '
 									+ new Link(true).toSymbol(type)
-									+ '</tt>' + (text  ? ' &mdash; '
-										+ processInlineTags(text, {
-											stripParagraphs: true
-										}) : '');
+									+ '</tt>' + text + defaultValue;
 						}
 					) + '</li>');
 				}
