@@ -311,7 +311,7 @@ var Render = new function() {
 							}
 							return '<tt>' + (optionalName || name) + ': '
 									+ new Link(true).toSymbol(type)
-									+ '</tt>' + text + defaultValue;
+									+ '</tt>' + text + (defaultValue || '');
 						}
 					) + '</li>');
 				}
