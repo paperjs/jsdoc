@@ -85,8 +85,7 @@ Link.symbolNameToLinkName = function(symbol) {
 	var linker = "",
 		ns = "";
 	
-	if (symbol.isStatic) linker = "-";
-	else if (symbol.isInner) linker = "-";
+	if (symbol.isInner) linker = "-";
 	
 	if (symbol.isEvent && !/^event:/.test(symbol.name)) {
 		ns = "event:";
