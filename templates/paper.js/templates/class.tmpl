@@ -32,6 +32,14 @@
 	</div>
 </if>
 
+<if test="defined(data.staticProperties) && data.staticProperties.length">
+    <div class="reference-members"><h2>Static Properties</h2>
+        <for each="member" in="data.staticProperties">
+            {+ Render.property(member) +}
+        </for>
+    </div>
+</if>
+
 <if test="defined(data.methods) && data.methods.length">
 <!-- ============================== methods ================================ -->
 	<div class="reference-members"><h2>Methods</h2>
