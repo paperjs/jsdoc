@@ -55,6 +55,23 @@ var Render = new function() {
 			}
 		);
 
+        // {@strings ...} -> list of code strings
+        str = str.replace(/\{@strings\s+([^}]+)\}/g,
+            function(match, text) {
+                return text.split(',').map(function(str) {
+                    str = str.trim();
+                    return str === '...' ? str : "<tt>'" + str + "'</tt>";
+                }).join(', ');
+            }
+        );
+
+        // Replace ellipsis
+        str = str.replace(/\.\.\./g,
+            function() {
+                return '&hellip;';
+            }
+        );
+
 		var lineBreak = java.lang.System.getProperty('line.separator');
 
 		// Convert any type of lineBreak to the one we're using now:
