@@ -41,10 +41,10 @@ var Render = new function() {
 					.replace(/[\^]/g, '-'));
 			}
 		);
-		// {@code ...} -> code blocks
-		str = str.replace(/\{@code\s+([^}]+)\}/g,
-			function(match, code) {
-				return '<tt>' + code + '</tt>';
+		// {@code ...} an `...` -> code blocks
+		str = str.replace(/\{@code\s+([^}]+)\}|`([^`]+)`/g,
+			function(match, code1, code2) {
+				return '<tt>' + (code1 || code2) + '</tt>';
 			}
 		);
 
