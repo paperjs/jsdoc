@@ -320,13 +320,18 @@ var Render = new function() {
 			}
 			return '';
 		},
-		operators: function(symbols) {
+		operators: function(symbols, asMethods) {
 			var operatorCount = 0;
 			var title = [];
 			for (var i = 0, l = symbols.length; i < l; i++) {
 				var type = symbols[i].params[0].type;
-				type = type.charAt(0).toUpperCase() + type.slice(1);
-				title.push('<tt><b>' + Operator.getOperator(symbols[i]) + '</b> ' + type + '</tt>');
+				type = type.charAt(0).toLowerCase() + type.slice(1);
+				title.push('<tt><b>'
+						+ Operator[asMethods ? 'getMethod' : 'getOperator'](
+								symbols[i])
+						+ '</b>'
+						+ (asMethods ? '(' + type + ')' : ' ' + type)
+						+ '</tt>');
 			}
 
 			return templates.operators.process({
@@ -335,12 +340,8 @@ var Render = new function() {
 				operators: symbols
 			});
 		},
-		operator: function(symbol, id) {
-			var type = symbol.params[0].type;
+		operator: function(symbol) {
 			return templates.operator.process({
-				id: id,
-				name: Operator.getOperator(symbol),
-				type: type.charAt(0).toUpperCase() + type.slice(1),
 				description: processInlineTags(symbol.desc),
 				symbol: symbol
 			});

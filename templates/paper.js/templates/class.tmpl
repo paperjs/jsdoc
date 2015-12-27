@@ -7,7 +7,7 @@
 {+ data.classExamples +}
 </div>
 <if test="data.showConstructors">
-<!-- ============================== constructors ========================= -->
+<!-- =============================== constructors ========================== -->
 <div class="reference-members"><h2>Constructors</h2>
 	<for each="constructor" in="data.constructors">
 		{+ Render.constructor(constructor) +}
@@ -16,15 +16,16 @@
 </if>
 
 <if test="defined(data.operators)">
-<!-- ============================== properties ========================= -->
+<!-- ================================ operators ============================ -->
 	<div class="reference-members"><h2>Operators</h2>
 		<for each="operator" in="data.operators">
-			{+ Render.operators(operator) +}
+			{+ Render.operators(operator, false) +}
 		</for>
 	</div>
 </if>
 
 <if test="defined(data.properties) && data.properties.length">
+<!-- ================================ properties =========================== -->
 	<div class="reference-members"><h2>Properties</h2>
 		<for each="member" in="data.properties">
 			{+ Render.property(member) +}
@@ -45,6 +46,14 @@
 	<div class="reference-members"><h2>Methods</h2>
 		<for each="member" in="data.methods">
 			{+ Render.method(member) +}
+		</for>
+	</div>
+</if>
+<if test="defined(data.operators)">
+<!-- ============================ math functions =========================== -->
+	<div class="reference-members"><h2>Math Functions</h2>
+		<for each="operator" in="data.operators">
+			{+ Render.operators(operator, true) +}
 		</for>
 	</div>
 </if>
@@ -74,7 +83,7 @@
 </if>
 </for>
 <if test="publish.conf.renderMode == 'docs'">
-<!-- =========================== copyright notice ========================= -->
+<!-- =========================== copyright notice ========================== -->
 <p class="footer">Copyright &#169; 2011—{+ new Date().getFullYear() +} <a href="http://www.lehni.org" target="_blank">J&uuml;rg Lehni</a> &amp; <a href="http://www.jonathanpuckey.com" target="_blank">Jonathan Puckey</a>. All Rights Reserved.</p>
 <div class="content-end"></div>
 </if>
