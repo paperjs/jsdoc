@@ -4,6 +4,7 @@ var Render = new function() {
 	var templates = {
 		_class: 'class.tmpl',
 		method: 'method.tmpl',
+		methods: 'methods.tmpl',
 		property: 'property.tmpl',
 		parameters: 'parameters.tmpl',
 		parameter: 'parameter.tmpl',
@@ -243,6 +244,11 @@ var Render = new function() {
 			};
 			return templates.method.process(param);
 		},
+		methods: function(methods) {
+			return templates.methods.process({
+				symbols: methods
+			});
+		},
 		property: function(symbol) {
 			var name = symbol.name.replace(/\^\d+$/, '');
 			if (symbol.isStatic)
@@ -317,18 +323,14 @@ var Render = new function() {
 			}
 			return '';
 		},
-		operators: function(symbols, asMethods) {
+		operators: function(symbols) {
 			var operatorCount = 0;
 			var title = [];
 			for (var i = 0, l = symbols.length; i < l; i++) {
 				var type = symbols[i].params[0].type;
 				type = type.charAt(0).toLowerCase() + type.slice(1);
-				title.push('<tt><b>'
-						+ Operator[asMethods ? 'getMethod' : 'getOperator'](
-								symbols[i])
-						+ '</b>'
-						+ (asMethods ? '(' + type + ')' : ' ' + type)
-						+ '</tt>');
+				title.push('<tt><b>' + Operator.getOperator(symbols[i]) + '</b>'
+						+ type + '</tt>');
 			}
 
 			return templates.operators.process({

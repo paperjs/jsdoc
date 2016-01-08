@@ -8,7 +8,8 @@
 </div>
 <if test="data.showConstructors">
 <!-- =============================== constructors ========================== -->
-<div class="reference-members"><h2>Constructors</h2>
+<div class="reference-members">
+	<h2>Constructors</h2>
 	<for each="constructor" in="data.constructors">
 		{+ Render.constructor(constructor) +}
 	</for>
@@ -17,16 +18,18 @@
 
 <if test="defined(data.operators)">
 <!-- ================================ operators ============================ -->
-	<div class="reference-members"><h2>Operators</h2>
+	<div class="reference-members">
+		<h2>Operators</h2>
 		<for each="operator" in="data.operators">
-			{+ Render.operators(operator, false) +}
+			{+ Render.operators(operator) +}
 		</for>
 	</div>
 </if>
 
 <if test="defined(data.properties) && data.properties.length">
 <!-- ================================ properties =========================== -->
-	<div class="reference-members"><h2>Properties</h2>
+	<div class="reference-members">
+		<h2>Properties</h2>
 		<for each="member" in="data.properties">
 			{+ Render.property(member) +}
 		</for>
@@ -34,7 +37,8 @@
 </if>
 
 <if test="defined(data.staticProperties) && data.staticProperties.length">
-    <div class="reference-members"><h2>Static Properties</h2>
+    <div class="reference-members">
+    	<h2>Static Properties</h2>
         <for each="member" in="data.staticProperties">
             {+ Render.property(member) +}
         </for>
@@ -43,22 +47,20 @@
 
 <if test="defined(data.methods) && data.methods.length">
 <!-- ============================== methods ================================ -->
-	<div class="reference-members"><h2>Methods</h2>
-		<for each="member" in="data.methods">
-			{+ Render.method(member) +}
-		</for>
-	</div>
-</if>
-<if test="defined(data.operators)">
-<!-- ============================ math functions =========================== -->
-	<div class="reference-members"><h2>Math Functions</h2>
-		<for each="operator" in="data.operators">
-			{+ Render.operators(operator, true) +}
-		</for>
+	<div class="reference-members">
+		<h2>Methods</h2>
+		{+ Render.methods(data.methods) +}
+		<if test="defined(data.operators)">
+			<h3>Math Operator Functions</h3>
+			<for each="operator" in="data.operators">
+				{+ Render.methods(operator) +}
+			</for>
+		</if>
 	</div>
 </if>
 <if test="defined(data.staticMethods) && data.staticMethods.length">
-	<div class="reference-members"><h2>Static Methods</h2>
+	<div class="reference-members">
+		<h2>Static Methods</h2>
 		<for each="member" in="data.staticMethods">
 			{+ Render.method(member) +}
 		</for>
