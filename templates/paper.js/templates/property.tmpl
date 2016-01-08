@@ -12,6 +12,11 @@
 	<if test="data.symbol.readOnly">
 		<p>Read only.</p>
 	</if>
+	<if test="data.symbol.values">
+		<ul><b>Values:</b>
+		<li>{+ Render.values(data.symbol.values) +}</li>
+		</ul>
+	</if>
 	<if test="data.symbol.defaultValue">
 		<ul><b>Default:</b>
 		<li>

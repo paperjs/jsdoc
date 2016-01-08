@@ -432,6 +432,8 @@ JSDOC.Symbol.prototype.setTags = function() {
 			var property = new JSDOC.Symbol(this.alias+"#"+properties[i].name, [], "OBJECT", new JSDOC.DocComment("/**"+properties[i].desc+"*/"));
 			// TODO: shouldn't the following happen in the addProperty method of Symbol?
 			if (properties[i].type) property.type = properties[i].type;
+			// Lehni: @values
+			if (properties[i].values) property.values = properties[i].values;
 			if (properties[i].defaultValue) property.defaultValue = properties[i].defaultValue;
 			this.addProperty(property);
 			if (!JSDOC.Parser.symbols.getSymbolByName(property.name))
@@ -534,6 +536,14 @@ JSDOC.Symbol.prototype.setTags = function() {
 	if (defaults.length) {
 		if (this.is("OBJECT")) {
 			this.defaultValue = defaults[0].desc;
+		}
+	}
+
+	// Lehni: @values
+	var values = this.comment.getTag("values");
+	if (values.length) {
+		if (this.is("OBJECT")) {
+			this.values = values[0].desc;
 		}
 	}
 	

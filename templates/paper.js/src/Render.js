@@ -55,13 +55,10 @@ var Render = new function() {
 			}
 		);
 
-        // {@strings ...} -> list of code strings
-        str = str.replace(/\{@strings\s+([^}]+)\}/g,
+        // {@values ...} -> list of code values
+        str = str.replace(/\{@values\s+([^}]+)\}/g,
             function(match, text) {
-                return text.split(',').map(function(str) {
-                    str = str.trim();
-                    return str === '...' ? str : "<tt>'" + str + "'</tt>";
-                }).join(', ');
+            	return Render.values(text);
             }
         );
 
@@ -360,6 +357,12 @@ var Render = new function() {
 		},
 		seeAlsos: function(symbol) {
 			return templates.seeAlsos.process(symbol);
+		},
+		values: function(text) {
+            return text.split(',').map(function(str) {
+                str = str.trim();
+                return str === '...' ? '&hellip;' : "<tt>" + str + "</tt>";
+            }).join(', ');
 		},
 		examples: function(examples) {
 			var out = [];
