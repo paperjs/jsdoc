@@ -18,6 +18,15 @@ var Render = new function() {
 		index: 'index.tmpl',
 		operator: 'operator.tmpl'
 	};
+	var Extensions = Packages.org.pegdown.Extensions;
+    var pegDown = new Packages.org.pegdown.PegDownProcessor(
+    		Extensions.SMARTS | Extensions.QUOTES | Extensions.HARDWRAPS |
+    		Extensions.AUTOLINKS | Extensions.TABLES |
+    		Extensions.FENCED_CODE_BLOCKS | Extensions.STRIKETHROUGH,
+    		// Timeout:
+    		10000);
+	var lineBreak = java.lang.System.getProperty('line.separator');
+
 	publish.classes = [];
 	for (var i in templates) {
 		templates[i] = new JSDOC.JsPlate(templatesDir + templates[i]);
@@ -26,11 +35,6 @@ var Render = new function() {
 	var processInlineTags = function(str, param) {
 		if (!param)
 			param = {};
-		// <code>..</code> -> <pre>..</pre>
-		str = str.replace(/<(\/)*(code)>/g, '<$1pre>');
-
-		// <pre> -> <pre class="code">
-		str = str.replace(/<pre>/g, '<pre class="code">');
 
 		// {@link ...} -> html links
 		str = str.replace(/\{@link\s+([^}]+)?\}/g,
@@ -42,8 +46,8 @@ var Render = new function() {
 					.replace(/[\^]/g, '-'));
 			}
 		);
-		// {@code ...} an `...` -> code blocks
-		str = str.replace(/\{@code\s+([^}]+)\}|`([^`]+)`/g,
+		// {@code ...} -> code blocks
+		str = str.replace(/\{@code\s+([^}]+)\}/g,
 			function(match, code1, code2) {
 				return '<tt>' + (code1 || code2) + '</tt>';
 			}
@@ -63,55 +67,17 @@ var Render = new function() {
             }
         );
 
+        str = pegDown.markdownToHtml(str) + '';
+
         // Replace ellipsis
         str = str.replace(/\.\.\./g,
             function() {
-                return '&hellip;';
+                return '\u2026';
             }
         );
 
-		var lineBreak = java.lang.System.getProperty('line.separator');
-
-		// Convert any type of lineBreak to the one we're using now:
-		str = str.replace(/(\r\n|\n|\r)/g, function(match, lineBreak) {
-			return lineBreak;
-		});
-
-		// Replace inline <code></code> with <tt></tt>
-		str = str.replace(/<code>[ \t]*([^\n\r]*?)[ \t]*<\/code>/g, function(match, content) {
-			return '<tt>' + content + '</tt>';
-		});
-
-		// Put code and pre tags on the same line as the content, as white-space: pre is set:
-		str = str.replace(/(<(?:code|pre)>)\s*([\u0000-\uffff]*?)\s*(<\/(?:code|pre)>)/g, function(match, open, content, close) {
-			// Filter out the first white space at the beginning of each line, since
-			// that stems from the space after the * in the comment and replace <code>
-			// with <pre>, to fix a IE problem where lighter.js does not receive
-			// linebreaks from code tags weven when white-space: pre is set.
-			return '<pre>' + content.replace(/(\r\n|\n|\r) /mg, function(match, lineBreak) {
-				return lineBreak;
-			}) + '</pre>';
-		});
-		// Empty lines -> Paragraphs
-		if (!param.stripParagraphs) {
-			if (param.wrapInParagraphs === undefined || param.wrapInParagraphs)
-				str = '<p>' + str.trim() + '</p>';
-			str = str.trim().replace(/(\r\n|\n|\r)\s*(\r\n|\n|\r)/g, function(match, lineBreak) {
-				return '</p>' + lineBreak + '<p>';
-			});
-			// Automatically put </p><p> at the end of sentences with line breaks.
-			// Match following </p> and <p> tags and swallow them. This happens when
-			// the original content contains these.
-			str = str.trim().replace(/([.:?!;])\s*(\r\n|\n|\r)(\s*)(<\/p>|<p>|)/g, function(match, before, lineBreak, whiteSpace, after) {
-				// Include following whiteSpace as well, since for code blocks they are relevant (e.g. indentation on new line)
-				return before + '</p>' + lineBreak + whiteSpace + '<p>';
-			});
-			// Filter out <p> tags within and around <code> and <pre> blocks again
-			str = str.replace(/((?:<p>\s*|)<(?:code|pre)[^>]*>[\u0000-\uffff]*<\/(?:code|pre)>(?:\s*<\/p>|))/g, function(match, code) {
-				return Utils.stripTags(code, 'p');
-			});
-			// Filter out empty paragraphs
-			str = str.replace(/<p><\/p>/g, '');
+		if (param.stripParagraphs) {
+			str = str.replace(/<\/?p>|<br\/?>/g, '');
 		}
 
 		return str;
