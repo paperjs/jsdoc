@@ -60,7 +60,7 @@ function Link(asCode) {
 						thisLink.alias = symbolNames[i];
 						links.push(thisLink._makeSymbolLink(symbolNames[i], parameters));
 					}
-					return prematch+links.join(" / ")+postmatch;
+					return prematch+links.join('\u27cb') + postmatch;
 				}
 			);
 		}

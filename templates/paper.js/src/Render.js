@@ -262,7 +262,7 @@ var Render = new function() {
 				for (var i = 0, l = options.length; i < l; i++) {
 					list.push('<li>' + options[i].desc.replace(
 						// Match `[optionalName=defaultValue]` as well as `name`
-						/^(?:\[([^=\]]+)\=([^\]]+)\]|([\w.]+))\s*(?:\{(\w*)\})?\s*([\u0000-\uffff]*)$/,
+						/^(?:\[([^=\]]+)\=([^\]]+)\]|([\w.]+))\s*(?:\{([\w|]*)\})?\s*([\u0000-\uffff]*)$/,
 						function(match, optionalName, defaultValue, name, type,
 								text) {
 							text = text && text.trim();
