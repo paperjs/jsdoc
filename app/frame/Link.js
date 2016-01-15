@@ -127,14 +127,18 @@ Link.prototype._makeSymbolLink = function(alias, parameters) {
 	var linkTo = Link.getSymbol(alias);
 	var linkPath;
 	var target = (this.targetName)? " target=\""+this.targetName+"\"" : "";
-	// Expand (parameter,parameter) to (parameter, parameter)
 	if (parameters) {
-		parameters = parameters.replace(/\,([^\s])/, ', $1')
+		// Expand (parameter,parameter) to (parameter, parameter)
+		parameters = parameters.replace(/\,(\w)/g, ', $1');
 	}
-	
 	var linkText = (this.text || (alias == '_global_' && publish.conf.globalName
 			|| alias)) + (parameters || '');
-	
+	if (parameters) {
+		// Remove optional parameters since they're not part of the linkPath
+		parameters = parameters.replace(/(\[[^\]]*\])/g, '');
+		if (parameters == '()')
+			parameters = '';
+	}
 	// if there is no symbol by that name just return the name unaltered
 	if (!linkTo) {
 		// TODO: See below about asCode
