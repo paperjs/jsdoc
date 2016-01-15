@@ -1,0 +1,8 @@
+<if test="data.see.length">
+	<ul class="member-list">
+		<h4>See also:</h4>
+		<for each="item" in="data.see">
+			<li><tt>{+ new Link(true).toSymbol(item) +}</tt></li>
+		</for>
+	</ul>
+</if>

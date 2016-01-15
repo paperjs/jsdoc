@@ -13,24 +13,25 @@
 		<p>Read only.</p>
 	</if>
 	<if test="data.symbol.values">
-		<ul><b>Values:</b>
-		<li>{+ Render.values(data.symbol.values) +}</li>
+		<ul class="member-list">
+			<h4>Values:</h4>
+			<li>{+ Render.values(data.symbol.values) +}</li>
 		</ul>
 	</if>
 	<if test="data.symbol.defaultValue">
-		<ul><b>Default:</b>
-		<li>
-		<tt>{+ data.symbol.defaultValue +}</tt>
-		</li>
+		<ul class="member-list">
+			<h4>Default:</h4>
+			<li><tt>{+ data.symbol.defaultValue +}</tt></li>
 		</ul>
 	</if>
-	<ul><b>Type:</b>
-	<li>
-		{+new Link(true).toSymbol(data.symbol.type)+}
-	</li>
+	<ul class="member-list">
+		<h4>Type:</h4>
+		<li>
+			{+new Link(true).toSymbol(data.symbol.type)+}
+		</li>
 	</ul>
     {+ Render.options(data.symbol) +}
-	{+ Render.seeAlsos(data.symbol) +}
+	{+ Render.seeAlso(data.symbol) +}
 	{+ Render.examples(data.symbol.example) +}
 </div>
 </if>

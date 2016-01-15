@@ -1,6 +1,4 @@
-<p>
-<b>Example</b> <if test="data.description.length">{+ '&mdash; ' + data.description +}</if>
-</p>
+<h4>Example:<if test="data.description.length">{+ '<span class="description">' + data.description + '</span>' +}</if></h4>
 <if test="data.paperScript">
 <div class="paperscript <if test="data.paperScript.mode">{+ data.paperScript.mode +}</if>">
 <if test="data.paperScript.source != 'false'">
@@ -15,5 +13,5 @@
 </div>
 </if>
 <if test="!data.paperScript">
-<pre class="code">{+ data.code +}</pre>
+<pre><code>{+ data.code +}</code></pre>
 </if>

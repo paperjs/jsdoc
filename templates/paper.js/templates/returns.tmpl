@@ -1,7 +1,8 @@
 <if test="data.returns.length">
-	<ul><b>Returns:</b>
-	<for each="symbol" in="data.returns">
-		{+ Render['return'](symbol) +}
-	</for>
+	<ul class="member-list">
+		<h4>Returns:</h4>
+		<for each="symbol" in="data.returns">
+			{+ Render['return'](symbol) +}
+		</for>
 	</ul>
 </if>

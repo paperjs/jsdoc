@@ -11,7 +11,7 @@ var Render = new function() {
 		operators: 'operators.tmpl',
 		returns: 'returns.tmpl',
 		'return': 'return.tmpl',
-		seeAlsos: 'seeAlsos.tmpl',
+		seeAlso: 'seeAlso.tmpl',
 		example: 'example.tmpl',
 		constructor: 'constructor.tmpl',
 		html: 'html.tmpl',
@@ -258,7 +258,7 @@ var Render = new function() {
 		options: function(symbol) {
 			var options = symbol.comment.getTag('option');
 			if (options.length) {
-				var list = ['<ul>', '<b>Options:</b>'];
+				var list = ['<ul class="member-list">', '<h4>Options:</h4>'];
 				for (var i = 0, l = options.length; i < l; i++) {
 					list.push('<li>' + options[i].desc.replace(
 						// Match `[optionalName=defaultValue]` as well as `name`
@@ -323,8 +323,8 @@ var Render = new function() {
 				symbol: symbol
 			});
 		},
-		seeAlsos: function(symbol) {
-			return templates.seeAlsos.process(symbol);
+		seeAlso: function(symbol) {
+			return templates.seeAlso.process(symbol);
 		},
 		values: function(text) {
             return text.split(',').map(function(str) {
