@@ -20,9 +20,9 @@ var Render = new function() {
 	};
 	var Extensions = Packages.org.pegdown.Extensions;
     var pegDown = new Packages.org.pegdown.PegDownProcessor(
-    		Extensions.SMARTS | Extensions.QUOTES | Extensions.HARDWRAPS |
-    		Extensions.AUTOLINKS | Extensions.TABLES |
-    		Extensions.FENCED_CODE_BLOCKS | Extensions.STRIKETHROUGH,
+    		Extensions.SMARTS | Extensions.QUOTES | Extensions.AUTOLINKS |
+    		Extensions.TABLES | Extensions.FENCED_CODE_BLOCKS |
+    		Extensions.STRIKETHROUGH,
     		// Timeout:
     		10000);
 	var lineBreak = java.lang.System.getProperty('line.separator');
@@ -77,7 +77,7 @@ var Render = new function() {
         );
 
 		if (param.stripParagraphs) {
-			str = str.replace(/<\/?p>|<br\/?>/g, '');
+			str = str.replace(/<\/?p>/g, '');
 		}
 
 		return str;
