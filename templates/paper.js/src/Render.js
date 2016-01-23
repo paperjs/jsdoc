@@ -436,8 +436,8 @@ var Render = new function() {
 
 			return out + '</ul>';
 		},
-		index: function(html) {
-			return templates.index.process(html);
+		index: function(param) {
+			return templates.index.process(param);
 		}
 	};
 };

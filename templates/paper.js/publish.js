@@ -6,6 +6,7 @@ load(JSDOC.opt.t + 'src/Render.js');
 
 function publish(symbolSet) {
 	var renderMode = JSDOC.opt.D.renderMode;
+	var version = JSDOC.opt.D.version || '';
 	var serverdocs = renderMode == 'serverdocs';
 	var extension = serverdocs ? '.txt' : '.html';
 	var templateDir = JSDOC.opt.t || SYS.pwd + '../templates/jsdoc/';
@@ -92,8 +93,12 @@ function publish(symbolSet) {
 		IO.saveFile(classDir, name + extension, html);
 	}
 	if (serverdocs) {
-		IO.saveFile(publish.conf.outDir, 'classes.txt', Render.classes());
+		IO.saveFile(publish.conf.outDir, 'classes.txt', Render.classes({
+			version: version
+		}));
 	} else {
-		IO.saveFile(publish.conf.classesDir, 'index.html', Render.index());
+		IO.saveFile(publish.conf.classesDir, 'index.html', Render.index({
+			version: version
+		}));
 	}
 }
