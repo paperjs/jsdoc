@@ -1,4 +1,3 @@
-/** Called automatically by JsDoc Toolkit. */
 load(JSDOC.opt.t + 'src/Symbol.js');
 load(JSDOC.opt.t + 'src/Utils.js');
 load(JSDOC.opt.t + 'src/Operator.js');
@@ -7,6 +6,11 @@ load(JSDOC.opt.t + 'src/Render.js');
 function publish(symbolSet) {
 	var renderMode = JSDOC.opt.D.renderMode;
 	var version = JSDOC.opt.D.version || '';
+	var match = version.match(/^([\d\.]*)-(\w*)$/);
+	if (match) {
+		// If there's a branch name, put it in brackets.
+		version = match[1] + ' (' + match[2] + ')';
+	}
 	var serverdocs = renderMode == 'serverdocs';
 	var extension = serverdocs ? '.txt' : '.html';
 	var templateDir = JSDOC.opt.t || SYS.pwd + '../templates/jsdoc/';
@@ -70,11 +74,11 @@ function publish(symbolSet) {
 		var symbol = classes[i];
 		if (!symbol.isVisible())
 			continue;
-		symbol.events = symbol.getEvents();   // 1 order matters
-		symbol.methods = symbol.getMethods(); // 2
+		symbol.events = symbol.getEvents();
+		symbol.methods = symbol.getMethods();
 		
 		Link.currentSymbol = symbol;
-		var html = Render._class(symbol);
+		var html = Render._class(symbol, version);
 		var classDir = publish.conf.classesDir;
 		var name = symbol.alias;
 		if (serverdocs) {
@@ -92,13 +96,15 @@ function publish(symbolSet) {
 		}
 		IO.saveFile(classDir, name + extension, html);
 	}
+
+	var param = {
+		version: version
+	};
+
 	if (serverdocs) {
-		IO.saveFile(publish.conf.outDir, 'classes.txt', Render.classes({
-			version: version
-		}));
+		IO.saveFile(publish.conf.outDir, 'classes.txt', Render.aside(param));
 	} else {
-		IO.saveFile(publish.conf.classesDir, 'index.html', Render.index({
-			version: version
-		}));
+		IO.saveFile(publish.conf.classesDir, 'index.html', Render.index(param));
+		IO.saveFile(publish.conf.outDir, 'index.html', Render.main(param));
 	}
 }

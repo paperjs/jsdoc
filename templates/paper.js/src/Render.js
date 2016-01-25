@@ -9,6 +9,7 @@ var Render = new function() {
 		parameters: 'parameters.tmpl',
 		parameter: 'parameter.tmpl',
 		operators: 'operators.tmpl',
+		operator: 'operator.tmpl',
 		returns: 'returns.tmpl',
 		'return': 'return.tmpl',
 		seeAlso: 'seeAlso.tmpl',
@@ -16,7 +17,8 @@ var Render = new function() {
 		constructor: 'constructor.tmpl',
 		html: 'html.tmpl',
 		index: 'index.tmpl',
-		operator: 'operator.tmpl'
+		main: 'main.tmpl',
+		aside: 'aside.tmpl'
 	};
 	var Extensions = Packages.org.pegdown.Extensions;
     var pegDown = new Packages.org.pegdown.PegDownProcessor(
@@ -110,7 +112,7 @@ var Render = new function() {
 	};
 	var paperScriptId = 0;
 	return {
-		_class: function(symbol) {
+		_class: function(symbol, version) {
 			// Reset PaperScript id to 0 for each class, so they count up on a
 			// per file basis, and changes won't affect the whole docs files.
 			// Useful when checking into version control systems.
@@ -142,7 +144,8 @@ var Render = new function() {
 						&& !symbol.isNamespace && !symbol.ignore
 						&& constructors.length),
 				inheritedClasses: inherited,
-				classExamples: Render.examples(symbol.classExample)
+				classExamples: Render.examples(symbol.classExample),
+				version: version
 			};
 			param.inheritedLinks = [];
 			for (var i in param.inheritedClasses) {
@@ -438,6 +441,12 @@ var Render = new function() {
 		},
 		index: function(param) {
 			return templates.index.process(param);
+		},
+		main: function(param) {
+			return templates.main.process(param);
+		},
+		aside: function(param) {
+			return templates.aside.process(param);
 		}
 	};
 };
