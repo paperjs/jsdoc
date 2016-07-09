@@ -6,12 +6,15 @@ var classLayout = {
 		'Point', 'Size', 'Rectangle', 'Matrix'
 	],
 	'Project & Items': [
-		'Project', 'Item', 'Layer', 'Group', 'Shape', 'Raster', 'Symbol',
-		'PlacedSymbol', 'ruler', 'HitResult'
+		'Project', 'Item', 'Layer', 'Group', 'Shape', 'Raster',
+		'ruler', 'HitResult'
+	],
+	'Symbols': [
+		'SymbolDefinition', 'SymbolItem'
 	],
 	'Paths': [
-		'PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve', 'ruler',
-		'CurveLocation'
+		'PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve',
+		'ruler', 'CurveLocation'
 	],
 	'Styling': [
 		'Style', 'Color', 'Gradient', 'GradientStop'
