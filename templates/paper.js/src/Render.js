@@ -388,7 +388,7 @@ var Render = new function() {
 			// TODO: Use a template instead?
 			var out = '<ul class="reference-classes">';
 
-			load(JSDOC.opt.t + 'classLayout.js');
+			load(JSDOC.opt.t + 'sidebar.js');
 			function parseClassNames(classNames) {
 				var out = '';
 				for (var i = 0, l = classNames.length; i < l; i++) {
@@ -424,13 +424,13 @@ var Render = new function() {
 			}
 
 			var first = true;
-			for (var i in classLayout) {
+			for (var i in sidebar) {
 				if (i != '_global_') {
 					out += '<li' + (first ? ' class="first">' : '>\n');
 					out += '<h2>' + i + '</h2>\n';
 					out += '<ul>\n';
 				}
-				out += parseClassNames(classLayout[i]);
+				out += parseClassNames(sidebar[i]);
 				if (i != '_global_') {
 					out += '</ul>\n';
 				}
