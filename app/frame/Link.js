@@ -33,7 +33,7 @@ function Link(asCode) {
 			alias = alias.replace(/\[\]$/, '');
 			this.prefix = 'Array of ';
 			this.text = alias;
-			this.suffix = ' objects';
+			this.suffix = /^(Number|Boolean|String)$/.test(alias) ? 's' : ' objects';
 		}
 		if (defined(alias)) this.alias = new String(alias);
 		return this;
@@ -58,7 +58,10 @@ function Link(asCode) {
 					var links = [];
 					for (var i = 0, l = symbolNames.length; i < l; i++) {
 						thisLink.alias = symbolNames[i];
-						links.push(thisLink._makeSymbolLink(symbolNames[i], parameters));
+						var html = thisLink._makeSymbolLink(symbolNames[i], parameters);
+						if (thisLink.prefix || thisLink.suffix)
+							html = (thisLink.prefix || '') + html + (thisLink.suffix || '');
+						links.push(html);
 					}
 					return prematch+links.join('\u27cb') + postmatch;
 				}
@@ -177,10 +180,7 @@ Link.prototype._makeSymbolLink = function(alias, parameters) {
 	// elements a special class so they can be styled through CSS.
 	if (this.asCode)
 		text = "<tt>" + text + "</tt>";
-	var html = "<a href=\""+link.linkPath+link.linkInner+"\""+target+">" + text + "</a>";
-	if (this.prefix || this.suffix)
-		html = (this.prefix || '') + html + (this.suffix || '');
-	return html;
+	return "<a href=\""+link.linkPath+link.linkInner+"\""+target+">" + text + "</a>";
 }
 
 /** Create a link to a source file. */

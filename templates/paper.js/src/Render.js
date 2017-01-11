@@ -110,6 +110,45 @@ var Render = new function() {
 		}
 		return '(' + signature + postSignature + ')';
 	};
+
+	var renderOptions = function(symbol, tag, title) {
+				var options = symbol.comment.getTag(tag);
+				if (options.length) {
+					var list = ['<ul class="member-list">'];
+					if (title)
+						list.push('<h4>' + title + ':</h4>');
+					for (var i = 0, l = options.length; i < l; i++) {
+						list.push('<li>' + options[i].desc.replace(
+							// Match `[optionalName=defaultValue]` as well as `name`
+							// (?:\{([\w|\[\]]*)\}): Match type specifier, including
+							// '|' for multiple values and '[]' for arrays.
+							/^(?:\[([^=\]]+)\=([^\]]+)\]|([\w.]+))\s*(?:\{([\w|\[\]]*)\})?\s*([\u0000-\uffff]*)$/,
+							function(match, optionalName, defaultValue, name, type,
+									text) {
+								text = text && text.trim();
+								if (text) {
+									text = ' &mdash; ' + processInlineTags(text, {
+												stripParagraphs: true
+											});
+								}
+								if (defaultValue) {
+									defaultValue = ' &mdash;&nbsp;default: <tt>'
+											+ processInlineTags(defaultValue, {
+												stripParagraphs: true
+											})
+											+ '</tt>';
+								}
+								return '<tt>' + (optionalName || name) + ': '
+										+ new Link(true).toSymbol(type)
+										+ '</tt>' + text + (defaultValue || '');
+							}
+						) + '</li>');
+					}
+					list.push('</ul>');
+					return list.join('\n');
+				}
+				return '';
+			}
 	var paperScriptId = 0;
 	return {
 		_class: function(symbol, version) {
@@ -259,38 +298,10 @@ var Render = new function() {
 			});
 		},
 		options: function(symbol) {
-			var options = symbol.comment.getTag('option');
-			if (options.length) {
-				var list = ['<ul class="member-list">', '<h4>Options:</h4>'];
-				for (var i = 0, l = options.length; i < l; i++) {
-					list.push('<li>' + options[i].desc.replace(
-						// Match `[optionalName=defaultValue]` as well as `name`
-						/^(?:\[([^=\]]+)\=([^\]]+)\]|([\w.]+))\s*(?:\{([\w|]*)\})?\s*([\u0000-\uffff]*)$/,
-						function(match, optionalName, defaultValue, name, type,
-								text) {
-							text = text && text.trim();
-							if (text) {
-								text = ' &mdash; ' + processInlineTags(text, {
-											stripParagraphs: true
-										});
-							}
-							if (defaultValue) {
-								defaultValue = ' &mdash;&nbsp;default: <tt>'
-										+ processInlineTags(defaultValue, {
-											stripParagraphs: true
-										})
-										+ '</tt>';
-							}
-							return '<tt>' + (optionalName || name) + ': '
-									+ new Link(true).toSymbol(type)
-									+ '</tt>' + text + (defaultValue || '');
-						}
-					) + '</li>');
-				}
-				list.push('</ul>');
-				return list.join('\n');
-			}
-			return '';
+			return renderOptions(symbol, 'option', 'Options');
+		},
+		results: function(symbol) {
+			return renderOptions(symbol, 'result');
 		},
 		operators: function(symbols) {
 			var operatorCount = 0;
