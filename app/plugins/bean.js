@@ -11,15 +11,16 @@ JSDOC.PluginManager.registerPlugin(
 					symbol.readOnly = true;
 					this.beanSymbols[symbol.alias] = symbol;
 
-                    // search for a default value in tags
-                    for (var i=0; i<symbol.comment.tags.length; i++) {
-                        var tag = symbol.comment.tags[i];
-                        if (tag.title === 'default' && tag.desc) {
-                            // parse it as @default tag should be
-                            symbol.defaultValue = tag.desc;
-                            break;
-                        }
-                    }
+					// Search for a default value in tags
+					var tags = symbol.comment.tags;
+					for (var i = 0; i < tags.length; i++) {
+						var tag = tags[i];
+						if (tag.title === 'default' && tag.desc) {
+							// Parse it as @default tag should be
+							symbol.defaultValue = tag.desc;
+							break;
+						}
+					}
 				} else {
 					LOG.warn('@bean error: ' + symbol.name);
 				}
