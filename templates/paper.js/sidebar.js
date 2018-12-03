@@ -7,7 +7,7 @@ var sidebar = {
 	],
 	'Project & Items': [
 		'Project', 'Item', 'Layer', 'Group', 'Shape', 'Raster',
-		'ruler', 'HitResult', 'Tween'
+		'ruler', 'HitResult'
 	],
 	'Paths': [
 		'PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve',
@@ -18,6 +18,9 @@ var sidebar = {
 	],
 	'Styling': [
 		'Style', 'Color', 'Gradient', 'GradientStop'
+	],
+	'Animation': [
+		'Tween'
 	],
 	'Typography': [
 		'TextItem', 'PointText'
