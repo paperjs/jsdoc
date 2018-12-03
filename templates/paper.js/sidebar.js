@@ -7,7 +7,7 @@ var sidebar = {
 	],
 	'Project & Items': [
 		'Project', 'Item', 'Layer', 'Group', 'Shape', 'Raster',
-		'ruler', 'HitResult'
+		'ruler', 'HitResult', 'Tween'
 	],
 	'Paths': [
 		'PathItem', 'Path', 'CompoundPath', 'Segment', 'Curve',
