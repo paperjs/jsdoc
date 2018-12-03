@@ -74,7 +74,8 @@ JSDOC.Symbol.prototype.getStaticProperties = function() {
 JSDOC.Symbol.prototype.getInheritedClasses = function() {
 	var inheritedClasses = {};
 	var addInherited = function(symbol) {
-		if (symbol.memberOf != this.alias) {
+		// Skip deprecated properties and methods.
+		if (symbol.memberOf != this.alias && !symbol.isDeprecated) {
 			var _class = inheritedClasses[symbol.memberOf];
 			if (!_class) {
 				_class = inheritedClasses[symbol.memberOf] = {
