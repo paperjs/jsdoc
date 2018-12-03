@@ -100,6 +100,11 @@ var Render = new function() {
 		var postSignature = '';
 		for (var i = 0, l = params.length; i < l; i++) {
 			var param = params[i];
+			// If parameter is a rest (if type is of the form `...Type`),
+            // prefix name with `...`.
+			if (/^\.\.\./.test(param.type)) {
+				signature += '...';
+			}
 			if (param.isOptional) {
 				signature += '[';
 				postSignature += ']';
@@ -284,12 +289,15 @@ var Render = new function() {
 			return templates.parameters.process({params: params});
 		},
 		parameter: function(symbol) {
+			// If parameter is a rest (if type is of the form `...Type`),
+			// remove `...` in the type.
+			var type = symbol.type.replace(/^\.\.\./, '');
 			return templates.parameter.process({
 				name: symbol.name,
 				description: processInlineTags(symbol.desc, {
 					stripParagraphs: true
 				}),
-				typeLink: new Link(true).toSymbol(symbol.type),
+				typeLink: new Link(true).toSymbol(type),
 				symbol: symbol,
 				defaultValue: symbol.defaultValue ?
 						processInlineTags(symbol.defaultValue, {
