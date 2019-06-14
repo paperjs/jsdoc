@@ -28,12 +28,25 @@ function Link(asCode) {
 		return this;
 	}
 	this.toSymbol = function(alias) {
+		// Handle any case:
+		// - `*` => `any value`
+		// - `*[]` => `any values`
+		var isAny = /^\*/.test(alias);
+		
 		// 'Class[]' to 'Array of Class objects'
 		if(/\[\]$/.test(alias)) {
 			alias = alias.replace(/\[\]$/, '');
 			this.prefix = 'Array of ';
 			this.text = alias;
-			this.suffix = /^(Number|Boolean|String)$/.test(alias) ? 's' : ' objects';
+			if (/^(Number|Boolean|String)$/.test(alias)) {
+				this.text += 's';
+			} else if (isAny) {
+				this.text = 'any values';
+			} else {
+				this.suffix = ' objects';
+			}
+		} else if (isAny) {
+			this.text = 'any value';
 		}
 		if (defined(alias)) this.alias = new String(alias);
 		return this;
@@ -52,7 +65,7 @@ function Link(asCode) {
 		var thisLink = this;
 
 		if (this.alias) {
-			linkString = this.alias.replace(/(^|[^a-z$0-9_#.:^-])([|a-z$0-9_#.:^-]+)(\([^)]+\))*($|[^a-z$0-9_#.:^-])/i,
+			linkString = this.alias.replace(/(^|[^a-z$0-9_#.:^-])([*|a-z$0-9_#.:^-]+)(\([^)]+\))*($|[^a-z$0-9_#.:^-])/i,
 				function(match, prematch, symbolName, parameters, postmatch) {
 					var symbolNames = symbolName.split("|");
 					var links = [];
