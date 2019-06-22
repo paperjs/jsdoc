@@ -153,7 +153,25 @@ var Render = new function() {
 					return list.join('\n');
 				}
 				return '';
-			}
+			};
+	var renderType = function(type) {
+		// Handle rest parameter (of the form `...Type`):
+		// - `...Type` => `Type`
+		// - `...(TypeA|TypeB)` => `TypeA|TypeB`
+		type = type
+			.trim()
+			.replace(/^\.\.\./, '')
+			.replace(/^\(/,'')
+			.replace(/\)$/,'');
+
+		// Handle multiple types: 
+		// `TypeA|TypeB` => `<a ...>TypeA</a> / <a ...>TypeB</a>`
+		var types = type.split('|');
+		for (var i = 0; i < types.length; i++) {
+			types[i] = new Link(true).toSymbol(types[i]).toString();
+		}
+		return types.join('\u27cb');
+	};
 	var paperScriptId = 0;
 	return {
 		_class: function(symbol, version) {
@@ -289,15 +307,12 @@ var Render = new function() {
 			return templates.parameters.process({params: params});
 		},
 		parameter: function(symbol) {
-			// If parameter is a rest (if type is of the form `...Type`),
-			// remove `...` in the type.
-			var type = symbol.type.replace(/^\.\.\./, '');
 			return templates.parameter.process({
 				name: symbol.name,
 				description: processInlineTags(symbol.desc, {
 					stripParagraphs: true
 				}),
-				typeLink: new Link(true).toSymbol(type),
+				typeLink: renderType(symbol.type),
 				symbol: symbol,
 				defaultValue: symbol.defaultValue ?
 						processInlineTags(symbol.defaultValue, {
@@ -341,7 +356,7 @@ var Render = new function() {
 				name: symbol.name,
 				description: processInlineTags(symbol.desc,
 						{stripParagraphs: true}),
-				typeLink: new Link(true).toSymbol(symbol.type),
+				typeLink: renderType(symbol.type),
 				symbol: symbol
 			});
 		},

@@ -6,12 +6,10 @@ function publish(symbolSet) {
 	// Filter and organize JSDOC parsed data.
 	var symbols = symbolSet.toArray().sort(makeSortby('alias'));
 	var classes = symbols.filter(isClass).filter(isVisible);
-	var global = symbols.filter(isGlobal)[0];
 
 	// Build a data object which will be used by next script.
 	var result = {
 		classes: classes,
-		global: global,
 		version: JSDOC.opt.D.version,
 		date: JSDOC.opt.D.date
 	};
@@ -27,10 +25,6 @@ function publish(symbolSet) {
 
 	function isClass(_) {
 		return ((_.is('CONSTRUCTOR') || _.isNamespace) && (_.alias != '_global_'));
-	}
-
-	function isGlobal(_) {
-		return _.isNamespace && _.alias == '_global_' && _.properties.length > 0;
 	}
 
 	function isVisible(_) {
