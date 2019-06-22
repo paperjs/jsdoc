@@ -166,7 +166,7 @@ JSDOC.Walker.prototype.step = function() {
 				
 				if (!this.namescope.last().is("GLOBAL")) isInner = true;
 				
-				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
+				params = JSDOC.Walker.onParamList(this.ts);
 
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 				if (isInner) symbol.isInner = true;
@@ -213,7 +213,7 @@ JSDOC.Walker.prototype.step = function() {
 				}
 
 				if (this.lastDoc) doc = this.lastDoc;
-				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
+				params = JSDOC.Walker.onParamList(this.ts);
 				
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 
@@ -248,7 +248,7 @@ JSDOC.Walker.prototype.step = function() {
 				this.ts.next(3); // advance past the "new" or "("
 				
 				if (this.lastDoc) doc = this.lastDoc;
-				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
+				params = JSDOC.Walker.onParamList(this.ts);
 				
 				symbol = new JSDOC.Symbol(name, params, "OBJECT", doc);
 				if (isInner) symbol.isInner = true;
@@ -273,7 +273,7 @@ JSDOC.Walker.prototype.step = function() {
 				name = (this.namescope.last().alias+"."+name).replace("#.", "#");
 				
 				if (this.lastDoc) doc = this.lastDoc;
-				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
+				params = JSDOC.Walker.onParamList(this.ts);
 				
 				if (doc && doc.getTag("constructs").length) {
 					name = name.replace(/\.prototype(\.|$)/, "#");
@@ -396,7 +396,7 @@ JSDOC.Walker.prototype.step = function() {
 					var functionCall = {name: name};
 				
 					var cursor = this.ts.cursor;
-					params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
+					params = JSDOC.Walker.onParamList(this.ts);
 					this.ts.cursor = cursor;
 					
 					for (var i = 0; i < params.length; i++)
@@ -420,7 +420,7 @@ JSDOC.Walker.prototype.step = function() {
 				name = "$anonymous";
 				name = this.namescope.last().alias+"-"+name
 				
-				params = JSDOC.Walker.onParamList(this.ts.balance("LEFT_PAREN"));
+				params = JSDOC.Walker.onParamList(this.ts);
 				
 				symbol = new JSDOC.Symbol(name, params, "FUNCTION", doc);
 				
@@ -489,9 +489,14 @@ JSDOC.Walker.prototype.resolveThis = function(name) {
 	return name;
 }
 
-JSDOC.Walker.onParamList = function(/**Array*/paramTokens) {
+JSDOC.Walker.onParamList = function(/**JSDOC.TokenStream*/ts) {
+	var context = [];
+	for (var i = -2; i < 2; i++) {
+		context.push(ts.look(i));
+	}
+	var paramTokens = ts.balance("LEFT_PAREN");
 	if (!paramTokens) {
-		LOG.warn("Malformed parameter list. Can't parse code.");
+		LOG.warn("Malformed parameter list. Can't parse code: " + context.join(''));
 		return [];
 	}
 	var params = [];
