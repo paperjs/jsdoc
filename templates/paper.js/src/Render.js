@@ -155,11 +155,11 @@ var Render = new function() {
 		return '';
 	};
 
-	var renderLink = function(type) {
+	var renderLinks = function(type) {
 		// Handle rest parameter (of the form `...Type`):
 		// - `...Type` => `Type`
 		// - `...(TypeA|TypeB)` => `TypeA|TypeB`
-		type = type.trim().replace(/^\.\.\.|^\(|\)$/, '')
+		type = type.trim().replace(/^\.\.\.|^\(|\)$/g, '')
 		// Handle multiple types: 
 		// `TypeA|TypeB` => `<a ...>TypeA</a> / <a ...>TypeB</a>`
 		var types = type.split('|');
@@ -309,7 +309,7 @@ var Render = new function() {
 				description: processInlineTags(symbol.desc, {
 					stripParagraphs: true
 				}),
-				typeLink: renderLink(symbol.type),
+				typeLink: renderLinks(symbol.type),
 				symbol: symbol,
 				defaultValue: symbol.defaultValue ?
 						processInlineTags(symbol.defaultValue, {
@@ -353,7 +353,7 @@ var Render = new function() {
 				name: symbol.name,
 				description: processInlineTags(symbol.desc,
 						{stripParagraphs: true}),
-				typeLink: renderLink(symbol.type),
+				typeLink: renderLinks(symbol.type),
 				symbol: symbol
 			});
 		},

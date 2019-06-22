@@ -76,7 +76,7 @@ function Link(asCode) {
 							html = (thisLink.prefix || '') + html + (thisLink.suffix || '');
 						links.push(html);
 					}
-					return prematch+links.join('\u27cb') + postmatch;
+					return prematch + links.join('⟋') + postmatch;
 				}
 			);
 		}
