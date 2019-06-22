@@ -117,61 +117,58 @@ var Render = new function() {
 	};
 
 	var renderOptions = function(symbol, tag, title) {
-				var options = symbol.comment.getTag(tag);
-				if (options.length) {
-					var list = ['<ul class="member-list">'];
-					if (title)
-						list.push('<h4>' + title + ':</h4>');
-					for (var i = 0, l = options.length; i < l; i++) {
-						list.push('<li>' + options[i].desc.replace(
-							// Match `[optionalName=defaultValue]` as well as `name`
-							// (?:\{([\w|\[\]]*)\}): Match type specifier, including
-							// '|' for multiple values and '[]' for arrays.
-							/^(?:\[([^=\]]+)\=([^\]]+)\]|([\w.]+))\s*(?:\{([\w|\[\]]*)\})?\s*([\u0000-\uffff]*)$/,
-							function(match, optionalName, defaultValue, name, type,
-									text) {
-								text = text && text.trim();
-								if (text) {
-									text = ' &mdash; ' + processInlineTags(text, {
-												stripParagraphs: true
-											});
-								}
-								if (defaultValue) {
-									defaultValue = ' &mdash;&nbsp;default: <tt>'
-											+ processInlineTags(defaultValue, {
-												stripParagraphs: true
-											})
-											+ '</tt>';
-								}
-								return '<tt>' + (optionalName || name) + ': '
-										+ new Link(true).toSymbol(type)
-										+ '</tt>' + text + (defaultValue || '');
-							}
-						) + '</li>');
+		var options = symbol.comment.getTag(tag);
+		if (options.length) {
+			var list = ['<ul class="member-list">'];
+			if (title)
+				list.push('<h4>' + title + ':</h4>');
+			for (var i = 0, l = options.length; i < l; i++) {
+				list.push('<li>' + options[i].desc.replace(
+					// Match `[optionalName=defaultValue]` as well as `name`
+					// (?:\{([\w|\[\]]*)\}): Match type specifier, including
+					// '|' for multiple values and '[]' for arrays.
+					/^(?:\[([^=\]]+)\=([^\]]+)\]|([\w.]+))\s*(?:\{([\w|\[\]]*)\})?\s*([\u0000-\uffff]*)$/,
+					function(match, optionalName, defaultValue, name, type,
+							text) {
+						text = text && text.trim();
+						if (text) {
+							text = ' &mdash; ' + processInlineTags(text, {
+										stripParagraphs: true
+									});
+						}
+						if (defaultValue) {
+							defaultValue = ' &mdash;&nbsp;default: <tt>'
+									+ processInlineTags(defaultValue, {
+										stripParagraphs: true
+									})
+									+ '</tt>';
+						}
+						return '<tt>' + (optionalName || name) + ': '
+								+ new Link(true).toSymbol(type)
+								+ '</tt>' + text + (defaultValue || '');
 					}
-					list.push('</ul>');
-					return list.join('\n');
-				}
-				return '';
-			};
-	var renderType = function(type) {
+				) + '</li>');
+			}
+			list.push('</ul>');
+			return list.join('\n');
+		}
+		return '';
+	};
+
+	var renderLink = function(type) {
 		// Handle rest parameter (of the form `...Type`):
 		// - `...Type` => `Type`
 		// - `...(TypeA|TypeB)` => `TypeA|TypeB`
-		type = type
-			.trim()
-			.replace(/^\.\.\./, '')
-			.replace(/^\(/,'')
-			.replace(/\)$/,'');
-
+		type = type.trim().replace(/^\.\.\.|^\(|\)$/, '')
 		// Handle multiple types: 
 		// `TypeA|TypeB` => `<a ...>TypeA</a> / <a ...>TypeB</a>`
 		var types = type.split('|');
 		for (var i = 0; i < types.length; i++) {
 			types[i] = new Link(true).toSymbol(types[i]).toString();
 		}
-		return types.join('\u27cb');
+		return types.join('⟋');
 	};
+
 	var paperScriptId = 0;
 	return {
 		_class: function(symbol, version) {
@@ -312,7 +309,7 @@ var Render = new function() {
 				description: processInlineTags(symbol.desc, {
 					stripParagraphs: true
 				}),
-				typeLink: renderType(symbol.type),
+				typeLink: renderLink(symbol.type),
 				symbol: symbol,
 				defaultValue: symbol.defaultValue ?
 						processInlineTags(symbol.defaultValue, {
@@ -356,7 +353,7 @@ var Render = new function() {
 				name: symbol.name,
 				description: processInlineTags(symbol.desc,
 						{stripParagraphs: true}),
-				typeLink: renderType(symbol.type),
+				typeLink: renderLink(symbol.type),
 				symbol: symbol
 			});
 		},
