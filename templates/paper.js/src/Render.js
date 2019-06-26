@@ -159,7 +159,7 @@ var Render = new function() {
 		// Handle rest parameter (of the form `...Type`):
 		// - `...Type` => `Type`
 		// - `...(TypeA|TypeB)` => `TypeA|TypeB`
-		type = type.trim().replace(/^\.\.\.|^\(|\)$/g, '')
+		type = type.trim().replace(/^\.\.\.\(?|\)$/g, '')
 		// Handle multiple types: 
 		// `TypeA|TypeB` => `<a ...>TypeA</a> / <a ...>TypeB</a>`
 		var types = type.split('|');
