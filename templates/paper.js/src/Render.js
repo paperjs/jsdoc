@@ -159,10 +159,27 @@ var Render = new function() {
 		// Handle rest parameter (of the form `...Type`):
 		// - `...Type` => `Type`
 		// - `...(TypeA|TypeB)` => `TypeA|TypeB`
-		type = type.trim().replace(/^\.\.\.|^\(|\)$/g, '')
+		type = type.trim().replace(/^\.\.\.\(?|\)$/g, '')
 		// Handle multiple types: 
 		// `TypeA|TypeB` => `<a ...>TypeA</a> / <a ...>TypeB</a>`
 		var types = type.split('|');
+		// Hanle nullable type: 
+		// - `?Type` => `Type|null`
+		// - `?TypeA|TypeB` => `TypeA|TypeB|null`
+		// - `?TypeA|?TypeB` => `TypeA|TypeB|null`
+        // If at least one type is nullable, we add null type at the end of the
+        // list.
+		var nullable = false;
+		var nullablePattern = /^\?/;
+		for (var i = 0; i < types.length; i++) {
+			if (types[i].match(nullablePattern)) {
+				types[i] = types[i].replace(nullablePattern, '');
+				nullable = true;
+			}
+		}
+		if (nullable) {
+			types.push('null');
+		}
 		for (var i = 0; i < types.length; i++) {
 			types[i] = new Link(true).toSymbol(types[i]).toString();
 		}
@@ -285,7 +302,8 @@ var Render = new function() {
 				symbol: symbol,
 				id: symbol.getId(),
 				name: name,
-				description: processInlineTags(symbol.desc)
+				description: processInlineTags(symbol.desc),
+				typeLink: renderLinks(symbol.type)
 			};
 			publish.curClass.index[param.id] = {
 				title: param.name,
