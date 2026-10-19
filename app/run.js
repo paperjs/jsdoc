@@ -252,6 +252,8 @@ IO = {
 		dir = new File(dir);
 		if (!dir.directory) return [String(dir)];
 		var files = dir.list();
+		// Sort, so the output doesn't depend on the file system's order:
+		java.util.Arrays.sort(files);
 		
 		for (var f = 0; f < files.length; f++) {
 			var file = String(files[f]);
